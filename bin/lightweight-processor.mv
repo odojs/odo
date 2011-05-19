@@ -1,5 +1,5 @@
 #!/usr/bin/env move
-require.paths.unshift __dirname+'/../nodelib'
+require.paths.unshift __dirname+'/../core/node_modules'
 
 # A program that runs as a daemon (in the backround) and does things.
 # Don't use this unless you where looking for a solution like this.
