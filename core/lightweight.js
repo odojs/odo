@@ -1,13 +1,15 @@
 var http = require('http');
 var store = require('supermarket');
 var paperboy = require('paperboy');
+var path = require('path');
 
 //todo: upload files
 
 var server = http.createServer(function(req, res) {
-    console.log(__dirname + '/../www/');
+    var url = require('url').parse(req.url, true);
+    url.www = path.normalize(__dirname + '/../www/');
     paperboy
-        .deliver(__dirname + '/../www/', req, res)
+        .deliver(url.www, req, res)
         .before(function() {
             console.log('About to deliver: ' + req.url);
         })
@@ -21,14 +23,13 @@ var server = http.createServer(function(req, res) {
             res.end();
         })
         .otherwise(function() {
-            var url = require('url').parse(req.url, true);
             
             switch (url.pathname) {
                 case '/services/store':
-                    require('./store').request(url, req, res);
+                    require('./store.js').request(url, req, res);
                     break;
                 case '/services/list':
-                    require('./list').request(url, req, res);
+                    require('./list.js').request(url, req, res);
                     break;
                 default:
                     res.writeHead(404, {'Content-Type': 'text/plain'});

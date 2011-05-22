@@ -1,4 +1,3 @@
-var path = require('path');
 var fs = require('fs');
 
 this.request = function (url, req, res) {
@@ -9,14 +8,14 @@ this.request = function (url, req, res) {
         return;
     }
     
-    var dirpath = path.dirname(__filename) + '/../www/' + url.query.dir;
+    var dirpath = url.www + url.query.dir;
         
     fs.readdir(dirpath, function(err, files) {
         if (err) {
             res.writeHead(500, {'Content-Type': 'text/plain'});
             res.write('Could not list dir');
             res.end();
-            console.error(err.stack);
+            console.error(err.stack + ' ' + dirpath);
             
             return;
         }
