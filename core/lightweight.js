@@ -23,23 +23,15 @@ var server = http.createServer(function(req, res) {
             res.end();
         })
         .otherwise(function() {
+            if (require('./services/store.js').request(url, req, res)) return;
+            if (require('./services/list.js').request(url, req, res)) return;
+            if (require('./services/upload.js').request(url, req, res)) return;
             
-            switch (url.pathname) {
-                case '/services/store':
-                    require('./store.js').request(url, req, res);
-                    break;
-                case '/services/list':
-                    require('./list.js').request(url, req, res);
-                    break;
-                default:
-                    res.writeHead(404, {'Content-Type': 'text/plain'});
-                    res.write('Not Found');
-                    res.end();
-                    break;
-        
-            }
+            res.writeHead(404, {'Content-Type': 'text/plain'});
+            res.write('Not Found');
+            res.end();
         });
 });
-server.listen(3000);
+server.listen(80);
 
-console.log('Server running at http://localhost:3000/');
+console.log('Server running at http://localhost/');

@@ -1,11 +1,15 @@
 var fs = require('fs');
 
 this.request = function (url, req, res) {
+    var match = new RegExp('/services/list').exec(url.pathname);
+    if (!match)
+        return false;
+        
     if (!url.query.dir) {
         res.writeHead(404, {'Content-Type': 'text/plain'});
         res.write('Not Found');
         res.end();
-        return;
+        return true;
     }
     
     var dirpath = url.www + url.query.dir;
@@ -65,4 +69,6 @@ this.request = function (url, req, res) {
         res.write(JSON.stringify(files));
         res.end();
     });
+    
+    return true;
 }

@@ -1,11 +1,15 @@
 var store = require('supermarket');
 
 this.request = function(url, req, res) {
+    var match = new RegExp('/services/store').exec(url.pathname);
+    if (!match)
+        return false;
+        
     if (!url.query.key) {
         res.writeHead(404, {'Content-Type': 'text/plain'});
         res.write('Not Found');
         res.end();
-        return;
+        return true;
     }
     
     if (req.method == 'GET') {
@@ -16,7 +20,10 @@ this.request = function(url, req, res) {
                 res.end(value);
             });
         });
-    } else if (req.method == 'POST') {
+        return true;
+    }
+    
+    if (req.method == 'POST') {
         var data = '';
         req
             .on('data', function(chunk) {
@@ -41,9 +48,11 @@ this.request = function(url, req, res) {
                 res.write('OK');
                 res.end();
             });
-    } else {
-        res.writeHead(405, {'Content-Type': 'text/plain'});
-        res.write('Method Not Allowed');
-        res.end();
+        return true;
     }
+    
+    res.writeHead(405, {'Content-Type': 'text/plain'});
+    res.write('Method Not Allowed');
+    res.end();
+    return true;
 }
