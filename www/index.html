@@ -23,7 +23,7 @@
         }
         
         $(function() {
-            $('#submit_button').click(function(e) {
+            $('#uploadform input[type=file]').change(function () {
                 var file = $("input:file").val();
                 
                 if (file == '') {
@@ -51,7 +51,6 @@
                         uri = '/update/'+upload_uuid;
                         $.post(uri, {'title': $('#title').val()})
                     });
-                
                 }
             })
         });
@@ -60,13 +59,12 @@
 <body>
 
 <form id='uploadform' enctype="multipart/form-data" method="post">
-  media: <input type="file" name="file"><br>
-  title: <input type="text" name="title" id="title"><br>
-  <input type="button" id="submit_button" value="upload">
+  media: <input type="file" name="file"> <div id="progress"></div><br>
+  title: <input type="text" name="title" id="title">
 </form>
 
 <div id="status">INSERT DISK.</div>
-<div id="progress"></div>
+
 
 <div id="target" style="width: 100px; height:0px; visibility:hidden;"></div>
 

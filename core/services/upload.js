@@ -54,6 +54,7 @@ this.request = function (url, req, res) {
             metadata[name] = value;
         });
         form.parse(req);
+        return true;
     }
     
     // respond to progress queries.
@@ -63,6 +64,7 @@ this.request = function (url, req, res) {
         res.writeHead(200, {'content-type': 'application/json'});
         res.write(JSON.stringify({'progress': progresses[uuid]}));
         res.end();
+        return true;
     }
     
     return false;
