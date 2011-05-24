@@ -13,7 +13,7 @@ this.request = function (url, req, res) {
         console.log("receiving upload: "+uuid+'\n');
         
         var form = new formidable.IncomingForm();
-        form.uploadDir = '../upload';
+        form.uploadDir = url.upload;
         form.keepExtensions = true;
         
         // keep track of progress.
