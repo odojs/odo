@@ -2,22 +2,31 @@
 <html>
 <head>
   <title>Soundcloud Upload Demo</title>
-  <script src="jquery.js" type="text/javascript"></script>
-  <script src="hack.js" type="text/javascript"></script>
+  
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
   <script>
-        function update_progress() {
-            var uri = '/progress/'+upload_uuid;
-            $.getJSON(uri, function(data) {
-                progress = data['progress'];
-                if (progress) {
-                    if (progress < 100.0) {
-                        $('div#progress').html("progress: "+progress+"%");
-                    } else {
-                        $('div#progress').html(''); // clear when done.
+    // random numbers that look like GUIDs - http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
+    function S4()   { return (((1+Math.random())*0x10000)|0).toString(16).substring(1); }
+    function guid() { return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4()); }
+  </script>
+  <script>
+        function update_progress(options) {
+            var uri = '/progress/' + options.uuid;
+            $.get(uri, function(data) {
+                if (data.progress.percent) {
+                    if (data.progress.percent < 100.0)
+                        options.target.text('progress: ' + data.progress.percent + '%');
+                    else {
+                        options.target.text(data.filename + ' complete (' + data.progress.received + ' bytes) ');
+                        options.target.append($('<a />')
+                            .attr('href', '/upload/' + data.savedfilename)
+                            .text('view'));
                     }
                 }
-                if (progress != 100.0) {
-                    setTimeout("update_progress()", 200);
+                if (data.progress.percent != 100.0) {
+                    setTimeout(function () {
+                        update_progress(options);
+                    }, 200);
                 }
             });
         }
@@ -26,31 +35,25 @@
             $('#uploadform input[type=file]').change(function () {
                 var file = $("input:file").val();
                 
-                if (file == '') {
-                    $('#status').css({background: 'red'});
-                    $('#status').html('INSERT DISK.')
-                } else {
-                    // ok.
-                    $('#status').css({background: 'white'});
-                    $('#status').html('uploading: ' + file);
-                    // TODO: disable submit button.
-                    
+                if (file != '') {
                     // submit form in hidden iframe.
-                    upload_uuid = guid();
-                    var iframe = $('<iframe name="postframe" id="postframe" class="hidden" src="about:none" />');
-                    $('div#target').html(iframe);
-                    $('#uploadform').attr('target', 'postframe');
-                    $('#uploadform').attr('action', '/upload/'+upload_uuid);
-                    $('#uploadform').submit();
-                    update_progress();
+                    var upload_uuid = guid();
+                    $('#uploadform')
+                        .attr('target', 'postframe')
+                        .attr('action', '/upload/' + upload_uuid)
+                        .submit();
                     
-                    $('#postframe').load(function() {
-                        var status = $('#postframe')[0].contentDocument.body.textContent;
-                        $('div#status').html(status);
-                        // post title back to server
-                        uri = '/update/'+upload_uuid;
-                        $.post(uri, {'title': $('#title').val()})
+                    update_progress({
+                        target: $('<li />')
+                            .text('')
+                            .data('uuid', upload_uuid)
+                            .appendTo($('#progress')),
+                        uuid: upload_uuid
                     });
+                    
+                    $('#postframe').load();
+                    
+                    $('#uploadform input:file').val('');
                 }
             })
         });
@@ -58,15 +61,13 @@
 </head>
 <body>
 
-<form id='uploadform' enctype="multipart/form-data" method="post">
-  media: <input type="file" name="file"> <div id="progress"></div><br>
-  title: <input type="text" name="title" id="title">
+<ul id="progress">
+</ul>
+
+<form id="uploadform" enctype="multipart/form-data" method="post">
+  <input type="file" name="file">
 </form>
-
-<div id="status">INSERT DISK.</div>
-
-
-<div id="target" style="width: 100px; height:0px; visibility:hidden;"></div>
+<iframe name="postframe" id="postframe" class="hidden" src="about:none" style="width: 100px; height:0px; visibility:hidden;"></iframe>
 
 </body>
 </html>
