@@ -1,73 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Soundcloud Upload Demo</title>
-  
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
-  <script>
-    // random numbers that look like GUIDs - http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
-    function S4()   { return (((1+Math.random())*0x10000)|0).toString(16).substring(1); }
-    function guid() { return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4()); }
-  </script>
-  <script>
-        function update_progress(options) {
-            var uri = '/progress/' + options.uuid;
-            $.get(uri, function(data) {
-                if (data.progress.percent) {
-                    if (data.progress.percent < 100.0)
-                        options.target.text('progress: ' + data.progress.percent + '%');
-                    else {
-                        options.target.text(data.filename + ' complete (' + data.progress.received + ' bytes) ');
-                        options.target.append($('<a />')
-                            .attr('href', '/upload/' + data.savedfilename)
-                            .text('view'));
-                    }
-                }
-                if (data.progress.percent != 100.0) {
-                    setTimeout(function () {
-                        update_progress(options);
-                    }, 200);
-                }
-            });
-        }
-        
-        $(function() {
-            $('#uploadform input[type=file]').change(function () {
-                var file = $("input:file").val();
-                
-                if (file != '') {
-                    // submit form in hidden iframe.
-                    var upload_uuid = guid();
-                    $('#uploadform')
-                        .attr('target', 'postframe')
-                        .attr('action', '/upload/' + upload_uuid)
-                        .submit();
-                    
-                    update_progress({
-                        target: $('<li />')
-                            .text('')
-                            .data('uuid', upload_uuid)
-                            .appendTo($('#progress')),
-                        uuid: upload_uuid
-                    });
-                    
-                    $('#postframe').load();
-                    
-                    $('#uploadform input:file').val('');
-                }
-            })
-        });
-  </script>
+    <title>VoodooLabs</title>
+	
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Tangerine">
+	<link rel="stylesheet" type="text/css" href="/assets/styles/lightweight.css" />
+	
+    <script src="/assets/scripts/jquery-1.6.1.min.js"></script>
+    <script src="/assets/scripts/date.js"></script>
+    <script src="/assets/scripts/showdown-0.9.min.js"></script>
+    <script src="/assets/scripts/jquery.ba-bbq.min.js"></script>
+	<script src="/assets/scripts/jquery.autocomplete.min.js"></script>
+	<script src="/assets/scripts/jquery.fieldselection.min.js"></script>
+	<script src="/assets/scripts/knockout-1.2.1.js"></script>
+    
+    <script src="/assets/scripts/voodoo.util.js"></script>
+    <script src="/assets/scripts/voodoo.dialog.js"></script>
+    <script src="/assets/scripts/voodoo.overlay.js"></script>
+    <script src="/assets/scripts/voodoo.markdown.js"></script>
 </head>
+
 <body>
-
-<ul id="progress">
-</ul>
-
-<form id="uploadform" enctype="multipart/form-data" method="post">
-  <input type="file" name="file">
-</form>
-<iframe name="postframe" id="postframe" class="hidden" src="about:none" style="width: 100px; height:0px; visibility:hidden;"></iframe>
-
+    <div id="wrapper">
+        <header>
+            <h1>VoodooLabs</h1>
+        </header>
+        
+        <article>
+            <ul>
+                <li><a href="wiki.html">Wiki</a></li>
+                <li><a href="wiki.html">Upload</a></li>
+            </ul>
+        </article>
+        
+        <footer>
+            &copy; 2011 Thomas Coats. All Rights Reserved.
+        </footer>
+    </div>
 </body>
 </html>

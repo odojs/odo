@@ -14,9 +14,9 @@ var server = http.createServer(function(req, res) {
     url.www = path.normalize(__dirname + '/../www/');
     url.upload = path.normalize(__dirname + '/../www/upload/');
     
-    if (require('./services/store.js').request(url, req, res)) return;
-    if (require('./services/list.js').request(url, req, res)) return;
-    if (require('./services/upload.js').request(url, req, res)) return;
+    if (require('../services/store.js').request(url, req, res)) return;
+    if (require('../services/list.js').request(url, req, res)) return;
+    if (require('../services/upload.js').request(url, req, res)) return;
     
     paperboy
         .deliver(url.www, req, res)

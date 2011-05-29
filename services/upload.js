@@ -6,7 +6,7 @@ this.request = function (url, req, res) {
     var match = null;
 
     // parse an upload using formidable.
-    match = new RegExp('/upload/(.+)').exec(url.pathname);
+    match = new RegExp('/services/upload/(.+)').exec(url.pathname);
     if (match && req.method.toLowerCase() == 'post') {
         var uuid = match[1];
         status[uuid] = {
@@ -54,7 +54,7 @@ this.request = function (url, req, res) {
     }
     
     // (update) metadata
-    //match = new RegExp('/update/(.+)').exec(url.pathname);
+    //match = new RegExp('/services/update/(.+)').exec(url.pathname);
     //if (match && req.method.toLowerCase() == 'post') {
     //    uuid = match[1]
     //    var form = new formidable.IncomingForm();
@@ -67,7 +67,7 @@ this.request = function (url, req, res) {
     //}
     
     // respond to progress queries.
-    match = new RegExp('/progress/(.+)').exec(url.pathname);
+    match = new RegExp('/services/progress/(.+)').exec(url.pathname);
     if (match) {
         uuid = match[1];
         res.writeHead(200, {'content-type': 'application/json'});
