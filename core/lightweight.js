@@ -1,43 +1,26 @@
-var http = require('http');
-var store = require('supermarket');
-var paperboy = require('paperboy');
+var express = require('express');
 var path = require('path');
-var formidable = require('formidable');
+app = express.createServer();
 
-var progresses = {}
-var metadata   = {}
+require('../services/list.js');
+require('../services/store.js');
+require('../services/upload.js');
 
-//todo: upload files
-
-var server = http.createServer(function(req, res) {
-    var url = require('url').parse(req.url, true);
-    url.www = path.normalize(__dirname + '/../www/');
-    url.upload = path.normalize(__dirname + '/../www/upload/');
+app.configure(function() {
+    app.set('www', path.normalize(__dirname + '/../www/'));
+    app.set('upload', path.normalize(__dirname + '/../www/upload/'));
+    app.set('store', path.normalize(__dirname + '/../store/'));
     
-    if (require('../services/store.js').request(url, req, res)) return;
-    if (require('../services/list.js').request(url, req, res)) return;
-    if (require('../services/upload.js').request(url, req, res)) return;
-    
-    paperboy
-        .deliver(url.www, req, res)
-        .before(function() {
-            console.log('About to deliver: ' + req.url);
-        })
-        .after(function() {
-            console.log('Delivered: ' + req.url);
-        })
-        .error(function(statusCode) {
-            console.log('Error delivering: ' + req.url + ' ' + statusCode);
-            res.writeHead(statusCode, {'Content-Type': 'text/plain'});
-            res.write('Error delivering: ' + req.url + ' status: ' + statusCode);
-            res.end();
-        })
-        .otherwise(function() {
-            res.writeHead(404, {'Content-Type': 'text/plain'});
-            res.write('Not Found');
-            res.end();
-        });
+    //app.use(express.logger());
+    app.use(express.bodyParser());
+    //app.use(express.methodOverride());
+    //app.use(express.cookieParser());
+    //app.use(express.session({ secret: "bob" }));
+    app.use(app.router);
+    app.use(express.static(app.set('www')));
+    app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
-server.listen(80);
+
+app.listen(80);
 
 console.log('Server running at http://localhost/');

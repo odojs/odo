@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Demo</title>
+    
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Tangerine">
+    <link rel="stylesheet" type="text/css" href="/assets/styles/lightweight.css" />
+    
+    <script src="/assets/scripts/jquery-1.6.1.min.js"></script>
+    <script src="/assets/scripts/date.js"></script>
+    <script src="/assets/scripts/showdown-0.9.min.js"></script>
+    <script src="/assets/scripts/jquery.ba-bbq.min.js"></script>
+    <script src="/assets/scripts/jquery.autocomplete.min.js"></script>
+    <script src="/assets/scripts/jquery.fieldselection.min.js"></script>
+    <script src="/assets/scripts/knockout-1.2.1.js"></script>
+    
+    <script src="/assets/scripts/voodoo.util.js"></script>
+    <script src="/assets/scripts/voodoo.dialog.js"></script>
+    <script src="/assets/scripts/voodoo.overlay.js"></script>
+    <script src="/assets/scripts/voodoo.markdown.js"></script>
+    
+    <script>
+        $(function () {
+            $('form button').click(function (e) {
+                e.preventDefault();
+                
+                var $form = $(this).closest('form');
+                $.ajax({
+                    type: 'post',
+                    url: '/services/store?db='
+                        + $form.find('input[name=db]').val()
+                        + '&key=' + $form.find('input[name=key]').val(),
+                    contentType: 'application/json',
+                    data: JSON.stringify(JSON.parse($form.find('textarea[name=value]').val())),
+                    success: function (data) {
+                        $form.find('textarea[name=value]').val(data);
+                    }
+                });
+            });
+            
+            $('form input:submit').click(function (e) {
+                e.preventDefault();
+                
+                var $form = $(this).closest('form');
+                $.ajax({
+                    type: 'get',
+                    url: '/services/store?db='
+                        + $form.find('input[name=db]').val()
+                        + '&key=' + $form.find('input[name=key]').val(),
+                    success: function (data) {
+                        $form.find('textarea[name=value]').val(JSON.stringify(data));
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="wrapper">
+        <header>
+            <h1>VoodooLabs</h1>
+        </header>
+        
+        <article>
+            <ul id="progress"></ul>
+            
+            <form>
+                <div>
+                    <label>db <input name="db" type="text" value="store" /></label>
+                </div>
+                <div>
+                    <label>key <input name="key" type="text" value="recipies" /></label>
+                </div>
+                <div>
+                    <label>value <textarea name="value"></textarea></label>
+                </div>
+                <button>push</button>
+                <input type="submit" value="pull" />
+            </form>
+        </article>
+        
+        <footer>
+            &copy; 2011 Thomas Coats. All Rights Reserved.
+        </footer>
+    </div>
+</body>
+</html>

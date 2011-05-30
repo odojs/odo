@@ -1,26 +1,16 @@
 var fs = require('fs');
 
-this.request = function (url, req, res) {
-    var match = new RegExp('/services/list').exec(url.pathname);
-    if (!match)
-        return false;
-        
-    if (!url.query.dir) {
-        res.writeHead(404, {'Content-Type': 'text/plain'});
-        res.write('Not Found');
-        res.end();
-        return true;
+app.get('/services/list', function(req, res, next) {
+    if (!req.query.dir) {
+        next();
+        return;
     }
     
-    var dirpath = url.www + url.query.dir;
+    var dirpath = app.set('www') + req.query.dir;
         
     fs.readdir(dirpath, function(err, files) {
         if (err) {
-            res.writeHead(500, {'Content-Type': 'text/plain'});
-            res.write('Could not list dir');
-            res.end();
-            console.error(err.stack + ' ' + dirpath);
-            
+            next(err);
             return;
         }
         
@@ -42,17 +32,17 @@ this.request = function (url, req, res) {
             return file.filename[0] != '.';
         });
         
-        if (url.query.ext)
+        if (req.query.ext)
             files = files.filter(function (file) {
-                return file.ext == url.query.ext;
+                return file.ext == req.query.ext;
             });
         
-        if (url.query.type == 'file')
+        if (req.query.type == 'file')
             files = files.filter(function (file) {
                 return file.stat.isFile();
             });
         
-        if (url.query.type == 'dir')
+        if (req.query.type == 'dir')
             files = files.filter(function (file) {
                 return file.stat.isDirectory();
             });
@@ -65,10 +55,6 @@ this.request = function (url, req, res) {
             };
         });
         
-        res.writeHead(200, {'Content-Type': 'application/json'});
-        res.write(JSON.stringify(files));
-        res.end();
+        res.send(files);
     });
-    
-    return true;
-}
+});
