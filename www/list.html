@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>List Demo</title>
+    
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Tangerine">
+    <link rel="stylesheet" type="text/css" href="/assets/styles/lightweight.css" />
+    
+    <script src="/assets/scripts/jquery-1.6.1.min.js"></script>
+    <script src="/assets/scripts/date.js"></script>
+    <script src="/assets/scripts/showdown-0.9.min.js"></script>
+    <script src="/assets/scripts/jquery.ba-bbq.min.js"></script>
+    <script src="/assets/scripts/jquery.autocomplete.min.js"></script>
+    <script src="/assets/scripts/jquery.fieldselection.min.js"></script>
+    <script src="/assets/scripts/jquery.tmpl.min.js"></script>
+    <script src="/assets/scripts/knockout-1.2.1.js"></script>
+    
+    <script src="/assets/scripts/voodoo.util.js"></script>
+    <script src="/assets/scripts/voodoo.dialog.js"></script>
+    <script src="/assets/scripts/voodoo.overlay.js"></script>
+    <script src="/assets/scripts/voodoo.markdown.js"></script>
+    
+    <script>
+        var viewModel = {
+            source: '/services/store?db=recipes&key=ingredients',
+            filter: ko.observable(''),
+            ingredients: ko.observableArray([]),
+            set: function (ingredients) {
+                while (viewModel.ingredients.pop()) { }
+                $.each(ingredients, function (key, ingredient) {
+                    viewModel.ingredients.push({
+                        name: ko.observable(ingredient.name)
+                    });
+                });
+                viewModel.sort();
+            },
+            get: function () {
+                return ko.toJS(viewModel).ingredients;
+            },
+            add: function (e) {
+                if (e.keyCode != 13)
+                    return true;
+                
+                var $item = $('#item');
+                var $name = $item.find('input:text[name=name]');
+                
+                viewModel.ingredients.push({
+                    name: ko.observable($name.val())
+                });
+                
+                $name.val('');
+                
+                viewModel.sort();
+            },
+            remove: function (ingredient) {
+                viewModel.ingredients.remove(ingredient);
+            },
+            sort: function () {
+                viewModel.ingredients.sort(function(left, right) {
+                    return left.name() == right.name() ? 0 : (left.name() < right.name() ? -1 : 1);
+                });
+            }
+        };
+        $.extend(viewModel, {
+            ingredientsFiltered: ko.dependentObservable(function() {
+                return viewModel.ingredients().filter(function (value) {
+                    return value.name().toLowerCase().indexOf(viewModel.filter().toLowerCase()) != -1;
+                });
+            })
+        });
+        $(function() {
+            $.ajax({
+                type: 'get',
+                url: viewModel.source,
+                success: function (data) {
+                    viewModel.set(data || []);
+                    ko.applyBindings(viewModel);
+                }
+            });
+            
+            $('#save').click(function (e) {
+                $.ajax({
+                    type: 'post',
+                    url: viewModel.source,
+                    contentType: 'application/json',
+                    data: JSON.stringify(viewModel.get())
+                });
+            });
+        });
+  </script>
+</head>
+<body>
+    <div id="wrapper">
+        <header>
+            <h1>VoodooLabs</h1>
+        </header>
+        
+        <article>
+            <div id="actions">
+                <button id="save">Save</button>
+            </div>
+            
+            <div id="filter">
+                Filter: <input name="filter" type="text" data-bind="value: filter, valueUpdate: 'afterkeydown'" />
+            </div>
+            <ul id="items" data-bind='template: { name: "itemsTemplate", foreach: ingredientsFiltered }'>
+                <script id="itemsTemplate" type="text/x-jquery-tmpl">
+                    <li>
+                        <input type="text" data-bind="value: name, valueUpdate: 'afterkeydown'" /> <button data-bind="click: function () { viewModel.remove($data); }">Remove</button>
+                    </li>
+                </script>
+            </ul>
+            <div id="item">
+                Add: <input name="name" type="text" data-bind="event: { keydown: add } " />
+            </div>
+        </article>
+        
+        <footer>
+            &copy; 2011 Thomas Coats. All Rights Reserved.
+        </footer>
+    </div>
+</body>
+</html>

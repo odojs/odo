@@ -242,15 +242,11 @@ ul {
     margin-left: 0;
     margin-bottom: 1.4em;
 }
-
-    ul li {
-        margin-bottom: 0.7em;
-    }
     
-        ul ul {
-            margin-left: 0;
-            margin-bottom: 1.4em;
-        }
+    ul ul {
+        margin-left: 0;
+        margin-bottom: 1.4em;
+    }
         
     article ul p {
         text-indent: 0;

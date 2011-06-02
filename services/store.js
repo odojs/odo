@@ -1,6 +1,5 @@
 var store = require('supermarket');
 
-
 app.get('/services/store', function(req, res, next) {
     if (!req.query.db || !req.query.key) {
         next();
@@ -21,6 +20,7 @@ app.get('/services/store', function(req, res, next) {
                 next(err);
                 return;
             }
+            //console.log(req.query.db + '.db:' + req.query.key);
             res.send(value);
         });
     });
@@ -36,6 +36,15 @@ app.post('/services/store', function(req, res, next) {
     req.setEncoding('utf8');
     req.on('data', function(chunk) { data += chunk; });
     req.on('end', function() {
+        var jsondata = null;
+        
+        try {
+            jsondata = JSON.parse(data);
+        } catch (err) {
+            next(err);
+            return;
+        }
+        
         store({
             filename: app.set('store') + req.query.db + '.db',
             json: true
@@ -44,15 +53,14 @@ app.post('/services/store', function(req, res, next) {
                 next(err);
                 return;
             }
-            console.log(data);
-            db.set(req.query.key, JSON.parse(data), function (err) {
+            //console.log(req.query.db + '.db:' + req.query.key);
+            db.set(req.query.key, jsondata, function (err) {
                 if (err) {
                     next(err);
                     return;
                 }
+                res.send('OK');
             });
         });
-        
-        res.send('OK');
     });
 });
