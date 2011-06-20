@@ -1,6 +1,6 @@
 ## Access over HTTP (but not HTTPS)
 server {
-    listen        3001;
+    listen        80;
     listen        [::]:3001 default ipv6only=on;
     server_name_in_redirect off;
     server_name _;
