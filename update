@@ -23,6 +23,7 @@ fi
 sudo -Hu www-data git submodule update --init
 
 if [ "$1" == "restart" ]; then
+  [ -f /etc/init.d/nginx ] && invoke-rc.d nginx restart
   [ -f /etc/init.d/lightweight-httpd ] && invoke-rc.d lightweight-httpd restart
   [ -f /etc/init.d/lightweight-processor ] && invoke-rc.d lightweight-processor restart
 fi
