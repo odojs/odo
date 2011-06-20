@@ -22,7 +22,7 @@
     
     <script>
         var viewModel = {
-            source: '/services/store?db=recipes&key=ingredients',
+            source: '/services/store?key=recipes:ingredients',
             filter: ko.observable(''),
             ingredients: ko.observableArray([]),
             currentIngredient: {
@@ -89,7 +89,7 @@
                 // todo: usdablubasdlajsbvlevbdl;vk
             },
             addClick: function (e) {
-                $(e.currentTarget).parent().children('')
+                //$(e.currentTarget).parent().children('')
             },
             add: function (target) {
                 viewModel.ingredients.push({
@@ -162,7 +162,7 @@
                     </li>
                 </script>
                 <li>
-                    <input name="name" type="text" data-bind="event: { keydown: addKeydown } " /> <a href="#" data-bind="click: addClick">add</a>
+                    <input name="name" type="text" data-bind="event: { keydown: addKeydown } " /> <!--<a href="#" data-bind="click: addClick">add</a>-->
                 </li>
             </ul>
             <div id="item" data-bind='template: { name: "itemTemplate" }'>

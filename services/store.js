@@ -1,66 +1,69 @@
-var store = require('supermarket');
+var redis = require('redis');
 
 app.get('/services/store', function(req, res, next) {
-    if (!req.query.db || !req.query.key) {
+    if (!req.query.key) {
         next();
         return;
     }
     
-    store({
-        filename: app.set('store') + req.query.db + '.db',
-        json: true
-    },
-    function (err, db) {
+    var client = redis.createClient();
+    
+    client.on('error', function (err) {
+        console.log('Redis connection error to ' + client.host + ':' + client.port + ' - ' + err);
+    });
+    
+    
+    //client.set('recipies', '{"a":"b"}', redis.print);
+    
+    client.get(req.query.key, function (err, value) {
+        client.end();
+        
         if (err) {
             next(err);
             return;
         }
-        db.get(req.query.key, function (err, value, key) {
-            if (err) {
-                next(err);
-                return;
-            }
-            //console.log(req.query.db + '.db:' + req.query.key);
-            res.send(value);
-        });
+        
+        var data = null;
+        try {
+            data = JSON.parse(value);
+        } catch (err) {
+            client.end();
+            next(err);
+            return;
+        }
+        
+        //console.log('get:' + req.query.key + ':' + JSON.stringify(data));
+        res.send(data);
     });
 });
 
 app.post('/services/store', function(req, res, next) {
-    if (!req.query.db || !req.query.key) {
+    if (!req.query.key) {
         next();
         return;
     }
     
-    var data = '';
+    var value = '';
     req.setEncoding('utf8');
-    req.on('data', function(chunk) { data += chunk; });
+    req.on('data', function(chunk) { value += chunk; });
     req.on('end', function() {
-        var jsondata = null;
-        
+        var data = null;
         try {
-            jsondata = JSON.parse(data);
+            data = JSON.parse(value);
         } catch (err) {
             next(err);
             return;
         }
         
-        store({
-            filename: app.set('store') + req.query.db + '.db',
-            json: true
-        }, function (err, db) {
-            if (err) {
-                next(err);
-                return;
-            }
-            //console.log(req.query.db + '.db:' + req.query.key);
-            db.set(req.query.key, jsondata, function (err) {
-                if (err) {
-                    next(err);
-                    return;
-                }
-                res.send('OK');
-            });
+        var client = redis.createClient();
+    
+        client.on('error', function (err) {
+            console.log('Redis connection error to ' + client.host + ':' + client.port + ' - ' + err);
+        });
+        
+        //console.log('set:' + req.query.key + ':' + JSON.stringify(data));
+        client.set(req.query.key, JSON.stringify(data), function (err, reply) {
+            client.end();
         });
     });
 });

@@ -21,17 +21,18 @@
     
     <script>
         $(function () {
+            var $form = $('form');
+            var $key = $form.find('input[name=key]');
+            var $value = $form.find('textarea[name=value]');
+            
             $('form button').click(function (e) {
                 e.preventDefault();
                 
-                var $form = $(this).closest('form');
                 $.ajax({
                     type: 'post',
-                    url: '/services/store?db='
-                        + $form.find('input[name=db]').val()
-                        + '&key=' + $form.find('input[name=key]').val(),
+                    url: '/services/store?key=' + $key.val(),
                     contentType: 'application/json',
-                    data: JSON.stringify(JSON.parse($form.find('textarea[name=value]').val())),
+                    data: JSON.stringify(JSON.parse($value.val())),
                     success: function (data) {
                         $form.find('textarea[name=value]').val(data);
                     }
@@ -41,14 +42,11 @@
             $('form input:submit').click(function (e) {
                 e.preventDefault();
                 
-                var $form = $(this).closest('form');
                 $.ajax({
                     type: 'get',
-                    url: '/services/store?db='
-                        + $form.find('input[name=db]').val()
-                        + '&key=' + $form.find('input[name=key]').val(),
+                    url: '/services/store?key=' + $key.val(),
                     success: function (data) {
-                        $form.find('textarea[name=value]').val(JSON.stringify(data));
+                        $value.val(JSON.stringify(data));
                     }
                 });
             });
@@ -65,9 +63,6 @@
             <ul id="progress"></ul>
             
             <form>
-                <div>
-                    <label>db <input name="db" type="text" value="store" /></label>
-                </div>
                 <div>
                     <label>key <input name="key" type="text" value="recipies" /></label>
                 </div>
