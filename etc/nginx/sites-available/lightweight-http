@@ -1,10 +1,14 @@
 ## Access over HTTP (but not HTTPS)
 server {
-  listen        3001;
-  listen        [::]:3001 default ipv6only=on;
-  access_log    /var/log/nginx/access.log;
-  location / {
-    proxy_pass          http://127.0.0.1:3000;
-    proxy_set_header    X-Client-IP  $remote_addr;
-  }
+    listen        3001;
+    listen        [::]:3001 default ipv6only=on;
+    server_name_in_redirect off;
+    server_name _;
+    access_log  /var/log/nginx/$host.access.log;
+    error_log  /var/log/nginx/$host.error.log;
+    
+    location / {
+        proxy_pass          http://127.0.0.1:3000;
+        proxy_set_header    X-Client-IP  $remote_addr;
+    }
 }
