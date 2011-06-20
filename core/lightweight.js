@@ -6,4 +6,4 @@ require('../services/list.js');
 require('../services/store.js');
 require('../services/upload.js');
 
-app.listen(3000);
+app.listen(80);
