@@ -3,7 +3,7 @@
 <head>
     <title>List Demo</title>
     
-    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Tangerine">
+    <!--<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Tangerine">-->
     <link rel="stylesheet" type="text/css" href="/assets/styles/lightweight.css" />
     
     <script src="/assets/scripts/jquery-1.6.1.min.js"></script>
@@ -25,35 +25,81 @@
             source: '/services/store?db=recipes&key=ingredients',
             filter: ko.observable(''),
             ingredients: ko.observableArray([]),
+            currentIngredient: {
+                ingredient: ko.observable(),
+                remove: function () {
+                    viewModel.ingredients.remove(viewModel.currentIngredient.ingredient());
+                    viewModel.currentIngredient.select(null);
+                },
+                addVariation: function (e) {
+                    if (e.which != 13)
+                        return true;
+                    
+                    var $name = $(e.target);
+                    
+                    viewModel.currentIngredient.ingredient().variations.push({
+                        name: ko.observable($name.val())
+                    });
+                    
+                    $name.val('');
+                    
+                    viewModel.currentIngredient.sort();
+                    
+                    $('#item input:text[name=name]').focus();
+                },
+                select: function (ingredient) {
+                    $('#item').empty();
+                    if (viewModel.currentIngredient.ingredient() == ingredient)
+                        viewModel.currentIngredient.ingredient(null);
+                    else
+                        viewModel.currentIngredient.ingredient(ingredient);
+                },
+                sort: function () {
+                    viewModel.currentIngredient.ingredient().variations.sort(function(left, right) {
+                        return left.name() == right.name() ? 0 : (left.name() < right.name() ? -1 : 1);
+                    });
+                }
+            },
             set: function (ingredients) {
                 while (viewModel.ingredients.pop()) { }
                 $.each(ingredients, function (key, ingredient) {
-                    viewModel.ingredients.push({
-                        name: ko.observable(ingredient.name)
-                    });
+                    var result = {
+                        name: ko.observable(ingredient.name),
+                        variations: ko.observableArray([])
+                    };
+                    if (ingredient.variations)
+                        $.each(ingredient.variations, function (key2, variation) {
+                            result.variations.push({
+                                name: ko.observable(variation.name)
+                            });
+                        });
+                    viewModel.ingredients.push(result);
                 });
                 viewModel.sort();
             },
             get: function () {
                 return ko.toJS(viewModel).ingredients;
             },
-            add: function (e) {
-                if (e.keyCode != 13)
+            addKeydown: function (e) {
+                if (e.which != 13)
                     return true;
                 
-                var $item = $('#item');
-                var $name = $item.find('input:text[name=name]');
+                viewModel.add($(e.target));
                 
+                // todo: usdablubasdlajsbvlevbdl;vk
+            },
+            addClick: function (e) {
+                $(e.currentTarget).parent().children('')
+            },
+            add: function (target) {
                 viewModel.ingredients.push({
-                    name: ko.observable($name.val())
+                    name: ko.observable(target.val())
                 });
+                viewModel.currentIngredient.select(null);
                 
-                $name.val('');
+                target.val('');
                 
                 viewModel.sort();
-            },
-            remove: function (ingredient) {
-                viewModel.ingredients.remove(ingredient);
             },
             sort: function () {
                 viewModel.ingredients.sort(function(left, right) {
@@ -63,8 +109,13 @@
         };
         $.extend(viewModel, {
             ingredientsFiltered: ko.dependentObservable(function() {
-                return viewModel.ingredients().filter(function (value) {
-                    return value.name().toLowerCase().indexOf(viewModel.filter().toLowerCase()) != -1;
+                var lowercaseFilter = viewModel.filter().toLowerCase();
+                return viewModel.ingredients().filter(function (ingredient) {
+                    return ingredient.name().toLowerCase().indexOf(lowercaseFilter) != -1
+                        || ingredient.variations()
+                            .filter(function (variation) {
+                                return variation.name().toLowerCase().indexOf(lowercaseFilter) != -1;
+                            }).length > 0;
                 });
             })
         });
@@ -101,17 +152,41 @@
             </div>
             
             <div id="filter">
-                Filter: <input name="filter" type="text" data-bind="value: filter, valueUpdate: 'afterkeydown'" />
+                Filter: <input name="filter" type="text" data-bind="value: filter, valueUpdate: 'afterkeydown'" /> <a href="#" data-bind="click: function () { viewModel.filter(''); }">clear</a>
             </div>
             <ul id="items" data-bind='template: { name: "itemsTemplate", foreach: ingredientsFiltered }'>
                 <script id="itemsTemplate" type="text/x-jquery-tmpl">
                     <li>
-                        <input type="text" data-bind="value: name, valueUpdate: 'afterkeydown'" /> <button data-bind="click: function () { viewModel.remove($data); }">Remove</button>
+                        <a href="#" data-bind="text: name, click: function () { viewModel.currentIngredient.select($data); }"></a>
+                        {{if $data == viewModel.currentIngredient.ingredient()}}=>{{/if}}
                     </li>
                 </script>
+                <li>
+                    <input name="name" type="text" data-bind="event: { keydown: addKeydown } " /> <a href="#" data-bind="click: addClick">add</a>
+                </li>
             </ul>
-            <div id="item">
-                Add: <input name="name" type="text" data-bind="event: { keydown: add } " />
+            <div id="item" data-bind='template: { name: "itemTemplate" }'>
+                <script id="itemTemplate" type="text/x-jquery-tmpl">
+                    <div data-bind="visible: viewModel.currentIngredient.ingredient() != null">
+                    {{if viewModel.currentIngredient.ingredient()}}
+                        <input type="text" data-bind="value: viewModel.currentIngredient.ingredient().name, valueUpdate: 'afterkeydown'" />
+                        <button data-bind="click: function () { viewModel.currentIngredient.remove(); }">Remove</button>
+                        <h3>Variations:</h3>
+                        <ul>
+                        {{if viewModel.currentIngredient.ingredient().variations}}
+                        {{if viewModel.currentIngredient.ingredient().variations() && viewModel.currentIngredient.ingredient().variations().length > 0}}
+                        {{each viewModel.currentIngredient.ingredient().variations}}
+                            <li>
+                                <input type="text" data-bind="value: $value.name, valueUpdate: 'afterkeydown'" />
+                                <button data-bind="click: function () { $data.variations.remove($value); }">Remove</button>
+                            </li>{{/each}}{{/if}}{{/if}}
+                            <li>
+                                <input name="name" type="text" data-bind="event: { keydown: function (e) { return viewModel.currentIngredient.addVariation(e); } } " />
+                            </li>
+                        </ul>
+                    {{/if}}
+                    </div>
+                </script>
             </div>
         </article>
         
