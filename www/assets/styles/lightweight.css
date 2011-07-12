@@ -54,9 +54,13 @@ html,
 body {
     margin: 0;
 	padding: 0;
-    background-color: #335588;
     font-family: Cambria, Georgia, serif;
     color: #9fb3d1;
+}
+
+html {
+    background-color: #358;
+	/* background-image: url(../images/blueprint_1600x1200.jpg); */
 }
 
 /* layout
@@ -171,8 +175,8 @@ h1, h2 {
 }
 
 h1 {
-    font-family: Tangerine, script, serif;
-    font-size: 6em;
+    font-family: Dancing Script, script, serif;
+    font-size: 5.5em;
     text-align: center;
     margin-top: 0.7em;
     margin-bottom: 1em;

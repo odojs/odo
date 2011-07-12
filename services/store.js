@@ -12,9 +12,6 @@ app.get('/services/store', function(req, res, next) {
         console.log('Redis connection error to ' + client.host + ':' + client.port + ' - ' + err);
     });
     
-    
-    //client.set('recipies', '{"a":"b"}', redis.print);
-    
     client.get(req.query.key, function (err, value) {
         client.end();
         
