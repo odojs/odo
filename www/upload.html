@@ -1,108 +1,81 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Upload Demo</title>
-    
-	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dancing Script">
-    <link rel="stylesheet" type="text/css" href="/assets/styles/lightweight.css" />
-    
-    <script src="/assets/scripts/jquery-1.6.1.min.js"></script>
-    <script src="/assets/scripts/date.js"></script>
-    <script src="/assets/scripts/showdown-0.9.min.js"></script>
-    <script src="/assets/scripts/jquery.ba-bbq.min.js"></script>
-    <script src="/assets/scripts/jquery.autocomplete.min.js"></script>
-    <script src="/assets/scripts/jquery.fieldselection.min.js"></script>
-    <script src="/assets/scripts/knockout-1.2.1.js"></script>
-    
-    <script src="/assets/scripts/voodoo.util.js"></script>
-    <script src="/assets/scripts/voodoo.dialog.js"></script>
-    <script src="/assets/scripts/voodoo.overlay.js"></script>
-    <script src="/assets/scripts/voodoo.markdown.js"></script>
-    
-    <script>
-        var index = 1;
-        
-        function update_progress(options) {
-            var uri = '/services/progress/' + options.uuid;
-            $.get(uri, function(data) {
-                if (data.progress.percent) {
-                    if (data.progress.percent < 100.0)
-                        options.target.text('progress: ' + data.progress.percent + '%');
-                    else {
-                        options.target.text(data.filename + ' complete (' + data.progress.received + ' bytes) ');
-                        options.target.append($('<a />')
-                            .attr('href', '/upload/' + data.savedfilename)
-                            .text('view'));
-                        $('#postframe-' + options.index).remove();
-                    }
-                }
-                if (data.progress.percent != 100.0) {
-                    setTimeout(function () {
-                        update_progress(options);
-                    }, 200);
-                }
-            });
+{{< base.nun.html}}
+
+{{+ title}}Upload Demo{{/ title}}
+{{+ heading}}Upload Demo{{/ heading}}
+
+{{+ script}}
+<script>
+var index = 1;
+
+function update_progress(options) {
+    var uri = '/services/progress/' + options.uuid;
+    $.get(uri, function(data) {
+        if (data.progress.percent) {
+            if (data.progress.percent < 100.0)
+                options.target.text('progress: ' + data.progress.percent + '%');
+            else {
+                options.target.text(data.filename + ' complete (' + data.progress.received + ' bytes) ');
+                options.target.append($('<a />')
+                    .attr('href', '/upload/' + data.savedfilename)
+                    .text('view'));
+                $('#postframe-' + options.index).remove();
+            }
         }
+        if (data.progress.percent != 100.0) {
+            setTimeout(function () {
+                update_progress(options);
+            }, 200);
+        }
+    });
+}
+
+$(function() {
+    $('#uploadform input:file').change(function () {
+        var file = $(this).val();
         
-        $(function() {
-            $('#uploadform input:file').change(function () {
-                var file = $(this).val();
-                
-                if (file != '') {
-                    // submit form in hidden iframe.
-                    var upload_uuid = guid();
-                    $('body').append(
-                        $('<iframe />')
-                            .attr('id', 'postframe-' + index)
-                            .attr('name', 'postframe-' + index)
-                            .attr('src', 'about:none')
-                            .css({
-                                width: '100px',
-                                height: '100px',
-                                visibility: 'hidden'
-                            })
-                            .addClass('hidden'));
-                    $(this).closest('form')
-                        .attr('target', 'postframe-' + index)
-                        .attr('action', '/services/upload/' + upload_uuid)
-                        .submit();
-                    
-                    update_progress({
-                        target: $('<li />')
-                            .text('')
-                            .data('uuid', upload_uuid)
-                            .appendTo($('#progress')),
-                        uuid: upload_uuid,
-                        index: index
-                    });
-                    
-                    $('#postframe').load();
-                    
-                    $('#uploadform input:file').val('');
-                    
-                    index++;
-                }
-            })
-        });
-  </script>
-</head>
-<body>
-    <div id="wrapper">
-        <header>
-            <h1>VoodooLabs</h1>
-        </header>
-        
-        <article>
-            <ul id="progress"></ul>
+        if (file != '') {
+            // submit form in hidden iframe.
+            var upload_uuid = guid();
+            $('body').append(
+                $('<iframe />')
+                    .attr('id', 'postframe-' + index)
+                    .attr('name', 'postframe-' + index)
+                    .attr('src', 'about:none')
+                    .css({
+                        width: '100px',
+                        height: '100px',
+                        visibility: 'hidden'
+                    })
+                    .addClass('hidden'));
+            $(this).closest('form')
+                .attr('target', 'postframe-' + index)
+                .attr('action', '/services/upload/' + upload_uuid)
+                .submit();
             
-            <form id="uploadform" enctype="multipart/form-data" method="post">
-                <input type="file" name="file">
-            </form>
-        </article>
-        
-        <footer>
-            &copy; 2011 Thomas Coats. All Rights Reserved.
-        </footer>
-    </div>
-</body>
-</html>
+            update_progress({
+                target: $('<li />')
+                    .text('')
+                    .data('uuid', upload_uuid)
+                    .appendTo($('#progress')),
+                uuid: upload_uuid,
+                index: index
+            });
+            
+            $('#postframe').load();
+            
+            $('#uploadform input:file').val('');
+            
+            index++;
+        }
+    })
+});
+</script>
+{{/ script}}
+
+{{+ article}}
+<ul id="progress"></ul>
+
+<form id="uploadform" enctype="multipart/form-data" method="post">
+    <input type="file" name="file">
+</form>
+{{/ article}}

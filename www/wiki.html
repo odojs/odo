@@ -1,70 +1,38 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Index - VoodooLabs</title>
-	
-	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dancing Script">
-	<link rel="stylesheet" type="text/css" href="/assets/styles/lightweight.css" />
-	
-    <script src="/assets/scripts/jquery-1.6.1.min.js"></script>
-    <script src="/assets/scripts/date.js"></script>
-    <script src="/assets/scripts/showdown-0.9.min.js"></script>
-    <script src="/assets/scripts/jquery.ba-bbq.min.js"></script>
-	<script src="/assets/scripts/jquery.autocomplete.min.js"></script>
-	<script src="/assets/scripts/jquery.fieldselection.min.js"></script>
-	<script src="/assets/scripts/knockout-1.2.1.js"></script>
-    
-    <script src="/assets/scripts/voodoo.util.js"></script>
-    <script src="/assets/scripts/voodoo.dialog.js"></script>
-    <script src="/assets/scripts/voodoo.overlay.js"></script>
-    <script src="/assets/scripts/voodoo.markdown.js"></script>
-	
-	<script>
-	    $(function() {
-            // detect a hashchange which means navigate to a new wiki page
-            $(window).bind('hashchange', function(e) {
-                var wikipage = ($.param.fragment() || 'Index');
-                $.get('/wiki/' + wikipage.replace(/\+/g, '%20') + '.md.txt', function (markdown) {
-                    var converter = new Showdown.converter();
-                    var html = converter.makeHtml(markdown);
-                    html = $.linkify(html, function (url) {
-                        return '<a href="' + url + '">' + url + '</a>';
-                    });
-                    html = $.linkifyWiki(html, wikipages, function (page, content) {
-                        return '<a href="#' + page.replace(/ /g, '+') + '">' + content + '</a>';
-                    });
-                    $('article').html(html);
-                    var title = wikipage.replace(/\+/g, ' ').toTitleCase();
-                    $('header h1').text(title);
-                    document.title = title + ' - VoodooLabs';
-                });
-            });
-            
-            // load all wiki page files (.md.txt files in the wiki directory)
-            $.get('/services/list?dir=/wiki/&ext=.md.txt&type=file', function (data) {
-                wikipages = data.map(function (file) {
-                    return file.name.substr(0, file.name.length - file.ext.length);
-                });
-                // initial haschange to detect current state and load initial wiki page
-                $(window).hashchange();
-            });
-        });
-	</script>
-</head>
+{{< base.nun.html}}
 
-<body>
-    <div id="wrapper">
-        <header>
-            <h1>VoodooLabs</h1>
-        </header>
-        
-        <article>
-            
-        </article>
-        
-        <footer>
-            &copy; 2011 Thomas Coats. All Rights Reserved.
-        </footer>
-    </div>
-</body>
-</html>
+{{+ title}}Wiki System{{/ title}}
+{{+ heading}}Wiki System{{/ heading}}
+
+{{+ script}}
+<script>
+$(function() {
+    // detect a hashchange which means navigate to a new wiki page
+    $(window).bind('hashchange', function(e) {
+        var wikipage = ($.param.fragment() || 'Index');
+        $.get('/wiki/' + wikipage.replace(/\+/g, '%20') + '.md.txt', function (markdown) {
+            var converter = new Showdown.converter();
+            var html = converter.makeHtml(markdown);
+            html = $.linkify(html, function (url) {
+                return '<a href="' + url + '">' + url + '</a>';
+            });
+            html = $.linkifyWiki(html, wikipages, function (page, content) {
+                return '<a href="#' + page.replace(/ /g, '+') + '">' + content + '</a>';
+            });
+            $('article').html(html);
+            var title = wikipage.replace(/\+/g, ' ').toTitleCase();
+            $('header h1').text(title);
+            document.title = title + ' - VoodooLabs';
+        });
+    });
+    
+    // load all wiki page files (.md.txt files in the wiki directory)
+    $.get('/services/list?dir=/wiki/&ext=.md.txt&type=file', function (data) {
+        wikipages = data.map(function (file) {
+            return file.name.substr(0, file.name.length - file.ext.length);
+        });
+        // initial haschange to detect current state and load initial wiki page
+        $(window).hashchange();
+    });
+});
+</script>
+{{/ script}}

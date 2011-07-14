@@ -74,19 +74,19 @@ article, section, nav, header, hgroup, footer, details, summary, figure, figcapt
 header {
     margin-bottom: 4em;
     padding: 0 3.2em;
-}
-
-    header h1 {
+    
+    h1 {
         margin-bottom: 0;
     }
+}
 
 article {
     margin: 0;
-}
-
-    article p {
+    
+    p {
         
     }
+}
 
 footer {
     border-top: 0.1em solid #5a7fb6;
@@ -95,8 +95,6 @@ footer {
     padding: .4em;
     margin-bottom: 3.2em;
 }
-
-
 
 #overlay 
 {
@@ -118,11 +116,11 @@ footer {
     height: 100%;
     width: 100%;
     z-index: 1002;
-}
     
-    #dialog > .inner {
+    > .inner {
         margin: 150px auto 50px auto;
     }
+}
 
 /*<div class="flip">
     <div class="inner">
@@ -139,27 +137,24 @@ footer {
     position: relative;
     height: 250px;
     -webkit-perspective: 1000;
-}
-
-    .flip > .inner {
+    
+    > .inner {
         -webkit-transform-style: preserve-3d;
         -webkit-transition: -webkit-transform 1s;
-    }
-    
-    .flip:hover > .inner {
-        -webkit-transform: rotateY(180deg);
-    }
-    
-        .flip > .inner > * {
+        
+        > * {
             position: absolute;
             width: 100%;
             height: 100%;
             -webkit-backface-visibility: hidden;
         }
         
-        .flip > .inner > .back {
+        > .back {
             -webkit-transform: rotateY(180deg);
         }
+
+    }
+}
 
 /* semantic
 address, aside, blockquote, h1, h2, h3, h4, h5, h6, hr, p, progress, time, wbr, div, span,  */
@@ -231,26 +226,26 @@ ol.footnotes {
     padding: 0;
     text-indent: 0;
     color: #5a7fb6;
-}
-
-    ol.footnotes li {
+    
+    li {
         margin: .7em 0;
     }
-
-    ol.footnotes a {
+    
+    a {
         color: #85a7da;
     }
+}
 
 ul {
     text-indent: 0;
     margin-left: 0;
     margin-bottom: 1.4em;
-}
     
-    ul ul {
+    ul {
         margin-left: 0;
         margin-bottom: 1.4em;
     }
+}
         
     article ul p {
         text-indent: 0;
