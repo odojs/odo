@@ -2,9 +2,9 @@ var paperboy = require('paperboy');
 
 exports = module.exports = function static(options) {
     options = options || {};
-    return function(req, res, next, route) {
+    return function(req, res, next) {
         paperboy
-            .deliver(route.map, req.extend({ url: route.url }), res)
+            .deliver(req.route.map, req, res)
             .otherwise(function () {
                 next();
             });

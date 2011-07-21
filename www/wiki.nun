@@ -1,4 +1,4 @@
-{{< base.nun.html}}
+{{< base.nun}}
 
 {{+ title}}Wiki System{{/ title}}
 {{+ heading}}Wiki System{{/ heading}}

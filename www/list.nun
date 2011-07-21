@@ -1,4 +1,4 @@
-{{< base.nun.html}}
+{{< base.nun}}
 
 {{+ title}}List Demo{{/ title}}
 {{+ heading}}List Demo{{/ heading}}

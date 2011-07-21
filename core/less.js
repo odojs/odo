@@ -1,29 +1,29 @@
-var fs = require('fs');
 var path = require('path');
 var less = require('less');
+var fs = require('fs');
 
 exports = module.exports = function static(options) {
-    return function(req, res, next, route) {
+    return function(req, res, next) {
         // only interested in known content types
-        var extension = route.url.split('.').pop();
+        var extension = req.url.split('.').pop();
         if (extension != 'less') {
             next();
             return;
         }
         
         // is it a file?
-        fs.stat(route.path, function (err, stat) {
-            if (err || !stat.isFile()) {
+        path.exists(req.route.path, function (exists) {
+            if (!exists) {
                 next();
                 return;
             }
             
             // from the url get the path and filename
             
-            var dir = path.dirname(route.path);
-            var filename = path.basename(route.path);
+            var dir = path.dirname(req.route.path);
+            var filename = path.basename(req.route.path);
             
-            fs.readFile(route.path, 'utf8', function (err, data) {
+            fs.readFile(req.route.path, 'utf8', function (err, data) {
                 if (err) {
                     next();
                     return;

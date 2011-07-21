@@ -21,11 +21,14 @@ exports = module.exports = function static(root, map, callback) {
         
         //console.log(root + '\n    =>' + req.url + '\n    =>' + url + '\n    =>' + map);
         
-        callback(req, res, next, {
-            root: root,
-            map: map,
+        callback(req.extend({
             url: url,
-            path: map + url
-        });
+            route: {
+                root: root,
+                map: map,
+                url: url,
+                path: map + url
+            }
+        }), res, next);
     };
 };

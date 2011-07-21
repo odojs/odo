@@ -1,4 +1,4 @@
-{{< base.nun.html}}
+{{< base.nun}}
 
 {{+ title}}Store Demo{{/ title}}
 {{+ heading}}Store Demo{{/ heading}}

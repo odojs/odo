@@ -1,4 +1,4 @@
-{{< base.nun.html}}
+{{< base.nun}}
 
 {{+ title}}Upload Demo{{/ title}}
 {{+ heading}}Upload Demo{{/ heading}}

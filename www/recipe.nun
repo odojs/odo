@@ -1,4 +1,4 @@
-{{< base.nun.html}}
+{{< base.nun}}
 
 {{+ title}}Recipe Demo{{/ title}}
 {{+ heading}}Recipe Demo{{/ heading}}
