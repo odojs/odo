@@ -10,14 +10,17 @@ app.configure(function() {
     app.set('www', path.normalize(__dirname + '/../www/'));
     app.set('upload', path.normalize(__dirname + '/../www/upload/'));
     app.set('wiki', path.normalize(__dirname + '/../www/wiki/'));
-    app.set('views', path.normalize(__dirname + '/../www/'));
     
     //app.use(express.logger());
     //app.use(express.bodyParser());
     app.use(express.methodOverride());
     app.use(express.cookieParser());
     app.use(express.session({ secret: "bob" }));
-    app.use(view());
+    app.use(view({
+        search: [
+            path.normalize(__dirname + '/../www/')
+        ]
+    }));
     app.use(app.router);
     app.use(route('/', app.set('www'), less()));
     app.use(route('/', app.set('www'), nun()));
