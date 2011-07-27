@@ -27,7 +27,7 @@ GROUP=www-data
 #RELOAD_SIGNAL=1
 
 # Node.js
-NODE_PROGRAM=/usr/local/bin/node
+NODE_PROGRAM=/usr/local/bin/coffee
 NODE_SCRIPT=/var/lightweight/bin/lightweight-httpd.mv
 NODE_ARGS="$NODE_PROGRAM"
 

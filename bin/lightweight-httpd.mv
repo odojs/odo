@@ -1,2 +1,2 @@
-#!/usr/bin/env node
-require('../core/lightweight');
+#!/usr/bin/env coffee
+require '../core/lightweight'
