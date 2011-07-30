@@ -119,6 +119,7 @@ footer {
     
     > .inner {
         margin: 150px auto 50px auto;
+        width: 760px;
     }
 }
 
@@ -257,9 +258,45 @@ ul {
 form, fieldset, legend, label, button, input, datalist, keygen, meter, select, optgroup, option, output, textarea, */
 
 
+.ac-input {
+    font-size: 14px;
+    width: 300px;
+}
 
-
-
+.ac-results {
+	padding: 0px;
+	background-color: rgba(255, 255, 255, 0.5);
+	overflow: hidden;
+	z-index: 99999;
+	
+	ul {
+        width: 100%;
+        list-style-position: outside;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        
+        li {
+            margin: 0px;
+            padding: 2px 5px;
+            display: block;
+            cursor: pointer;
+            font-size: 20px;
+            line-height: 24px;
+            overflow: hidden;
+            color: #666;
+        }
+        /* odd
+        li:nth-child(1) {
+            background-color: #eee;
+        }*/
+        
+        li:hover {
+            background-color: #358;
+            color: #9fb3d1;
+        }
+    }
+}
 
 
 

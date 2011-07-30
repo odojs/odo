@@ -33,7 +33,7 @@
 	$.overlay = function (settings) {
         $.overlay.api = {
             show: function () {
-                if (!$.overlay.overlay) {
+                if (!$.overlay.api.visible()) {
                     $.overlay.overlay = $('<div />')
                         .attr('id', 'overlay')
                         .css('height', $('document').css('height'))
@@ -42,11 +42,14 @@
                 return $.overlay.api;
             },
             hide: function () {
-                if ($.overlay.overlay) {
+                if ($.overlay.api.visible()) {
                     $.overlay.overlay.remove();
                     $.overlay.overlay = null;
                 }
                 return $.overlay.api;
+            },
+            visible: function () {
+                return ($.overlay.overlay) ? true : false;
             }
         };
 		return $.overlay.api;

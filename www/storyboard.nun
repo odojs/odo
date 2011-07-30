@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Storyboard</title>
+    <script src="/assets/scripts/jquery-1.6.1.min.js"></script>
+    <script src="/assets/scripts/jquery-ui-1.8.13.custom.min.js"></script>
+    <script src="/assets/scripts/date.js"></script>
+    <script src="/assets/scripts/jquery.ba-bbq.min.js"></script>
+    <script src="/assets/scripts/jquery.autocomplete.min.js"></script>
+    <script src="/assets/scripts/jquery.fieldselection.min.js"></script>
+    <script src="/assets/scripts/jquery.tmpl.min.js"></script>
+    <script src="/assets/scripts/knockout-1.2.1.js"></script>
+    
+    <script src="/assets/scripts/voodoo.util.js"></script>
+    <script src="/assets/scripts/voodoo.dialog.js"></script>
+    <script src="/assets/scripts/voodoo.overlay.js"></script>
+    <script src="/assets/scripts/voodoo.markdown.js"></script>
+    <script src="/assets/scripts/voodoo.menu.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/styles/jqueryui/jquery-ui-1.8.13.custom.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/styles/storyboard.less" />
+</head>
+<body>
+<div id="wrapper">
+    <ol id="state">
+        <li class="backlog">
+            <h1>Backlog</h2>
+            <ol class="stories">
+                <li>
+                    <a href="#"><h2>Fix Up Awesomeness</h2></a>
+                </li>
+                <li>
+                    <a href="#"><h2>Make More Awesomeness</h2></a>
+                </li>
+            </ol>
+        </li>
+        <li class="analysis">
+            <h1>Analysis</h2>
+            <ol class="stories">
+                <li>
+                    <a href="#"><h2>Add Awesomeness</h2></a>
+                </li>
+            </ol>
+        </li>
+        <li class="ready-for-development visual">
+            <h1>Ready for Development</h2>
+            <ol class="stories">
+                <li>
+                    <a href="#"><h2>Imagine Awesomeness</h2></a>
+                </li>
+            </ol>
+        </li>
+        <li class="development detail">
+            <h1>Development</h2>
+            <ol class="stories">
+                <li>
+                    <a href="#"><h2>Partake in Awesomeness</h2></a>
+                </li>
+            </ol>
+        </li>
+        <li class="ready-for-test visual">
+            <h1>Ready for Test</h2>
+            <ol class="stories">
+                <li>
+                    <a href="#"><h2>Envision Awesomeness</h2></a>
+                </li>
+            </ol>
+        </li>
+        <li class="test">
+            <h1>Test</h2>
+            <ol class="stories">
+                <li>
+                    <a href="#"><h2>Build Awesomeness</h2></a>
+                </li>
+                <li>
+                    <a href="#"><h2>Grow Awesomeness</h2></a>
+                </li>
+            </ol>
+        </li>
+        <li class="done">
+            <h1>Done</h2>
+            <ol class="stories">
+                <li>
+                    <a href="#"><h2>Have Awesomeness</h2></a>
+                </li>
+            </ol>
+        </li>
+    </ol>
+</div>
+</body>
+</html>

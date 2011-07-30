@@ -1,8 +1,5 @@
 {{< base.nun}}
 
-{{+ title}}Wiki System{{/ title}}
-{{+ heading}}Wiki System{{/ heading}}
-
 {{+ script}}
 <script>
 $(function() {
@@ -26,12 +23,68 @@ $(function() {
     });
     
     // load all wiki page files (.md.txt files in the wiki directory)
-    $.get('/services/list?dir=/wiki/&ext=.md.txt&type=file', function (data) {
+    $.get('/services/wiki', function (data) {
         wikipages = data.map(function (file) {
             return file.name.substr(0, file.name.length - file.ext.length);
         });
-        // initial haschange to detect current state and load initial wiki page
+        // initial hashchange to detect current state and load initial wiki page
         $(window).hashchange();
+    });
+    
+    $('<div />')
+        .attr('id', 'jump')
+        .appendTo($('#wrapper > nav:first-child'))
+        .menu([{
+            title: 'Jump',
+            character: 'J',
+            action: function() {
+                var input = $('<input />')
+                    .attr('type', 'search')
+                    .addClass('cancancel')
+                    .autocomplete(wikipages.map(function (wikipage) {
+                        return wikipage.toTitleCase();
+                    }))
+                    .result(function(event, data, formatted) {
+                        location.href = '#' + formatted.toLowerCase().replace(/ /g, '+');
+                        $.dialog().hide();
+                    });
+                    
+                var navigation = $('<div />')
+                    .attr('id', 'navigation')
+                    .append(input);
+                
+                $.dialog().show(navigation);
+                $.dialog().hide(function () {
+                    input.unautocomplete();
+                });
+                    
+                input.focus();
+            }
+        }]);
+    
+    $('<div />')
+        .attr('id', 'index')
+        .appendTo($('#wrapper > nav:first-child'))
+        .menu([{
+            title: 'Index',
+            character: 'I',
+            action: function() {
+                location.href = '#index';
+            }
+        }]);
+    
+    $(document).bind('keydown', function(e) {
+        var ob = e || event;
+        var keyCode = ob.keyCode;
+        var target = $(event.target);
+        if (keyCode != 27
+                || target.is('input:not(.cancancel)')
+                || target.is('textarea:not(.cancancel)')
+                || target.is('select:not(.cancancel)'))
+            return;
+        
+        e.preventDefault();
+        $.dialog().hide();
     });
 });
 </script>

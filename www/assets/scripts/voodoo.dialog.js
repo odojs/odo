@@ -35,6 +35,8 @@
 	    $.dialog.api = {
             show: function (content) {
                 if (!$.dialog.dialog) {
+                    if ($.overlay)
+                        $.overlay().show();
                     $.dialog.dialog = $('<div />')
                         .attr('id', 'dialog')
                         .append($('<div />')
@@ -44,29 +46,25 @@
                 }
                 return $.dialog.api;
             },
-            hide: function () {
+            hide: function (fn) {
                 if ($.dialog.dialog) {
+                    if (fn) {
+                        $.dialog.hide.push(fn);
+                        return $.dialog.api;
+                    }
+                    if ($.overlay)
+                        $.overlay().hide();
+                    $.each($.dialog.hide, function(key, fn) {
+                        fn();
+                    });
+                    $.dialog.hide = [];
                     $.dialog.dialog.remove();
                     $.dialog.dialog = null;
                 }
                 return $.dialog.api;
-            }/*,
-            shake: function () {
-                if ($.dialog.current) {
-                    var children = $.dialog.inner.children();
-                    children.stop();
-                    children
-                        .animate({ 'margin-left': '+=10px' }, 50)
-                        .animate({ 'margin-left': '-=20px' }, 100)
-                        .animate({ 'margin-left': '+=20px' }, 100)
-                        .animate({ 'margin-left': '-=20px' }, 100)
-                        .animate({ 'margin-left': '+=10px' }, 50, function () {
-                            children.css('margin-left', 'auto');
-                        });
-                }
-                return $.dialog.api;
-            }*/
+            }
         };
 		return $.dialog.api;
 	};
+    $.dialog.hide = [];
 })(jQuery);

@@ -3,7 +3,7 @@
 <head>
 <title>{{+ title}}VoodooLabs{{/ title}}</title>
 
-<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dancing Script">
+<!--<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dancing Script">-->
 <link rel="stylesheet" type="text/css" href="/assets/styles/lightweight.less" />
 {{+ style}}{{/ style}}
 
@@ -11,7 +11,7 @@
 <script src="/assets/scripts/date.js"></script>
 <script src="/assets/scripts/showdown-0.9.min.js"></script>
 <script src="/assets/scripts/jquery.ba-bbq.min.js"></script>
-<script src="/assets/scripts/jquery.autocomplete.min.js"></script>
+<script src="/assets/scripts/jquery.autocomplete.js"></script>
 <script src="/assets/scripts/jquery.fieldselection.min.js"></script>
 <script src="/assets/scripts/jquery.tmpl.min.js"></script>
 <script src="/assets/scripts/knockout-1.2.1.js"></script>
@@ -20,10 +20,13 @@
 <script src="/assets/scripts/voodoo.dialog.js"></script>
 <script src="/assets/scripts/voodoo.overlay.js"></script>
 <script src="/assets/scripts/voodoo.markdown.js"></script>
+<script src="/assets/scripts/voodoo.menu.js"></script>
 {{+ script}}{{/ script}}
 </head>
 <body>
 <div id="wrapper">
+<nav>
+</nav>
 <header>
     <h1>{{+ heading}}VoodooLabs{{/ heading}}</h1>
 </header>

@@ -59,20 +59,19 @@
 					if (value.items) {
 						container.buildMenu(value.items).appendTo(item).hide();
 					}
-					$(document).bind('keydown',
-						function(e) {
-							var ob = e || event;
-							var keyCode = ob.keyCode;
-                            var target = $(event.target);
-							if (keyCode != value.character.charCodeAt(0)
-									|| !menu.is(':visible')
-									|| target.is('input')
-									|| target.is('textarea')
-									|| target.is('select'))
-                                return;
-							container.menuAction(item, value);
-							return false;
-						});
+					$(document).bind('keydown', function(e) {
+                        var ob = e || event;
+                        var keyCode = ob.keyCode;
+                        var target = $(event.target);
+                        if (keyCode != value.character.charCodeAt(0)
+                                || !menu.is(':visible')
+                                || target.is('input')
+                                || target.is('textarea')
+                                || target.is('select'))
+                            return;
+                        container.menuAction(item, value);
+                        return false;
+                    });
 				});
 				return menu;
 			}
