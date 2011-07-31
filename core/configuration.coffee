@@ -10,7 +10,7 @@ app = require './app'
 app.configure () =>
     app.set 'www', path.normalize(__dirname + '/../www/')
     app.set 'upload', path.normalize(__dirname + '/../upload/')
-    app.set 'wiki', path.normalize(__dirname + '/../../BrainDump/')
+    app.set 'wiki', path.normalize(__dirname + '/../../BrainDump/wiki/')
     
     #app.use(express.logger());
     #app.use(express.bodyParser());
