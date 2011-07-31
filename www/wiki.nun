@@ -18,6 +18,10 @@ $(function() {
             $('article').html(html);
             var title = wikipage.replace(/\+/g, ' ').toTitleCase();
             $('header h1').text(title);
+            if (html.substring(0, 4) == '<h1>')
+                $('header h1').hide();
+            else
+                $('header h1').show();
             document.title = title + ' - VoodooLabs';
         });
     });
