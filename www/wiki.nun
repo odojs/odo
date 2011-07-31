@@ -27,6 +27,8 @@ $(function() {
         wikipages = data.map(function (file) {
             return file.name.substr(0, file.name.length - file.ext.length);
         });
+        // add extra mapped pages
+        wikipages.push('lightweight');
         // initial hashchange to detect current state and load initial wiki page
         $(window).hashchange();
     });

@@ -1,3 +1,5 @@
+path = require 'path'
+
 module.exports = (root, map, callback) =>
     # root required
     if not (root? and map?)
@@ -11,13 +13,17 @@ module.exports = (root, map, callback) =>
             return
         
         # root doesn't match the start of url - not matched
-        if req.url.substr(0, root.length)  != root
+        if req.url.substr(0, root.length) != root
             next()
             return
         
-        # chop off the matched part of the url
-        url = req.url.substr root.length - 1
-        
+        if map.substring(map.length - 1) != '/'
+            # direct file mapping, continue
+            url = path.basename map
+            map = path.dirname map
+        else
+            # chop off the matched part of the url
+            url = req.url.substr root.length - 1
         
         data = 
             url: url

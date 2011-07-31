@@ -23,6 +23,7 @@ app.configure () =>
     app.use app.router
     app.use route '/', app.set('www'), less()
     app.use route '/', app.set('www'), nun()
+    app.use route '/wiki/lightweight.md.txt', path.normalize(__dirname + '/../README.md'), static()
     app.use route '/wiki/', app.set('wiki'), static()
     app.use route '/', app.set('www'), static()
     app.use express.errorHandler
