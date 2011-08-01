@@ -4,7 +4,7 @@ app = require '../core/app'
 status = {};
 
 # parse an upload using formidable.
-app.post '/services/upload/:uuid', (req, res, next) =>
+app.post '/examples/upload/:uuid', (req, res, next) =>
     uuid = req.params.uuid
     status[uuid] =
         filename: ''
@@ -18,7 +18,7 @@ app.post '/services/upload/:uuid', (req, res, next) =>
     console.log 'receiving upload: ' + uuid
     
     form = new formidable.IncomingForm()
-    form.uploadDir = app.set 'upload'
+    form.uploadDir = app.set 'content'
     form.keepExtensions = true
     
     # keep track of progress.
@@ -39,7 +39,7 @@ app.post '/services/upload/:uuid', (req, res, next) =>
         console.log 'finished upload: ' + uuid
 
 
-app.post '/services/update/:uuid', (req, res, next) =>
+app.post '/examples/update/:uuid', (req, res, next) =>
     uuid = req.params.uuid;
     form = new formidable.IncomingForm()
     form.addListener 'field', (name, value) =>
@@ -48,7 +48,7 @@ app.post '/services/update/:uuid', (req, res, next) =>
     form.parse req
 
 
-app.get '/services/progress/:uuid', (req, res, next) =>
+app.get '/examples/progress/:uuid', (req, res, next) =>
     uuid = req.params.uuid;
     if status[uuid]
         res.send status[uuid]

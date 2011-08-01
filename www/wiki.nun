@@ -33,6 +33,7 @@ $(function() {
         });
         // add extra mapped pages
         wikipages.push('lightweight');
+        wikipages.push('braindump');
         // initial hashchange to detect current state and load initial wiki page
         $(window).hashchange();
     });

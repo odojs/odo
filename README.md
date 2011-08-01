@@ -7,8 +7,9 @@ Requirements
 ------------
 
 * Live on the Web
-* Single git repo (split out later? Once there is a nuget style thing for javascript...?)
+* Repos per project, with cross-over
 * Central database server (redis)
+* Messaging Framework
 * Markdown and other text based documents are saved as text files
 * Javascript library, up to date, easy to edit and examples
 * Unit testing, automated testing
@@ -18,36 +19,39 @@ Requirements
 * Multiple logins
 * Content Management: traditional, wiki, etc.
 * Templating engine
+* Most components of the system should function and be useful independently.
+* This is the system I want to write software on.
+* Others may join and write software in this system.
+* SaaS
+* iPad coding support
+* Web coding support
+* Eg. I want to be able to alter this code within itself
+  * Ace is neat (iPad - branch with some intial ideas)
 
 
-Core Stories
-------------
+Stories
+-------
 
-* Use routes when looking for directory contents (Shadow File System)
-* Evaluate MVC modules
-  * Zappa?
-    * Not much difference to express
-    * Only supports on view engine
-  * Express is good enough already!
-  
+* Create a Shadow File System
+  * irror file system calls
+* Auto detect modules and load
+  * Can modules define their own urls?
+  * Templates need a hierarchy - a site should override
 * Authentication
-* Signin
-* Signout
-* View Users
-* Edit Users
-* Permissions [epic]
-
-
-Content Stories
----------------
-
-* Wiki stories
-  * Display wiki articles (linkified)
-  * List all wiki articles
-  * Jump wiki articles
+  * Signin
+  * Signout
+* User management
+  * View Users
+  * Edit Users
+  * Permissions [epic]
+* Wiki
+  * Display wiki articles (linkified) [done]
+  * List all wiki articles [done]
+  * Jump wiki articles [done]
+  * Make wiki system pretty
   * Edit wiki articles (basic)
   * Edit wiki articles (ace editor - source code, common actions)
-  * Load mapped wiki articles
+  * Load mapped wiki articles (Shadow File System)
 * Sitemap editor
   * Display sitemap (iPad / Folder list style)
   * Filter list
@@ -71,37 +75,17 @@ Content Stories
 * Product System
   
 
-
 Spikes
 ------
 
 * Hosting
-  * How do I backup redis?
-  * How do I replicate redis (for development, or do I access redis from external, if so auth?)
-  * Need git push / pull database functionality - can redis?
-  * Eventually productionise on the web (host? VPS? Linux at least)
+  * How do I backup redis? - Using the rdb file
+  * Redis authentication
+  * Which host? (http://no.de/)
 * Forms Auth
 * OAuth
 * Single Sign On
 * Product system - investigate nopCommerce
-
-
-Goals
------
-
-* Most components of the system should function and be useful independently.
-* This is the system I want to write software on.
-* Others may join and write software in this system.
-* SaaS
-
-
-Lofty Goals
------------
-
-* iPad coding support
-* Web coding support
-* Eg. I want to be able to alter this code within itself
-  * Ace is neat (iPad - branch with some intial ideas)
 
 
 Technologies

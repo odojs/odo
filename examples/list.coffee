@@ -2,7 +2,7 @@ fs = require('fs');
 app = require '../core/app'
 list = require '../core/list'
 
-app.get '/services/list', (req, res, next) =>
+app.get '/examples/list', (req, res, next) =>
     if not req.query.dir?
         next()
         return

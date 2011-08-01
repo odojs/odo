@@ -1,4 +1,4 @@
-{{< base.nun}}
+{{< ../www/base.nun}}
 
 {{+ title}}Upload Demo{{/ title}}
 {{+ heading}}Upload Demo{{/ heading}}
@@ -8,7 +8,7 @@
 var index = 1;
 
 function update_progress(options) {
-    var uri = '/services/progress/' + options.uuid;
+    var uri = '/examples/progress/' + options.uuid;
     $.get(uri, function(data) {
         if (data.progress.percent) {
             if (data.progress.percent < 100.0)
@@ -49,7 +49,7 @@ $(function() {
                     .addClass('hidden'));
             $(this).closest('form')
                 .attr('target', 'postframe-' + index)
-                .attr('action', '/services/upload/' + upload_uuid)
+                .attr('action', '/examples/upload/' + upload_uuid)
                 .submit();
             
             update_progress({

@@ -1,4 +1,4 @@
-{{< base.nun}}
+{{< ../www/base.nun}}
 
 {{+ title}}Store Demo{{/ title}}
 {{+ heading}}Store Demo{{/ heading}}
@@ -15,7 +15,7 @@ $(function () {
         
         $.ajax({
             type: 'post',
-            url: '/services/store?key=' + $key.val(),
+            url: '/examples/store?key=' + $key.val(),
             contentType: 'application/json',
             data: JSON.stringify(JSON.parse($value.val())),
             success: function (data) {
@@ -29,7 +29,7 @@ $(function () {
         
         $.ajax({
             type: 'get',
-            url: '/services/store?key=' + $key.val(),
+            url: '/examples/store?key=' + $key.val(),
             success: function (data) {
                 $value.val(JSON.stringify(data));
             }

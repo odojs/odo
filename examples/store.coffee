@@ -1,7 +1,7 @@
 redis = require 'redis'
 app = require '../core/app'
 
-app.get '/services/store', (req, res, next) =>
+app.get '/examples/store', (req, res, next) =>
     if not req.query.key
         next()
         return
@@ -29,7 +29,7 @@ app.get '/services/store', (req, res, next) =>
         #console.log 'get:' + req.query.key + ':' + JSON.stringify(data)
         res.send data
 
-app.post '/services/store', (req, res, next) =>
+app.post '/examples/store', (req, res, next) =>
     if not req.query.key
         next()
         return

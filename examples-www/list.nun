@@ -1,4 +1,4 @@
-{{< base.nun}}
+{{< ../www/base.nun}}
 
 {{+ title}}List Demo{{/ title}}
 {{+ heading}}List Demo{{/ heading}}
@@ -6,7 +6,7 @@
 {{+ script}}
 <script>
 var viewModel = {
-    source: '/services/store?key=recipes:ingredients',
+    source: '/examples/store?key=recipes:ingredients',
     filter: ko.observable(''),
     ingredients: ko.observableArray([]),
     currentIngredient: {
