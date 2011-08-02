@@ -33,7 +33,7 @@ Stories
 -------
 
 * Create a Shadow File System
-  * irror file system calls
+  * mirror file system calls
 * Auto detect modules and load
   * Can modules define their own urls?
   * Templates need a hierarchy - a site should override
@@ -52,6 +52,17 @@ Stories
   * Edit wiki articles (basic)
   * Edit wiki articles (ace editor - source code, common actions)
   * Load mapped wiki articles (Shadow File System)
+* Git integration
+  * Load pending commits (new files as well as modifications)
+  * Sync, not expecting issues
+  * Sync, expect issues
+  * Reset all pending commits
+  * Display 'Sync pending' for information pull
+  * Display 'Sync pending' for information push
+  * Look at http://develop.github.com/ for API examples, https://github.com/github/ghterm for usage
+  * Perhaps it doesn't edit locally, but edits through github?
+  * But I'd rather not be tied to github
+  * Beat the crap out of treeeater
 * Sitemap editor
   * Display sitemap (iPad / Folder list style)
   * Filter list
@@ -79,13 +90,14 @@ Spikes
 ------
 
 * Hosting
-  * How do I backup redis? - Using the rdb file
   * Redis authentication
-  * Which host? (http://no.de/)
-* Forms Auth
-* OAuth
-* Single Sign On
-* Product system - investigate nopCommerce
+  * Which host?
+* Authentication
+  * Forms Auth
+  * OAuth
+  * Single Sign On
+* Product system
+  * Investigate nopCommerce
 
 
 Technologies

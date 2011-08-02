@@ -10,6 +10,7 @@ app = require './app'
 # general configuration
 require './underscore'
 app.configure () =>
+    app.set 'root', path.normalize(__dirname + '/../')
     #app.use(express.logger());
     #app.use(express.bodyParser());
     app.use express.methodOverride()
@@ -19,12 +20,12 @@ app.configure () =>
         
 # user content
 app.configure () =>
-    app.set 'content', path.normalize(__dirname + '/../content/')
+    app.set 'content', root + 'content/'
     app.use route '/content/', app.set('content'), static()
 
 # normal www directory
 app.configure () =>
-    app.set 'www', path.normalize(__dirname + '/../www/')
+    app.set 'www', root + 'www/'
     app.use view
         search: [ app.set 'www' ]
     app.use app.router
@@ -35,9 +36,9 @@ app.configure () =>
 # wiki
 require '../services/wiki'
 app.configure () =>
-    app.set 'wiki', path.normalize(__dirname + '/../../BrainDump/wiki/')
-    app.use route '/wiki/braindump.md.txt', path.normalize(__dirname + '/../../BrainDump/README.md'), static()
-    app.use route '/wiki/lightweight.md.txt', path.normalize(__dirname + '/../README.md'), static()
+    app.set 'wiki', path.normalize(root + '../BrainDump/wiki/')
+    app.use route '/wiki/braindump.md.txt', path.normalize(root + '../BrainDump/README.md'), static()
+    app.use route '/wiki/lightweight.md.txt', root + 'README.md', static()
     app.use route '/wiki/', app.set('wiki'), static()
 
 # examples
@@ -46,8 +47,9 @@ require '../examples/store'
 require '../examples/upload'
 require '../examples/template'
 require '../examples/worker'
+require '../examples/git'
 app.configure () =>
-    app.set 'examples', path.normalize(__dirname + '/../examples-www/')
+    app.set 'examples', root + 'examples-www/'
     app.use route '/', app.set('examples'), less()
     app.use route '/', app.set('examples'), nun()
     app.use route '/', app.set('examples'), static()
