@@ -53,6 +53,7 @@ Stories
   * Edit wiki articles (ace editor - source code, common actions)
   * Load mapped wiki articles (Shadow File System)
 * Git integration
+  * Break out into new repo as fork of treeeater (public)
   * Load pending commits (new files as well as modifications)
   * Sync, not expecting issues
   * Sync, expect issues
