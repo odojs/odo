@@ -1,0 +1,12 @@
+{{< base.nun}}
+
+{{+ title}}VoodooLabs{{/ title}}
+{{+ heading}}VoodooLabs{{/ heading}}
+
+{{+ article}}
+<ul>
+{{#repositories}}
+    <li>{{path}}</li>
+{{/repositories}}
+</ul>
+{{/ article}}
