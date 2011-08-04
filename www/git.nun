@@ -6,7 +6,13 @@
 {{+ article}}
 <ul>
 {{#repositories}}
-    <li>{{path}}</li>
+    <li>{{path}}
+        <ul>
+        {{#status.files}}
+            <li>{{path}}</li>
+        {{/status.files}}
+        </ul>
+    </li>
 {{/repositories}}
 </ul>
 {{/ article}}
