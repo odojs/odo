@@ -7,6 +7,9 @@ module.exports = (root, map, callback) =>
     
     #console.log 'Route: ' + root + ' => ' + map
     return (req, res, next) =>
+        mapref = map
+        url = ''
+        
         # root is longer than url - couldn't possibly match
         if root.length > req.url
             next()
@@ -17,10 +20,10 @@ module.exports = (root, map, callback) =>
             next()
             return
         
-        if map.substring(map.length - 1) != '/'
+        if mapref.substring(mapref.length - 1) != '/'
             # direct file mapping, continue
-            url = path.basename map
-            map = path.dirname map
+            url = path.basename mapref
+            mapref = path.dirname mapref
         else
             # chop off the matched part of the url
             url = req.url.substr root.length - 1
@@ -29,9 +32,9 @@ module.exports = (root, map, callback) =>
             url: url
             route:
                 root: root
-                map: map
+                map: mapref
                 url: url
-                path: map + url
+                path: mapref + url
         
         #console.log root + '\n    =>' + req.url + '\n    =>' + url + '\n    =>' + map
         callback(req extends data, res, next);

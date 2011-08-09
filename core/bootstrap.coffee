@@ -40,7 +40,7 @@ require '../services/wiki'
 app.configure () =>
     app.set 'wiki', path.normalize(root + '../BrainDump/wiki/')
     app.use route '/wiki/braindump.md.txt', path.normalize(root + '../BrainDump/README.md'), static()
-    app.use route '/wiki/lightweight.md.txt', app.set 'root' + 'README.md', static()
+    app.use route '/wiki/lightweight.md.txt', (app.set('root') + 'README.md'), static()
     app.use route '/wiki/', app.set('wiki'), static()
 
 # examples
