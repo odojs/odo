@@ -1,6 +1,7 @@
 express = require 'express'
 path = require 'path'
 less = require './less'
+sass = require './sass'
 nun = require './nun'
 static = require './static'
 route = require './route'
@@ -32,6 +33,7 @@ app.configure () =>
         search: [ app.set 'www' ]
     app.use app.router
     app.use route '/', app.set('www'), less()
+    app.use route '/', app.set('www'), sass()
     app.use route '/', app.set('www'), nun()
     app.use route '/', app.set('www'), static()
 
@@ -53,6 +55,7 @@ require '../examples/git'
 app.configure () =>
     app.set 'examples', (root + 'examples-www/')
     app.use route '/', app.set('examples'), less()
+    app.use route '/', app.set('examples'), sass()
     app.use route '/', app.set('examples'), nun()
     app.use route '/', app.set('examples'), static()
 

@@ -1,0 +1,208 @@
+/* html
+body, html, */
+
+html, body
+	:margin 0
+	:padding 0
+	:font-family Cambria, Georgia, serif
+	:color #9fb3d1
+
+html
+	:background-color #358
+	/* :background-image url(../images/blueprint_1600x1200.jpg) */
+
+/* layout
+article, section, nav, header, hgroup, footer, details, summary, figure, figcaption,	*/
+
+#wrapper
+	:width 35em
+	:margin 2em auto 0 auto
+
+header
+	:margin-bottom 4em
+	:padding 0 3.2em
+	
+	h1
+		:margin-bottom 0
+
+article
+	:margin 0
+
+footer
+	:border-top 0.1em solid #5a7fb6
+	:color #5a7fb6
+	:font-size 0.8em
+	:padding .4em
+	:margin-bottom 3.2em
+
+#overlay
+	:position absolute
+	:top 0
+	:left 0
+	:height 100%
+	:width 100%
+	:z-index 1001
+	:opacity 0.4
+	:background-color black
+
+#dialog
+	:position absolute
+	:top 0
+	:left 0
+	:height 100%
+	:width 100%
+	:z-index 1002
+	
+	> .inner
+		:margin 150px auto 50px auto
+		:width 760px
+
+/*<div class="flip">
+	<div class="inner">
+		<div class="front">
+			This flip effect is done entirely with 3D transforms and transitions - no JavaScript required!
+		</div>
+		<div class="back">
+			Foooooo!
+		</div>
+	</div>
+</div>*/
+
+.flip
+	:position relative
+	:height 250px
+	:-webkit-perspective 1000
+	
+	> .inner
+		:-webkit-transform-style preserve-3d
+		:-webkit-transition -webkit-transform 1s
+		
+		> *
+			:position absolute
+			:width 100%
+			:height 100%
+			:-webkit-backface-visibility hidden
+		
+		> .back
+			:-webkit-transform rotateY(180deg)
+
+/* semantic
+address, aside, blockquote, h1, h2, h3, h4, h5, h6, hr, p, progress, time, wbr, div, span,	*/
+
+h1, h2, h3
+	:padding 0
+	:margin 0
+
+h1, h2
+	:font-weight normal
+	:font-style italic
+
+h1
+	:font-family Dancing Script, script, serif
+	:font-size 5.5em
+	:text-align center
+	:margin-top 0.7em
+	:margin-bottom 1em
+	:line-height 0.8em
+
+h2
+	:font-size 1.7em
+	:margin-top 1em
+	:margin-bottom 0.7em
+
+h3
+	:font-size 1.2em
+	:margin-bottom 0.2em
+
+/* span level
+abbr, b, i, br, ins, del, mark, q, small, sup, sub,	*/
+
+sup
+	:padding-left 0.1em
+	:line-height .8em
+
+/* phrase
+em, strong, dfn, code, samp, kbd, var, cite,	*/
+
+/* menu
+menu, command,	*/
+
+/* feature
+a, img, pre,	*/
+
+a
+	:color white
+	:text-decoration none
+
+	&:hover
+		:text-decoration underline
+
+/* table
+table, caption, thead, tfoot, tbody, col, colgroup, th, tr, td,	*/
+
+/* lists
+ol, ul, li, dl, dt, dd,	*/
+
+ol.footnotes
+	:margin 1.3em 3.2em
+	:padding 0
+	:text-indent 0
+	:color #5a7fb6
+	
+	li
+		:margin .7em 0
+	
+	a
+		:color #85a7da
+
+ul
+	:text-indent 0
+	:margin-left 0
+	:margin-bottom 1.4em
+	
+	ul
+		:margin-left 0
+		:margin-bottom 1.4em
+		
+article ul p
+	:text-indent 0
+	:margin-top 0
+	:line-height 1.2em
+
+/* form
+form, fieldset, legend, label, button, input, datalist, keygen, meter, select, optgroup, option, output, textarea, */
+
+
+.ac-input
+	:font-size 14px
+	:width 300px
+
+.ac-results
+	:padding 0px
+	:background-color rgba(255, 255, 255, 0.5)
+	:overflow hidden
+	:z-index 99999
+	
+	ul
+		:width 100%
+		:list-style-position outside
+		:list-style none
+		:padding 0
+		:margin 0
+		
+		li
+			:margin 0px
+			:padding 2px 5px
+			:display block
+			:cursor pointer
+			:font-size 20px
+			:line-height 24px
+			:overflow hidden
+			:color #666
+		/* odd
+		li:nth-child(1)
+			:background-color #eee*/
+		
+		&:hover
+			:background-color #358
+			:color #9fb3d1
