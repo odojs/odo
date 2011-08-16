@@ -1,4 +1,5 @@
 path = require 'path'
+_ = require 'underscore'
 
 module.exports = (root, map, callback) =>
     # root required
@@ -36,5 +37,8 @@ module.exports = (root, map, callback) =>
                 url: url
                 path: mapref + url
         
+        newreq = _.clone req
+        newreq = _.extend newreq, data
+        
         #console.log root + '\n    =>' + req.url + '\n    =>' + url + '\n    =>' + map
-        callback(req extends data, res, next);
+        callback newreq, res, next

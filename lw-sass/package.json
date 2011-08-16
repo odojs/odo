@@ -1,0 +1,7 @@
+{
+  "name": "lw-sass",
+  "description": "Syntactically Awesome Stylesheets (compiles to css)",
+  "version": "0.0.1",
+  "author": "Thomas Coats <github@voodoolabs.net>",
+  "main": "sass.coffee"
+}

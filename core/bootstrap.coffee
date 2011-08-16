@@ -1,17 +1,24 @@
 express = require 'express'
 path = require 'path'
-less = require './less'
-sass = require './sass'
-nun = require './nun'
-static = require './static'
 route = require './route'
-view = require './view'
 app = require './app'
+inject = require 'pminject'
+_ = require 'underscore'
 
-root = path.normalize(__dirname + '/../')
+inject.bind staticfilehandler: require 'lw-static'
+
+inject.bind filehandlers: [
+    require 'lw-sass'
+    require 'lw-less'
+    require 'lw-nun'
+    require 'lw-static'
+]
+
+inject.bind viewhandler: require 'lw-view'
+
+root = path.normalize(__dirname + '/')
 
 # general configuration
-require './underscore'
 app.configure () =>
     app.set 'root', root
     #app.use(express.logger());
@@ -20,54 +27,55 @@ app.configure () =>
     app.use express.cookieParser()
     app.use express.session
         secret: 'bob'
-        
+
 # user content
 app.configure () =>
     app.set 'content', (root + 'content/')
-    app.use route '/content/', app.set('content'), static()
+    for filehandler in inject.all 'filehandlers'
+        app.use route '/content/', app.set('content'), filehandler()
 
 # normal www directory
 app.configure () =>
     app.set 'www', (root + 'www/')
-    app.use view
+    app.use(inject.one('viewhandler')(
         search: [ app.set 'www' ]
+    ))
     app.use app.router
-    app.use route '/', app.set('www'), less()
-    app.use route '/', app.set('www'), sass()
-    app.use route '/', app.set('www'), nun()
-    app.use route '/', app.set('www'), static()
+    
+    for filehandler in inject.all 'filehandlers'
+        app.use route '/', app.set('www'), filehandler()
 
 # wiki
-require '../services/wiki'
+require './services/wiki'
 app.configure () =>
-    app.set 'wiki', path.normalize(root + '../BrainDump/wiki/')
-    app.use route '/wiki/braindump.md.txt', path.normalize(root + '../BrainDump/README.md'), static()
-    app.use route '/wiki/lightweight.md.txt', (app.set('root') + 'README.md'), static()
-    app.use route '/wiki/', app.set('wiki'), static()
+    app.set 'wiki', path.normalize(root + '../../BrainDump/wiki/')
+    app.use route '/wiki/braindump.md.txt', path.normalize(root + '../../BrainDump/README.md'), inject.one('staticfilehandler')()
+    app.use route '/wiki/lightweight.md.txt', path.normalize(app.set('root') + '../README.md'), inject.one('staticfilehandler')()
+    
+    for filehandler in inject.all 'filehandlers'
+        app.use route '/wiki/', app.set('wiki'), filehandler()
 
 # examples
-require '../examples/list'
-require '../examples/store'
-require '../examples/upload'
-require '../examples/template'
-require '../examples/worker'
-require '../examples/git'
+require './examples/list'
+require './examples/store'
+require './examples/upload'
+require './examples/template'
+require './examples/worker'
+require './examples/git'
 app.configure () =>
     app.set 'examples', (root + 'examples-www/')
-    app.use route '/', app.set('examples'), less()
-    app.use route '/', app.set('examples'), sass()
-    app.use route '/', app.set('examples'), nun()
-    app.use route '/', app.set('examples'), static()
+    for filehandler in inject.all 'filehandlers'
+        app.use route '/', app.set('examples'), filehandler()
 
 # git repositories
 # perhaps self discover later
 app.configure () =>
     app.set 'repositories', [
         path.normalize(root)
-        path.normalize(root + '../BrainDump/')
-        path.normalize(root + '../VoodooLabs/')
-        path.normalize(root + '../Shard/')
-        path.normalize(root + '../MediaRepository/')
+        path.normalize(root + '../../BrainDump/')
+        path.normalize(root + '../../VoodooLabs/')
+        path.normalize(root + '../../Shard/')
+        path.normalize(root + '../../MediaRepository/')
     ]
 
 # if nothing was matched show the error handler
