@@ -1,9 +1,10 @@
 express = require 'express'
 path = require 'path'
-route = require './route'
 app = require './app'
 inject = require 'pminject'
 _ = require 'underscore'
+
+inject.bind router: require 'lw-route'
 
 inject.bind staticfilehandler: require 'lw-static'
 
@@ -32,7 +33,7 @@ app.configure () =>
 app.configure () =>
     app.set 'content', (root + 'content/')
     for filehandler in inject.all 'filehandlers'
-        app.use route '/content/', app.set('content'), filehandler()
+        app.use (inject.one 'router') '/content/', app.set('content'), filehandler()
 
 # normal www directory
 app.configure () =>
@@ -43,17 +44,17 @@ app.configure () =>
     app.use app.router
     
     for filehandler in inject.all 'filehandlers'
-        app.use route '/', app.set('www'), filehandler()
+        app.use (inject.one 'router') '/', app.set('www'), filehandler()
 
 # wiki
 require './services/wiki'
 app.configure () =>
     app.set 'wiki', path.normalize(root + '../../BrainDump/wiki/')
-    app.use route '/wiki/braindump.md.txt', path.normalize(root + '../../BrainDump/README.md'), inject.one('staticfilehandler')()
-    app.use route '/wiki/lightweight.md.txt', path.normalize(app.set('root') + '../README.md'), inject.one('staticfilehandler')()
+    app.use (inject.one 'router') '/wiki/braindump.md.txt', path.normalize(root + '../../BrainDump/README.md'), inject.one('staticfilehandler')()
+    app.use (inject.one 'router') '/wiki/lightweight.md.txt', path.normalize(app.set('root') + '../README.md'), inject.one('staticfilehandler')()
     
     for filehandler in inject.all 'filehandlers'
-        app.use route '/wiki/', app.set('wiki'), filehandler()
+        app.use (inject.one 'router') '/wiki/', app.set('wiki'), filehandler()
 
 # examples
 require './examples/list'
@@ -65,7 +66,7 @@ require './examples/git'
 app.configure () =>
     app.set 'examples', (root + 'examples-www/')
     for filehandler in inject.all 'filehandlers'
-        app.use route '/', app.set('examples'), filehandler()
+        app.use (inject.one 'router') '/', app.set('examples'), filehandler()
 
 # git repositories
 # perhaps self discover later
