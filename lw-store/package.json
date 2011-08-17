@@ -1,0 +1,7 @@
+{
+  "name": "lw-store",
+  "description": "Simple Storage!",
+  "version": "0.0.1",
+  "author": "Thomas Coats <github@voodoolabs.net>",
+  "main": "store.coffee"
+}

@@ -1,0 +1,55 @@
+{{< ../../core/www/base.nun}}
+
+{{+ title}}Store Demo{{/ title}}
+{{+ heading}}Store Demo{{/ heading}}
+
+{{+ script}}
+<script>
+$(function () {
+    var $form = $('form');
+    var $key = $form.find('input[name=key]');
+    var $value = $form.find('textarea[name=value]');
+    
+    $('form button').click(function (e) {
+        e.preventDefault();
+        
+        $.ajax({
+            type: 'post',
+            url: '/examples/store?key=' + $key.val(),
+            contentType: 'application/json',
+            data: JSON.stringify(JSON.parse($value.val())),
+            success: function (data) {
+                $form.find('textarea[name=value]').val(data);
+            }
+        });
+    });
+    
+    $('form input:submit').click(function (e) {
+        e.preventDefault();
+        
+        $.ajax({
+            type: 'get',
+            url: '/examples/store?key=' + $key.val(),
+            success: function (data) {
+                $value.val(JSON.stringify(data));
+            }
+        });
+    });
+});
+</script>
+{{/ script}}
+
+{{+ article}}
+<ul id="progress"></ul>
+
+<form>
+    <div>
+        <label>key <input name="key" type="text" value="recipies" /></label>
+    </div>
+    <div>
+        <label>value <textarea name="value"></textarea></label>
+    </div>
+    <button>push</button>
+    <input type="submit" value="pull" />
+</form>
+{{/ article}}

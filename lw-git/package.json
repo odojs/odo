@@ -1,0 +1,7 @@
+{
+  "name": "lw-git",
+  "description": "Git for lightweight",
+  "version": "0.0.1",
+  "author": "Thomas Coats <github@voodoolabs.net>",
+  "main": "git.coffee"
+}

@@ -1,12 +1,13 @@
 express = require 'express'
 path = require 'path'
-app = require './app'
 inject = require 'pminject'
-_ = require 'underscore'
-
 router = require 'lw-route'
 
 root = path.normalize(__dirname + '/')
+
+
+app = express.createServer()
+
 
 inject.bind 'root': root
 inject.bind 'root.www': (root + 'www/')
@@ -35,10 +36,10 @@ inject.bind viewhandler: require 'lw-view'
 inject.bind wiki: require 'lw-wiki'
 
 
-require './examples/store'
-require './examples/upload'
-require './examples/worker'
-require './examples/git'
+require 'lw-store'
+require 'lw-upload'
+require 'lw-worker'
+require 'lw-git'
 
 
 # general configuration
@@ -75,6 +76,8 @@ app.configure () =>
         app.use router '/wiki/', (inject.one 'wiki.store'), filehandler()
         app.use router '/', (root + 'examples-www/'), filehandler()
         app.use router '/', (root + '../lw-list/www/'), filehandler()
+        app.use router '/', (root + '../lw-store/www/'), filehandler()
+        app.use router '/', (root + '../lw-upload/www/'), filehandler()
 
 # if nothing was matched show the error handler
 app.configure () =>

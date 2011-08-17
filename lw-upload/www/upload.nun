@@ -1,0 +1,81 @@
+{{< ../../core/www/base.nun}}
+
+{{+ title}}Upload Demo{{/ title}}
+{{+ heading}}Upload Demo{{/ heading}}
+
+{{+ script}}
+<script>
+var index = 1;
+
+function update_progress(options) {
+    var uri = '/examples/progress/' + options.uuid;
+    $.get(uri, function(data) {
+        if (data.progress.percent) {
+            if (data.progress.percent < 100.0)
+                options.target.text('progress: ' + data.progress.percent + '%');
+            else {
+                options.target.text(data.filename + ' complete (' + data.progress.received + ' bytes) ');
+                options.target.append($('<a />')
+                    .attr('href', '/upload/' + data.savedfilename)
+                    .text('view'));
+                $('#postframe-' + options.index).remove();
+            }
+        }
+        if (data.progress.percent != 100.0) {
+            setTimeout(function () {
+                update_progress(options);
+            }, 200);
+        }
+    });
+}
+
+$(function() {
+    $('#uploadform input:file').change(function () {
+        var file = $(this).val();
+        
+        if (file != '') {
+            // submit form in hidden iframe.
+            var upload_uuid = guid();
+            $('body').append(
+                $('<iframe />')
+                    .attr('id', 'postframe-' + index)
+                    .attr('name', 'postframe-' + index)
+                    .attr('src', 'about:none')
+                    .css({
+                        width: '100px',
+                        height: '100px',
+                        visibility: 'hidden'
+                    })
+                    .addClass('hidden'));
+            $(this).closest('form')
+                .attr('target', 'postframe-' + index)
+                .attr('action', '/examples/upload/' + upload_uuid)
+                .submit();
+            
+            update_progress({
+                target: $('<li />')
+                    .text('')
+                    .data('uuid', upload_uuid)
+                    .appendTo($('#progress')),
+                uuid: upload_uuid,
+                index: index
+            });
+            
+            $('#postframe').load();
+            
+            $('#uploadform input:file').val('');
+            
+            index++;
+        }
+    })
+});
+</script>
+{{/ script}}
+
+{{+ article}}
+<ul id="progress"></ul>
+
+<form id="uploadform" enctype="multipart/form-data" method="post">
+    <input type="file" name="file">
+</form>
+{{/ article}}
