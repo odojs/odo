@@ -4,24 +4,45 @@ app = require './app'
 inject = require 'pminject'
 _ = require 'underscore'
 
-inject.bind router: require 'lw-route'
+router = require 'lw-route'
 
+root = path.normalize(__dirname + '/')
+
+inject.bind 'root': root
+inject.bind 'root.www': (root + 'www/')
+inject.bind 'root.content': (root + 'content/')
+inject.bind 'wiki.www': path.normalize(root + '../lw-wiki/www/')
+inject.bind 'wiki.store': path.normalize(root + '../../BrainDump/wiki/')
+inject.bind repositories: [
+    path.normalize(root + '../')
+    path.normalize(root + '../../BrainDump/')
+    path.normalize(root + '../../VoodooLabs/')
+    path.normalize(root + '../../Shard/')
+    path.normalize(root + '../../MediaRepository/')
+]
+
+inject.bind app: app
+inject.bind router: router
 inject.bind staticfilehandler: require 'lw-static'
-
 inject.bind filehandlers: [
     require 'lw-sass'
     require 'lw-less'
     require 'lw-nun'
     require 'lw-static'
 ]
-
+inject.bind list: require 'lw-list'
 inject.bind viewhandler: require 'lw-view'
+inject.bind wiki: require 'lw-wiki'
 
-root = path.normalize(__dirname + '/')
+
+require './examples/store'
+require './examples/upload'
+require './examples/worker'
+require './examples/git'
+
 
 # general configuration
 app.configure () =>
-    app.set 'root', root
     #app.use(express.logger());
     #app.use(express.bodyParser());
     app.use express.methodOverride()
@@ -31,53 +52,29 @@ app.configure () =>
 
 # user content
 app.configure () =>
-    app.set 'content', (root + 'content/')
     for filehandler in inject.all 'filehandlers'
-        app.use (inject.one 'router') '/content/', app.set('content'), filehandler()
+        app.use router '/content/', (inject.one 'root.content'), filehandler()
 
 # normal www directory
 app.configure () =>
-    app.set 'www', (root + 'www/')
     app.use(inject.one('viewhandler')(
-        search: [ app.set 'www' ]
+        search: [ inject.one 'root.www' ]
     ))
     app.use app.router
     
     for filehandler in inject.all 'filehandlers'
-        app.use (inject.one 'router') '/', app.set('www'), filehandler()
-
-# wiki
-require './services/wiki'
-app.configure () =>
-    app.set 'wiki', path.normalize(root + '../../BrainDump/wiki/')
-    app.use (inject.one 'router') '/wiki/braindump.md.txt', path.normalize(root + '../../BrainDump/README.md'), inject.one('staticfilehandler')()
-    app.use (inject.one 'router') '/wiki/lightweight.md.txt', path.normalize(app.set('root') + '../README.md'), inject.one('staticfilehandler')()
-    
-    for filehandler in inject.all 'filehandlers'
-        app.use (inject.one 'router') '/wiki/', app.set('wiki'), filehandler()
+        app.use router '/', (inject.one 'root.www'), filehandler()
 
 # examples
-require './examples/list'
-require './examples/store'
-require './examples/upload'
-require './examples/template'
-require './examples/worker'
-require './examples/git'
 app.configure () =>
-    app.set 'examples', (root + 'examples-www/')
+    app.use router '/wiki/braindump.md.txt', path.normalize(root + '../../BrainDump/README.md'), inject.one('staticfilehandler')()
+    app.use router '/wiki/lightweight.md.txt', path.normalize(root + '../README.md'), inject.one('staticfilehandler')()
+    
     for filehandler in inject.all 'filehandlers'
-        app.use (inject.one 'router') '/', app.set('examples'), filehandler()
-
-# git repositories
-# perhaps self discover later
-app.configure () =>
-    app.set 'repositories', [
-        path.normalize(root)
-        path.normalize(root + '../../BrainDump/')
-        path.normalize(root + '../../VoodooLabs/')
-        path.normalize(root + '../../Shard/')
-        path.normalize(root + '../../MediaRepository/')
-    ]
+        app.use router '/', (inject.one 'wiki.www'), filehandler()
+        app.use router '/wiki/', (inject.one 'wiki.store'), filehandler()
+        app.use router '/', (root + 'examples-www/'), filehandler()
+        app.use router '/', (root + '../lw-list/www/'), filehandler()
 
 # if nothing was matched show the error handler
 app.configure () =>

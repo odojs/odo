@@ -1,9 +1,12 @@
-fs = require('fs');
+fs = require 'fs'
+inject = require 'pminject'
+
+app = inject.one 'app'    
 
 # options =
 #     type = 'file' || 'dir'
 #     ext = '.txt'
-module.exports = (dir, options, callback) =>
+list = module.exports = (dir, options, callback) =>
     fs.readdir dir, (err, files) =>
         if err?
             callback(err, null)
@@ -43,3 +46,16 @@ module.exports = (dir, options, callback) =>
                 ext: file.ext
                 isDir: file.stat.isDirectory()
             })
+
+app.get '/examples/list', (req, res, next) =>
+    if not req.query.dir?
+        next()
+        return
+    
+    list (app.set 'www') + req.query.dir,
+        type: req.query.type
+        ext: req.query.ext,
+        (err, files) ->
+            throw err if err?
+            
+            res.send files

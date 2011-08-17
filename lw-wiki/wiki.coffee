@@ -1,9 +1,11 @@
-fs = require('fs');
-app = require '../app'
-list = require '../list'
+fs = require 'fs'
+inject = require 'pminject'
+
+list = inject.one 'list'
+app = inject.one 'app'
 
 app.get '/services/wiki', (req, res, next) =>
-    list (app.set 'wiki'),
+    list (inject.one 'wiki.store'),
         type: 'file'
         ext: '.md.txt',
         (err, files) ->

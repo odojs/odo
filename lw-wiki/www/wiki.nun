@@ -1,4 +1,4 @@
-{{< base.nun}}
+{{< ../../core/www/base.nun}}
 
 {{+ script}}
 <script>
