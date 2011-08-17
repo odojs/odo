@@ -21,6 +21,21 @@ inject.bind repositories: [
     path.normalize(root + '../../Shard/')
     path.normalize(root + '../../MediaRepository/')
 ]
+inject.bind routes: [
+    { from: '/', to: (inject.one 'root.www') }
+    { from: '/', to: (inject.one 'wiki.www') }
+    { from: '/wiki/', to: (inject.one 'wiki.store') }
+    { from: '/', to: (root + 'examples-www/') }
+    { from: '/', to: (root + '../lw-list/www/') }
+    { from: '/', to: (root + '../lw-store/www/') }
+    { from: '/', to: (root + '../lw-upload/www/') }
+    { from: '/content/', to: (inject.one 'root.content') }
+]
+
+inject.bind staticroutes: [
+    { from: '/wiki/braindump.md.txt', to: path.normalize(root + '../../BrainDump/README.md') }
+    { from: '/wiki/lightweight.md.txt', to: path.normalize(root + '../README.md') }
+]
 
 inject.bind app: app
 inject.bind router: router
@@ -50,37 +65,18 @@ app.configure () =>
     app.use express.cookieParser()
     app.use express.session
         secret: 'bob'
-
-# user content
-app.configure () =>
-    for filehandler in inject.all 'filehandlers'
-        app.use router '/content/', (inject.one 'root.content'), filehandler()
-
-# normal www directory
-app.configure () =>
+        
     app.use(inject.one('viewhandler')(
         search: [ inject.one 'root.www' ]
     ))
-    app.use app.router
+    
+    for mapping in inject.all 'staticroutes'
+        app.use router mapping.from, mapping.to, inject.one('staticfilehandler')()
     
     for filehandler in inject.all 'filehandlers'
-        app.use router '/', (inject.one 'root.www'), filehandler()
-
-# examples
-app.configure () =>
-    app.use router '/wiki/braindump.md.txt', path.normalize(root + '../../BrainDump/README.md'), inject.one('staticfilehandler')()
-    app.use router '/wiki/lightweight.md.txt', path.normalize(root + '../README.md'), inject.one('staticfilehandler')()
-    
-    for filehandler in inject.all 'filehandlers'
-        app.use router '/', (inject.one 'wiki.www'), filehandler()
-        app.use router '/wiki/', (inject.one 'wiki.store'), filehandler()
-        app.use router '/', (root + 'examples-www/'), filehandler()
-        app.use router '/', (root + '../lw-list/www/'), filehandler()
-        app.use router '/', (root + '../lw-store/www/'), filehandler()
-        app.use router '/', (root + '../lw-upload/www/'), filehandler()
-
-# if nothing was matched show the error handler
-app.configure () =>
+        for mapping in inject.all 'routes'
+            app.use router mapping.from, mapping.to, filehandler()
+            
     app.use express.errorHandler
         dumpExceptions: true
         showStack: true
