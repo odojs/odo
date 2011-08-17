@@ -1,5 +1,11 @@
 redis = require 'redis'
+path = require 'path'
 inject = require 'pminject'
+
+inject.bind routes:
+    from: '/'
+    to: path.normalize(__dirname + '/www/')
+
 app = inject.one 'app'
 
 app.get '/examples/store', (req, res, next) =>

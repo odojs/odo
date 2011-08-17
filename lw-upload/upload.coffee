@@ -1,5 +1,10 @@
 formidable = require 'formidable'
+path = require 'path'
 inject = require 'pminject'
+
+inject.bind routes:
+    from: '/'
+    to: path.normalize(__dirname + '/www/')
 
 app = inject.one 'app'
 
