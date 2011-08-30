@@ -3,10 +3,12 @@ var app = express.createServer(express.logger());
 
 
 app.get('/', function(request, response) {
-    if (process.env.REDISTOGO_URL) {
-        var redis = require('redis-url').connect(process.env.REDISTOGO_URL);
+   if (process.env.REDISTOGO_URL) {
+        var rtg   = require('url').parse(process.env.REDISTOGO_URL);
+        var redis = require('redis').createClient(rtg.port, rtg.hostname);
+        redis.auth(rtg.auth.split(':')[1]);
     } else {
-        var redis = require('redis-url').createClient();
+        var redis = require('redis').createClient();
     }
 
     redis.set('foo', 'bar');
