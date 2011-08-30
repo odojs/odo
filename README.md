@@ -29,34 +29,6 @@ Requirements
   * Ace is neat (iPad - branch with some intial ideas)
 
 
-Extension Points
-----------------
-
-* Define custom configurations (per environment)
-  
-  So the module can configure itself, and be configured
-  
-* Define custom routes (order defined by invoking app)
-
-  So the module can host apps
-
-* Define custom sections of shadow file system
-  
-  So routes that provide handlers for specific file extensions 'just work'
-
-* Define additional script and style resources to be loaded by the templating engine
-
-  Question: How? Which urls? How does the invoking app control this?
-
-* Define additional cms content types to be available
-
-* Need some sort of Ninject 'registrations for this interface' concept
-
-
-Question: Is it enough to use the express method of extension?
-Answer: No, I want to provide other points of extension, eg CMS types, register script and style files to be included (for example)
-
-
 
 Technologies
 ------------
