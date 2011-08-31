@@ -1,5 +1,5 @@
 async = require 'async'
-inject = require 'pminject'
+inject = require 'PMInject'
 
 app = inject.one 'app'
 

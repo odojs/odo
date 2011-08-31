@@ -1,5 +1,5 @@
 redis = require 'redis'
-inject = require 'pminject'
+inject = require 'PMInject'
 
 app = inject.one 'app'
 

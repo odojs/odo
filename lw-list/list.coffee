@@ -1,6 +1,6 @@
 fs = require 'fs'
 path = require 'path'
-inject = require 'pminject'
+inject = require 'PMInject'
 
 inject.bind routes:
     from: '/'

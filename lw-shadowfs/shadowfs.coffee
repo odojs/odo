@@ -1,4 +1,4 @@
-inject = require 'pminject'
+inject = require 'PMInject'
 
 module.exports = (options) =>
     

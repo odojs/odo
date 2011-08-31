@@ -1,6 +1,6 @@
 express = require 'express'
 path = require 'path'
-inject = require 'pminject'
+inject = require 'PMInject'
 router = require './lw-route/route'
 
 app = express.createServer()

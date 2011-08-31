@@ -1,6 +1,6 @@
 path = require 'path'
 
-inject = require 'pminject'
+inject = require 'PMInject'
 app = inject.one 'app'
 
 inject.bind routes:

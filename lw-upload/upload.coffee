@@ -1,6 +1,6 @@
 formidable = require 'formidable'
 path = require 'path'
-inject = require 'pminject'
+inject = require 'PMInject'
 
 inject.bind routes:
     from: '/'
