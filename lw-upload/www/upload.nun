@@ -1,4 +1,4 @@
-{{< ../../core/www/base.nun}}
+{{< ../../www/base.nun}}
 
 {{+ title}}Upload Demo{{/ title}}
 {{+ heading}}Upload Demo{{/ heading}}

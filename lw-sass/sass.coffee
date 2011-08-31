@@ -1,5 +1,5 @@
 path = require 'path'
-sass = require 'sass'
+sass = require 'lw-sass'
 fs = require 'fs'
 
 module.exports = (options) =>

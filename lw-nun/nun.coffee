@@ -1,5 +1,5 @@
 path = require('path');
-nun = require('nun');
+nun = require('lw-nun');
 
 module.exports = (options) =>
     return (req, res, next) =>

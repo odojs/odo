@@ -1,4 +1,4 @@
-{{< ../../core/www/base.nun}}
+{{< ../../www/base.nun}}
 
 {{+ title}}Store Demo{{/ title}}
 {{+ heading}}Store Demo{{/ heading}}
