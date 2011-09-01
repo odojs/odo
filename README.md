@@ -27,6 +27,7 @@ Requirements
 * Web coding support
 * Eg. I want to be able to alter this code within itself
   * Ace is neat (iPad - branch with some intial ideas)
+  * https://github.com/coreh/nide/
 
 
 
