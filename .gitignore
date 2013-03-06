@@ -3,5 +3,4 @@ node_modules
 components
 config.json
 *.sublime-workspace
-
 *.sublime-project
