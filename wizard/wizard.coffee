@@ -165,7 +165,8 @@
       shake: ->
         wizard = @
         wizard.target.stop()
-        wizard.target.animate('margin-left': '+=10px', 50)
+        wizard.target
+          .animate('margin-left': '+=10px', 50)
           .animate('margin-left': '-=20px', 100)
           .animate('margin-left': '+=20px', 100)
           .animate('margin-left': '-=20px', 100)
