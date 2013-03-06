@@ -6,6 +6,7 @@
     "bootstrap": "2.x",
     "d3": "3.x",
     "ember": "1.x",
+    "chai": "1.x",
     "handlebars": "1.x",
     "jquery": "1.x",
     "underscore": "1.x",
