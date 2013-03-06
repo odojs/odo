@@ -4,13 +4,13 @@ A Nodejs framework for creating awesome things.
 
 ## Setup
 
-  bower install
-  npm install
+    bower install
+    npm install
 
 ## Run
 
-  sudo nodemon -e js,json bootstrap.js
-  redis-server
+    sudo nodemon -e js,json bootstrap.js
+    redis-server
 
 ## Requirements
 
