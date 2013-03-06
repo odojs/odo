@@ -1,7 +1,0 @@
-{
-  "name": "lw-nun",
-  "description": "Totally asynchronous non-blocking template engine for node.js (.nun files)",
-  "version": "0.0.1",
-  "author": "Thomas Coats <github@voodoolabs.net>",
-  "main": "nun.coffee"
-}

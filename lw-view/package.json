@@ -1,7 +1,0 @@
-{
-  "name": "lw-view",
-  "description": "Totally asynchronous non-blocking template engine for node.js (.nun files) As a view engine!",
-  "version": "0.0.1",
-  "author": "Thomas Coats <github@voodoolabs.net>",
-  "main": "view.coffee"
-}

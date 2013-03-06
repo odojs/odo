@@ -1,0 +1,40 @@
+<header>
+	<h1>&Psi;</h1>
+
+	<div class="container">
+		<div class="row">
+			<div class="span6">
+				<p class="note"><a href="/ψ/">&Psi;</a> <span class="divider">-&#62;</span> <a href="/ψ/server/" class="active">Server information</a></p>
+			</div>
+		</div>
+	</div>
+</header>
+
+<div class="container">
+	<div class="row">
+		<div class="span6">
+			<div id="admin-server" class="document">
+				<table class="table table-condensed">
+				<thead>
+					<tr>
+						<th></th>
+						<th>Value</th>
+					</tr>
+				</thead>
+				<tbody>{{#each settings}}
+					<tr>
+						<th>{{key}}</th>
+						<td>{{value}}</td>
+					</tr>{{/each}}
+				</tbody>
+				</table>
+
+				
+				<div class="row">
+					<a class="btn btn-final" href="/ψ/">Done</a>
+				</div>
+			</div>
+			<p class="note">Never say never.</p>
+		</div>
+	</div>
+</div>

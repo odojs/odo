@@ -1,0 +1,146 @@
+@import url(http://fonts.googleapis.com/css?family=Indie+Flower);
+body {
+  background: #375999 url(/img/new_mathematics.png) top center;
+}
+.note {
+  color: white;
+  font-family: Indie Flower, script, serif;
+  font-size: 16px;
+}
+.note a {
+  color: white;
+}
+.note input,
+.note select,
+.note textarea {
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+.note input,
+.note select,
+.note label,
+.note legend,
+.note textarea,
+.note .help-block,
+.note .help-inline {
+  color: white;
+  font-family: Indie Flower, script, serif;
+  font-size: 16px;
+  background: transparent;
+}
+.note input {
+  line-height: 24px;
+}
+.note legend {
+  font-size: 21px;
+}
+.note label {
+  line-height: 24px;
+}
+.note ::-webkit-input-placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+.note :-moz-placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+.note ::-moz-placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+.note :-ms-input-placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+.note input:focus,
+.note select:focus,
+.note textarea:focus {
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  -o-box-shadow: none;
+  box-shadow: none;
+}
+.btn-final {
+  float: right;
+}
+body.prompt .container {
+  width: 460px;
+}
+.document {
+  padding: 8px;
+  margin-bottom: 18px;
+  background: white;
+  position: relative;
+  -webkit-border-radius: 6px 6px 6px 6px;
+  -moz-border-radius: 6px 6px 6px 6px;
+  -o-border-radius: 6px 6px 6px 6px;
+  border-radius: 6px 6px 6px 6px;
+  -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+  -o-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+}
+.document.affix {
+  position: fixed;
+}
+.document .close {
+  position: relative;
+  top: -7px;
+  right: 5px;
+  line-height: 18px;
+}
+.document-example::after {
+  content: "Example";
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  padding: 3px 7px;
+  font-size: 12px;
+  font-weight: bold;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  border-bottom: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  color: #9da0a4;
+  -webkit-border-radius: 6px 0 6px 0;
+  -moz-border-radius: 6px 0 6px 0;
+  border-radius: 6px 0 6px 0;
+}
+.admin header {
+  padding-top: 40px;
+}
+.admin header h1 {
+  margin: 0;
+  color: white;
+  font-family: serif;
+  font-size: 150px;
+  line-height: 150px;
+  text-align: center;
+}
+.full-admin .wrapper {
+  background-color: white;
+}
+.full-admin footer {
+  padding-top: 20px;
+}
+#admin-plugin {
+  padding: 8px;
+}
+#admin-plugin label {
+  padding-left: 25px;
+  border-radius: 3px;
+}
+#admin-plugin label.plugin-disabled {
+  color: #ccc;
+}
+#admin-plugin label:hover {
+  background-color: #d4f2ff;
+}
+#admin-plugin ul {
+  list-style-type: none;
+}
+#admin-server table {
+  overflow: hidden;
+  text-overflow: elipsis;
+}
+#admin-server tbody th {
+  width: 200px;
+}

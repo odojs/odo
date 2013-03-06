@@ -1,0 +1,22 @@
+<div class="container">
+	<div class="row">
+		<div class="span6">
+			{{#if query.title}}
+			<div id="incoming" class="document prompt">
+				<form class="form-inline form-tight">
+					<a class="close">&times;</a>
+					<div class="incoming-resource">
+						<a data-name="title" data-type="text" data-inputclass="span5" data-original-title="Change the title of the link" class="title editable editable-click" href="{{query.url}}">{{query.title}}</a>
+						<a data-name="url" data-type="text" data-inputclass="span5" data-original-title="Change the url of the link" class="url editable editable-click" href="{{query.url}}">{{query.url}}</a>
+					</div>
+					<hr class="hr-tight" />
+					<div class="input-append">
+						<input id="itemsearch" type="text"placeholder="Save link to a page...">
+						<button class="btn btn-primary" type="button">Save</button>
+					</div>
+				</form>
+			</div>
+			{{/if}}
+		</div>
+	</div>
+</div>

@@ -1,0 +1,415 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"admin",
+				"adminplugin"
+			],
+			[
+				"mar",
+				"margin-top"
+			],
+			[
+				"font",
+				"font-family"
+			],
+			[
+				"compo",
+				"componentdir"
+			],
+			[
+				"med",
+				"medicalEquipment"
+			],
+			[
+				"nav",
+				"nav-header"
+			],
+			[
+				"backgr",
+				"background-color"
+			],
+			[
+				"pl",
+				"plugin"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 267.0,
+		"selected_items":
+		[
+			[
+				"Up",
+				"Package Control: Upgrade Package"
+			],
+			[
+				"Istal",
+				"Package Control: Install Package"
+			],
+			[
+				"Install",
+				"Package Control: Install Package"
+			],
+			[
+				"Unin",
+				"SublimeCodeIntel: Disable Plugin"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"Inst",
+				"Package Control: Install Package"
+			],
+			[
+				"Insta",
+				"Package Control: Install Package"
+			],
+			[
+				"Instal",
+				"Package Control: Install Package"
+			],
+			[
+				"Install Pac",
+				"Package Control: Install Package"
+			],
+			[
+				"",
+				"About"
+			],
+			[
+				"Install Pa",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 449.0
+	},
+	"console":
+	{
+		"height": 159.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/dropbox-data/dropbox-data.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/framework/passport/dropbox/dropbox.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/odo/display/display.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/odo/display/display.html",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/config.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/framework/inject/inject.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/bootstrap.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/odo/incoming/incoming.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/odo/auth/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/odo/display/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/odo/incoming/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/odo/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/framework/util/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/framework/postal/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/framework/passport/dropbox/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/framework/peek/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/framework/passport/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/framework/inject/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/framework/handlebars/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/framework/dropbox/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/example/example-password/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/admin/plugins/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/example/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/admin/server/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/admin/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/dropbox-data/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/admin/server/server.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/admin/plugins/plugins.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/odo/auth/auth.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/framework/handlebars/handlebars.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/odo/plugins/display/display.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/admin/layout.html",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/admin/dashboard.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/odo/plugins/incoming/incoming.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/admin/plugins/plugins/plugins.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/admin/plugins/server/server.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/odo/plugins/auth/auth.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/odo/layout.html",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/test/test.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/framework/pminject/pminject.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/framework/peek/peek.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/framework/postal/postal.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/test/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/internal/util/typeselect.coffee",
+		"/Users/tcoats/.profile",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/internal/backbone/plugins/relational/relational.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/internal/backbone/backbone.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/internal/handlebars/handlebars.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/odo/plugins/display/display.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/peek/peek.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins.litcoffee",
+		"/Users/tcoats/Library/Application Support/Sublime Text 2/Packages/Emmet/Emmet.sublime-settings",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/odo/plugins/auth/auth.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/pminject/pminject.coffee",
+		"/Users/tcoats/Desktop/Fresh2Me/Code/root/locator/sorry.odo",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/odo/plugins/display/js/display.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/odo/layout.html",
+		"/Users/tcoats/Desktop/Old/Scary Movies",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/dropbox/dropbox.coffee",
+		"/Users/tcoats/Dropbox/Knowledge/Leader of Men/wiki/Yammer.md",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/passport/plugins/dropbox/dropbox.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/admin/dashboard.coffee",
+		"/Users/tcoats/Desktop/Scary Movies",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/dropbox/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/odo/plugins/display/display.html",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/passport/passport.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/odo/plugins/auth/login.html",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/odo/plugins/auth/account.html",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/odo/plugins/auth/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/README.md",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/passport/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/odo/plugins/login/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/odo/plugins/login/login.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/passport/plugins/dropbox/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/Odo.sublime-project",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/admin/dashboard.html",
+		"/Users/tcoats/Downloads/CM12.20.FULL/CM12.20_FULL/Readme_CM12.txt",
+		"/Users/tcoats/Downloads/CM12.20.FULL/CM12.20_FULL/FILES/DO NOT MOVE OR UNPACK THIS FILES",
+		"/Users/tcoats/Dropbox/Knowledge/Brain Dump/wiki/important numbers.md",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/handlebars/handlebars.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/admin/css/admin.less",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/admin/layout.html",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/test/templates/layout.handlebars",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/test/test.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/test/layout.handlebars",
+		"/Users/tcoats/Library/Application Support/Sublime Text 2/Packages/User/Handlebars.sublime-build",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/test/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/test/layout.html",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/ember/ember.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/ember/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/Plan.md",
+		"/Users/tcoats/Redis/redis.conof",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/admin/plugins/server/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/admin/plugins/plugins/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/admin/plugins/server/server.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/admin/plugins/plugins/plugins.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/knockback/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/knockback/knockback.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/pminject/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/underscore/underscore.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/knockout/plugins/bootstrap/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/underscore/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/knockout/knockout.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/knockout/plugins/bootstrap/bootstrap.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/d3/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/jquery/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/jquery/jquery.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/chai/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/chai/chai.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/backbone/plugins/relational/relational.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/backbone/plugins/relational/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/backbone/plugins/modelref/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/backbone/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/backbone/plugins/modelref/modelerf.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/backbone/backbone.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/d3/d3.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/odo/css/odo.less",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/odo/css/gridster.less",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/odo/plugins/incoming/incoming.html",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/admin/plugins/server/server.html",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/package.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/odo/plugins/incoming/incoming.coffee",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/odo/plugins/display/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/odo/plugins/incoming/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/odo-public/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/example/plugins/example-password/plugin.json",
+		"/Users/tcoats/Dropbox/Projects/Personal/Odo/plugins/bootstrap/plugins/bootstrap-editable/bootstrap-editable.coffee"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+			"/Users/tcoats/Dropbox/Projects/Blueprint"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"_",
+			"console",
+			"Cannot find module",
+			"components",
+			"typeselect.defaults",
+			"click",
+			"$(",
+			"Typeahead",
+			"TYPEAHEAD",
+			"typeahead",
+			"?",
+			"$@",
+			"{",
+			"function",
+			"case",
+			" function",
+			"this.",
+			"//",
+			"finger",
+			"path",
+			"finger",
+			"parse",
+			"matchRequest",
+			"loop",
+			"static",
+			"100.0",
+			"200.0",
+			"1",
+			"{ Name: ",
+			" }",
+			"Measurement: new Measurement ",
+			"measurement",
+			"name",
+			"frequency",
+			"letter",
+			"  ",
+			"text",
+			"params",
+			"div",
+			"stylesheet",
+			"div",
+			"Users",
+			"background",
+			"body",
+			"\n}",
+			"background",
+			"html"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"Typeselect",
+			"TYPESELECT",
+			"typeselect",
+			"",
+			"@",
+			"#	",
+			"	"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 33.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 45.0
+	},
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"dra",
+				"js/dragdealer.js"
+			],
+			[
+				"css",
+				"css/blackbeard.css"
+			],
+			[
+				"",
+				"thomascoats.less"
+			],
+			[
+				"app",
+				".meteor/local/build/app.html"
+			],
+			[
+				"metro",
+				"/Users/tcoats/Dropbox/Projects/newthomascoatscom/client/articles.coffee"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 249.0,
+	"status_bar_visible": true
+}

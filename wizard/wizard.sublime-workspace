@@ -1,0 +1,362 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "index.html",
+			"settings":
+			{
+				"buffer_size": 5216,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 207.0,
+		"selected_items":
+		[
+			[
+				"Up",
+				"Package Control: Upgrade/Overwrite All Packages"
+			],
+			[
+				"Upd",
+				"Package Control: Upgrade Package"
+			],
+			[
+				"Insta",
+				"Package Control: Install Package"
+			],
+			[
+				"Remo",
+				"Package Control: Remove Package"
+			],
+			[
+				"List",
+				"Package Control: List Packages"
+			],
+			[
+				"Remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"Instal",
+				"Package Control: Install Package"
+			],
+			[
+				"Install",
+				"Package Control: Install Package"
+			],
+			[
+				"Package",
+				"Package Control: List Packages"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"Inst",
+				"Package Control: Install Package"
+			],
+			[
+				"Install Pac",
+				"Package Control: Install Package"
+			],
+			[
+				"",
+				"About"
+			],
+			[
+				"Install Pa",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 449.0
+	},
+	"console":
+	{
+		"height": 159.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/tcoats/Desktop/wintec poc/wintec.coffee",
+		"/Users/tcoats/Desktop/wintec poc/wintec.less",
+		"/Users/tcoats/Desktop/wintec poc/index.html",
+		"/Users/tcoats/Library/Containers/com.apple.mail/Data/Library/Mail Downloads/nonlinear-wizard.js",
+		"/Users/tcoats/Desktop/wintec poc/wintec.html",
+		"/Users/tcoats/Downloads/Wintec.spcolor",
+		"/Users/tcoats/Downloads/wintec (1).spcolor",
+		"/Users/tcoats/Downloads/SharePoint 2013 Using the search REST service from an app for SharePoint/C#/SearchApp/Styles/SharePointProjectItem.spdata",
+		"/Users/tcoats/Downloads/SharePoint 2013 Using the search REST service from an app for SharePoint/C#/SearchApp/Scripts/_references.js",
+		"/Users/tcoats/Downloads/SharePoint 2013 Hello World remote app using REST/C#/BasicSelfHostedAppRESTWeb/Home.aspx.cs",
+		"/Users/tcoats/Downloads/SharePoint 2013 Using the search REST service from an app for SharePoint/C#/SearchApp/Scripts/App.js",
+		"/etc/hosts",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Brain Dump/wiki/important numbers.md",
+		"/Users/tcoats/Library/Caches/TemporaryItems/Transmit/.tmp_qwxyku/style.css",
+		"/Users/tcoats/Library/Caches/TemporaryItems/Transmit/.tmp_wugsas/index.html",
+		"/Users/tcoats/Desktop/Blokk/bookmarklet.js",
+		"/Users/tcoats/Desktop/Blokk/bookmarklet.coffee",
+		"/Users/tcoats/Desktop/Blokk/index.html",
+		"/Users/tcoats/Desktop/Blokk/Blokk.sublime-project",
+		"/Users/tcoats/Library/Application Support/Sublime Text 2/Packages/User/Preferences.sublime-settings",
+		"/Users/tcoats/Library/Application Support/Sublime Text 2/Packages/Default/Preferences.sublime-settings",
+		"/Users/tcoats/Library/Application Support/Sublime Text 2/Packages/User/Package Control.sublime-settings",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Work/Wintec Presentation.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Work/Wintec Uni vs Tech.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Work/Wintec General Ideas.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Work/Wintec Initial Presentation.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Work/Wintec Bob Grid.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Work/Wintec UX Plan.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Work/Wintec Persona Development.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Presentation.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Work/Wintec Uni vs Tech",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Work/Wintec General Ideas",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Patterns and Practices/wiki/Persona.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/list.js",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Patterns and Practices/wiki/Web Api.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Brain Dump/wiki/PowerShell.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Values.md",
+		"/Users/tcoats/Desktop/todo.txt",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Books.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Experience.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Developer.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Problem.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Productivity.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Protrack.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Responsibility.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Retro Guiding Questions.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Results Only Work Environment.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Self-Improvement.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Senior Developer.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Sleep.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Software Engineer.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Specialisations.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Success.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Team - Politics.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Team Leader.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Team.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Training.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Trello.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Tribal Leader.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Twitter.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Viability.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Web Designing.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Book.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Work/Show and Tell.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Policy.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Planning.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/FedEx Days.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Execution.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Environment.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Coaching - Feedback.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Coaching - Environment.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Coaching - Change Management.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Coaching - Career.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Change.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Calm.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Body Language.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Be An A Player.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Architect.md",
+		"/Users/tcoats/Public/Dropbox/Knowledge/Leader of Men/wiki/Accountability.md",
+		"/Users/tcoats/.profile",
+		"/Users/tcoats/Public/Dropbox/Projects/Blueprint/blackbeard.html",
+		"/Users/tcoats/Public/Dropbox/Shed to AssignEid.txt",
+		"/Users/tcoats/Public/Dropbox/values.txt",
+		"/Users/tcoats/Public/Dropbox/Projects/Blueprint/js/pminject.coffee",
+		"/Users/tcoats/Public/Dropbox/Projects/Blueprint/css/gridster.less",
+		"/Users/tcoats/Public/Dropbox/Projects/Blueprint/js/blueprint.coffee",
+		"/Users/tcoats/Public/Dropbox/Projects/Blueprint/blueprint.html",
+		"/Users/tcoats/Public/Dropbox/Projects/Blueprint/js/dragdealer.js",
+		"/Users/tcoats/Public/Dropbox/Projects/Blueprint/css/blackbeard.css",
+		"/Users/tcoats/Dropbox/Projects/Blueprint/blackbeard.html",
+		"/Users/tcoats/Dropbox/Projects/Blueprint/js/blackbeard.coffee",
+		"/Users/tcoats/Dropbox/Projects/newthomascoatscom/client/articles.html",
+		"/Users/tcoats/Dropbox/Projects/newthomascoatscom/thomascoats.less",
+		"/Users/tcoats/Dropbox/Knowledge/Patterns and Practices/wiki/jQuery - Tooltip.md",
+		"/Users/tcoats/Library/Application Support/Sublime Text 2/Packages/Default/Default (OSX).sublime-keymap",
+		"/Users/tcoats/Library/Application Support/Sublime Text 2/Packages/User/Default (OSX).sublime-keymap",
+		"/Users/tcoats/Library/Application Support/Sublime Text 2/Packages/User/Distraction Free.sublime-settings",
+		"/Users/tcoats/Dropbox/Projects/newthomascoatscom/.meteor/local/build/app.html",
+		"/Users/tcoats/Dropbox/Projects/newthomascoatscom/client/articles.coffee"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"”",
+			"“",
+			"’",
+			"params",
+			"div",
+			"stylesheet",
+			"div",
+			"Users",
+			"background",
+			"body",
+			"\n}",
+			"background",
+			"html"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"\"",
+			"'"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "index.html",
+					"settings":
+					{
+						"buffer_size": 5216,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 37.0
+	},
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"dra",
+				"js/dragdealer.js"
+			],
+			[
+				"css",
+				"css/blackbeard.css"
+			],
+			[
+				"",
+				"thomascoats.less"
+			],
+			[
+				"app",
+				".meteor/local/build/app.html"
+			],
+			[
+				"metro",
+				"/Users/tcoats/Dropbox/Projects/newthomascoatscom/client/articles.coffee"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 212.0,
+	"status_bar_visible": true
+}

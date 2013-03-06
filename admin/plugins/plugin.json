@@ -1,0 +1,7 @@
+{
+  "name": "Enable and disable plugins",
+  "category": "Platform",
+  "url": "/ψ/plugins/",
+  "version": "1.0.0",
+  "main": "./plugins.js"
+}

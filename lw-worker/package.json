@@ -1,7 +1,0 @@
-{
-  "name": "lw-worker",
-  "description": "Working Worker",
-  "version": "0.0.1",
-  "author": "Thomas Coats <github@voodoolabs.net>",
-  "main": "worker.coffee"
-}

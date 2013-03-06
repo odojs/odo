@@ -1,0 +1,7 @@
+{
+  "name": "Handlebars",
+  "version": "1.0.0",
+  "dependencies": {
+  	"handlebars": "1.x"
+  }
+}

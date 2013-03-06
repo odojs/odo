@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+	<title>{{title}}</title>
+	
+	<link rel="stylesheet" href="/js/bootstrap/docs/assets/css/bootstrap.css">
+	<link rel="stylesheet" href="/js/x-editable/dist/bootstrap-editable/css/bootstrap-editable.css">
+	<link rel="stylesheet" href="/css/blackbeard.css">
+	<link rel="stylesheet" href="/css/odo.css">
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Clicker Script">
+	{{#if stylesheets}}
+	{{#each stylesheets}}
+	<link rel="stylesheet" href="{{this}}">
+	{{/each}}
+	{{/if}}
+	{{hook 'head'}}
+</head>
+
+<body {{#if bodyclasses}} class="{{#each bodyclasses}}{{this}} {{/each}}"{{/if}}>
+	{{hook 'content'}}
+
+	<script src="/js/jquery/jquery.min.js"></script>
+	<script src="/js/chai/chai.js"></script>
+	<script src="/js/underscore/underscore-min.js"></script>
+	<script src="/js/knockout/build/output/knockout-latest.js"></script>
+	<script src="/js/bootstrap/docs/assets/js/bootstrap.min.js"></script>
+	<script src="/js/dragdealer.js"></script>
+	<script src="/js/wizard.js"></script>
+	<script src="/js/util.js"></script>
+	<script src="/js/knockout.sliders.js"></script>
+	<script src="/js/knockout.modal.js"></script>
+	<script src="/js/blueprint.js"></script>
+	<script src="/js/typeselect.js"></script>
+	<script src="/js/x-editable/dist/bootstrap-editable/js/bootstrap-editable.min.js"></script>
+	{{#if javascripts}}
+	{{#each javascripts}}
+	<script src="{{this}}"></script>
+	{{/each}}
+	{{/if}}
+	{{hook 'script'}}
+</body>
+</html>

@@ -1,20 +1,18 @@
 {
-  "name": "lightweight",
-  "version": "0.0.1",
+  "name": "Odo",
+  "description": "Odo, whatever you want it to be",
+  "version": "6.0.1",
+  "private": true,
   "dependencies": {
-    "express": "2.2.0",
-    "coffee-script": ">= 1.1.1",
-    "redis": ">= 0.6.0",
-    "PMInject": ">= 0.0.2",
-    "express": ">= 2.4.3",
-    "underscore": ">= 1.1.7",
-    "git": ">= 0.1.3",
-    "bufferstream": ">= 0.3.0",
-    "async": ">= 0.1.9",
-    "less": ">= 1.1.4",
-    "lw-nun": ">= 0.1.14",
-    "lw-sass": ">= 0.5.1",
-    "paperboy": ">= 0.0.2",
-    "formidable": ">= 1.0.2"
+    "express": "3.x",
+    "underscore": "1.x",
+    "handlebars": "1.x",
+    "consolidate": "0.7.x",
+    "moment": "1.7.x",
+    "dropbox": "0.9.x",
+    "passport": "0.1.x",
+    "passport-dropbox": "0.1.x",
+    "postal": "0.8.x",
+    "redis": "0.8.x"
   }
 }

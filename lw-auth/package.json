@@ -1,7 +1,0 @@
-{
-  "name": "lw-auth",
-  "description": "Authentication",
-  "version": "0.0.1",
-  "author": "Thomas Coats <github@voodoolabs.net>",
-  "main": "auth.coffee"
-}

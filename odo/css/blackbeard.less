@@ -1,0 +1,91 @@
+@silder-width: 40px;
+@slider-height: 200px;
+
+.slider-box {
+	float: left;
+  margin: 0 5px;
+  text-align: center;
+}
+
+.slider {
+	position: relative;
+	
+  -webkit-box-shadow: inset 0 0 8px 0 #ccc;
+  -moz-box-shadow: inset 0 0 8px 0 #ccc;
+  box-shadow: inner 0 0 8px 0 #ccc;
+  
+  z-index: 100;
+  
+  width: @silder-width;
+  height: @slider-height;
+  overflow: hidden;
+  
+  .handle {
+    position: absolute;
+    cursor: pointer;
+    width: @silder-width;
+    height: @slider-height * 2;
+  }
+  
+  .slide {
+    position: absolute;
+    bottom: 0px;
+    width: @silder-width;
+    height: @slider-height;
+    background: #c00;
+  }
+
+  &.slider-skill {
+    .slide {
+      background: #f92e59;
+    }
+  }
+
+  &.slider-output {
+    .slide {
+      background: #ff703f;
+    }
+  }
+
+  &.slider-delivery {
+    .slide {
+      background: #f6bc03;
+    }
+  }
+
+  &.slider-group {
+    .slide {
+      background: #dfd487;
+    }
+  }
+}
+
+.wizard {
+  padding: 0px;
+  width: 560px;
+  overflow: hidden;
+
+  section {
+    clear: none;
+  }
+
+  > .inner {
+    /* a huge width so we can fit all the panes */
+    overflow: hidden;
+    width: 9999px;
+
+    > .pane {
+      padding: 0px;
+      width: 560px;
+      overflow: hidden;
+      float: left;
+      position: relative;
+      min-height: 300px;
+    }
+  }
+}
+
+
+.modal-footer .prev {
+  float: left;
+}

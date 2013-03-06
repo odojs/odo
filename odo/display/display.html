@@ -1,0 +1,15 @@
+<header>
+	<h1>Odo</h1>
+</header>
+
+<div class="container">
+	<div class="row">
+		<div class="offset2 span8">
+			<div class="document">
+				<input class="input-block-level" type="text" placeholder="What do you want to do today?"></input>
+				{{#if user}}{{user.displayName}} <a href="/auth/dropbox/sign-out">Sign-out</a>{{else}}
+				<a href="/auth/dropbox">Sign-in with Dropbox</a>{{/if}}
+			</div>
+		</div>
+	</div>
+</div>

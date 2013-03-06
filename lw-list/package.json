@@ -1,7 +1,0 @@
-{
-  "name": "lw-list",
-  "description": "Directory Lister",
-  "version": "0.0.1",
-  "author": "Thomas Coats <github@voodoolabs.net>",
-  "main": "list.coffee"
-}
