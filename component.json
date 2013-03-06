@@ -3,19 +3,13 @@
   "description": "Odo, whatever you want it to be",
   "version": "6.0.1",
   "dependencies": {
-    "backbone": "0.x",
-    "backbone-modelref": "0.x",
-    "backbone-relational": "0.x",
     "bootstrap": "2.x",
-    "chai": "1.x",
     "d3": "3.x",
     "ember": "1.x",
     "handlebars": "1.x",
     "jquery": "1.x",
-    "knockback": "0.x",
-    "knockout": "2.x",
     "underscore": "1.x",
-    "x-editable": "1.x"
+    "bootstrap-editable": "http://vitalets.github.com/x-editable/assets/zip/bootstrap-editable-1.4.1.zip"
   },
   "ignore": [
     "node_modules/",

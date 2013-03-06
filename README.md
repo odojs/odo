@@ -6,8 +6,11 @@ A Nodejs framework for creating awesome things.
 
   bower install
   npm install
-  cd components/x-editable
-  grunt build
+
+## Run
+
+  sudo nodemon -e js,json bootstrap.js
+  redis-server
 
 ## Requirements
 
