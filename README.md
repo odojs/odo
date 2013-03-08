@@ -9,6 +9,8 @@ A Nodejs framework for creating awesome things.
 
     bower install
     npm install
+    cp config.sample.json config.json
+    subl config.json
 
 
 ## Run

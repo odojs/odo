@@ -2,12 +2,16 @@ path = require 'path'
 express = require 'express'
 fs = require 'fs'
 app = express()
-config = config = JSON.parse fs.readFileSync (path.join __dirname, 'config.json'), 'utf-8'
+
+
+configpath = path.join __dirname, 'config.json'
+await fs.readFile configpath, defer err, configfile
+config = JSON.parse configfile, 'utf-8'
 
 app.plugins = require './plugins'
 
 # plugins
-app.plugins.loadplugins config.plugins.directories
+await app.plugins.loadplugins config.plugins.directories, defer()
 
 for key, value of config.config
   app.set key, value
@@ -28,7 +32,7 @@ app.configure () =>
     app.use(source, express.static(__dirname + target))
 
   # plugin middleware
-  app.plugins.configure app
+  await app.plugins.configure app, defer()
   
   app.use app.router
 
@@ -37,7 +41,7 @@ app.configure () =>
     dumpExceptions: true
     showStack: true
 
-# init
-app.plugins.init app
-
 app.listen(process.env.PORT || 80)
+
+# init
+await app.plugins.init app, defer()

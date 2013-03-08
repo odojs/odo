@@ -13,6 +13,7 @@
     "passport": "0.1.x",
     "passport-dropbox": "0.1.x",
     "postal": "0.8.x",
-    "redis": "0.8.x"
+    "redis": "0.8.x",
+    "iced-coffee-script": "1.4.x"
   }
 }

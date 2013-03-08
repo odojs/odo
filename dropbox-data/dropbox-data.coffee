@@ -12,18 +12,29 @@ errors = {
 }
 
 strategies = (app) ->
-  'dropbox.rootfiles': (callback) ->
+  'dropbox.collections': (callback) ->
+    callback null, [
+      'Knowledge/Patterns and Practices'
+      'Knowledge/Work'
+      'Knowledge/Brain Dump'
+      'Knowledge/Leader of Men'
+    ]
+
+  'dropbox.list': (callback) ->
+    req = app.inject.one 'req'
     client = app.inject.one('dropbox.client')()
 
     if !client?
       callback null, []
       return
 
-    client.readdir '/', (error, entries) ->
-      if error?
-        callback errors[error]
+    await client.readdir req.query.path, defer error, entries
+    
+    if error?
+      callback errors[error]
 
-      callback null, entries
+    callback null, entries
+
 
 # Export the strategy to inject and json
 module.exports =
@@ -34,10 +45,11 @@ module.exports =
   init: (app) ->
     for strategy, _ of strategies app
       app.get "/#{strategy}.json", (req, res) ->
-        app.inject.one(strategy) (error, result) ->
-          throw error if error?
-          output = JSON.stringify result
-          res.set
-            'Content-Type': 'application/json'
-            'Content-Length': output.length
-          res.send output
+        await app.inject.one(strategy) (defer error, result)
+        
+        throw error if error?
+        output = JSON.stringify result
+        res.set
+          'Content-Type': 'application/json'
+          'Content-Length': output.length
+        res.send output
