@@ -1,0 +1,7 @@
+{
+  "name": "Dependency injection",
+  "category": "Application",
+  "url": "/ψ/inject/",
+  "version": "1.0.0",
+  "main": "./inject.js"
+}
