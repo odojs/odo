@@ -1,4 +1,6 @@
 dropbox = require 'dropbox'
+path = require 'path'
+_ = require 'underscore'
 
 errors = {
   '${dropbox.ApiError.INVALID_TOKEN}': 'Invalid token'
@@ -11,45 +13,34 @@ errors = {
   '${dropbox.ApiError.INVALID_METHOD}': 'Invalid method'
 }
 
-strategies = (app) ->
-  'dropbox.collections': (callback) ->
-    callback null, [
-      'Knowledge/Patterns and Practices'
-      'Knowledge/Work'
-      'Knowledge/Brain Dump'
-      'Knowledge/Leader of Men'
-    ]
-
-  'dropbox.list': (callback) ->
-    req = app.inject.one 'req'
-    client = app.inject.one('dropbox.client')()
-
-    if !client?
-      callback null, []
-      return
-
-    await client.readdir req.query.path, defer error, entries
-    
-    if error?
-      callback errors[error]
-
-    callback null, entries
-
-
-# Export the strategy to inject and json
 module.exports =
   configure: (app) ->
-    for strategy, implementation of strategies app
-      app.inject.bind strategy, implementation
+    app.fetch.bind 'pagenames', 'all', (app, spec, cb) ->
+      req = app.inject.one 'req'
+      client = app.inject.one('dropbox.client')()
 
-  init: (app) ->
-    for strategy, _ of strategies app
-      app.get "/#{strategy}.json", (req, res) ->
-        await app.inject.one(strategy) (defer error, result)
-        
-        throw error if error?
-        output = JSON.stringify result
-        res.set
-          'Content-Type': 'application/json'
-          'Content-Length': output.length
-        res.send output
+      if !client?
+        cb null, []
+        return
+
+      sections = [
+        'Knowledge/Patterns and Practices'
+        'Knowledge/Work'
+        'Knowledge/Brain Dump'
+        'Knowledge/Leader of Men'
+      ]
+
+      sections = _(sections).map (section) ->
+        path: section
+
+      await
+        for section in sections
+          client.readdir section.path, defer error, section.items
+      
+          cb errors[error] if error?
+
+      for section in sections
+        section.items = _(section.items).filter (item) ->
+          item.endsWith '.md'
+
+      cb null, sections
