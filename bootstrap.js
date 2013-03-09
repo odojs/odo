@@ -8,9 +8,9 @@
 
   path = require('path');
 
-  express = require('express');
-
   fs = require('fs');
+
+  express = require('express');
 
   app = express();
 
@@ -38,7 +38,7 @@
         filename: "/Users/tcoats/Source/odo/bootstrap.coffee"
       });
       app.plugins.loadplugins(config.plugins.directories, __iced_deferrals.defer({
-        lineno: 13
+        lineno: 12
       }));
       __iced_deferrals._fulfill();
     })(function() {
@@ -82,17 +82,14 @@
           }));
         });
       });
-      (function(__iced_k) {
-        __iced_deferrals = new iced.Deferrals(__iced_k, {
-          filename: "/Users/tcoats/Source/odo/bootstrap.coffee"
-        });
-        app.plugins.init(app, __iced_deferrals.defer({
-          lineno: 44
-        }));
-        __iced_deferrals._fulfill();
-      })(function() {
-        return app.listen(process.env.PORT || 80);
+      app.listen(process.env.PORT || 80);
+      __iced_deferrals = new iced.Deferrals(__iced_k, {
+        filename: "/Users/tcoats/Source/odo/bootstrap.coffee"
       });
+      app.plugins.init(app, __iced_deferrals.defer({
+        lineno: 46
+      }));
+      __iced_deferrals._fulfill();
     });
   });
 
