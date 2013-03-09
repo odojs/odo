@@ -77,8 +77,7 @@ control = {
       plugin.implementation = require plugin.pluginpath
     
     # Look for sub-plugins
-    control.parseforplugins plugin.path, (plugins) ->
-      plugin.plugins = plugins
+    await control.parseforplugins plugin.path, defer plugin.plugins
 
     cb plugin
 

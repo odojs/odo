@@ -246,10 +246,24 @@
             if (plugin.config.disabled !== true) {
               plugin.implementation = require(plugin.pluginpath);
             }
-            control.parseforplugins(plugin.path, function(plugins) {
-              return plugin.plugins = plugins;
+            (function(__iced_k) {
+              __iced_deferrals = new iced.Deferrals(__iced_k, {
+                parent: ___iced_passed_deferral,
+                filename: "/Users/tcoats/Source/odo/plugins.coffee",
+                funcname: "parseplugin"
+              });
+              control.parseforplugins(plugin.path, __iced_deferrals.defer({
+                assign_fn: (function(__slot_1) {
+                  return function() {
+                    return __slot_1.plugins = arguments[0];
+                  };
+                })(plugin),
+                lineno: 81
+              }));
+              __iced_deferrals._fulfill();
+            })(function() {
+              return cb(plugin);
             });
-            return cb(plugin);
           });
         });
       });
@@ -266,7 +280,7 @@
           funcname: "configure"
         });
         control.configureplugins(app, control.root, __iced_deferrals.defer({
-          lineno: 86
+          lineno: 85
         }));
         __iced_deferrals._fulfill();
       })(function() {
@@ -301,7 +315,7 @@
                 funcname: "_fn"
               });
               control.configureplugins(app, plugin.plugins, __iced_deferrals.defer({
-                lineno: 97
+                lineno: 96
               }));
               __iced_deferrals._fulfill();
             })(__iced_k);
@@ -312,7 +326,7 @@
         for (_i = 0, _len = plugins.length; _i < _len; _i++) {
           plugin = plugins[_i];
           _fn(__iced_deferrals.defer({
-            lineno: 98
+            lineno: 97
           }));
         }
         __iced_deferrals._fulfill();
@@ -332,7 +346,7 @@
           funcname: "init"
         });
         control.initplugins(app, control.root, __iced_deferrals.defer({
-          lineno: 103
+          lineno: 102
         }));
         __iced_deferrals._fulfill();
       })(function() {
@@ -367,7 +381,7 @@
                 funcname: "_fn"
               });
               control.initplugins(app, plugin.plugins, __iced_deferrals.defer({
-                lineno: 114
+                lineno: 113
               }));
               __iced_deferrals._fulfill();
             })(__iced_k);
@@ -378,7 +392,7 @@
         for (_i = 0, _len = plugins.length; _i < _len; _i++) {
           plugin = plugins[_i];
           _fn(__iced_deferrals.defer({
-            lineno: 115
+            lineno: 114
           }));
         }
         __iced_deferrals._fulfill();
