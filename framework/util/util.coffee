@@ -1,6 +1,12 @@
 # if 'word'.contains 'r' console.log 'yes'
 String::contains = (it) ->
-	@indexOf(it) != -1
+	@indexOf(it) isnt -1
+
+String::endsWith = (suffix) ->
+    return @.indexOf(suffix, @.length - suffix.length) isnt -1
+
+String::startsWith = (prefix) ->
+    @.indexOf prefix is 0
 
 # if 'WORD'.caseInsensitiveContains 'r' console.log 'yes'
 String::caseInsensitiveContains = (it) ->
