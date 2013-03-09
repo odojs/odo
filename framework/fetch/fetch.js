@@ -22,6 +22,18 @@
       return this.strategies;
     };
 
+    Fetch.prototype.get = function(fetch, spec) {
+      var _ref, _ref1;
+      return (_ref = this.strategies) != null ? (_ref1 = _ref[fetch]) != null ? _ref1[spec] : void 0 : void 0;
+    };
+
+    Fetch.prototype.exec = function(fetch, spec, app, params, cb) {
+      var implementation;
+      implementation = this.get(fetch, spec);
+      if (implementation == null) return null;
+      return implementation(app, params, cb);
+    };
+
     return Fetch;
 
   })();

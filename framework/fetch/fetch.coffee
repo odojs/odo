@@ -17,6 +17,14 @@ class Fetch
   getAll: () ->
     @strategies
 
+  get: (fetch, spec) ->
+    @strategies?[fetch]?[spec]
+
+  exec: (fetch, spec, app, params, cb) ->
+    implementation = @get fetch, spec
+    return null if !implementation?
+    implementation app, params, cb
+
 module.exports =
   configure: (app) ->
     app.fetch = new Fetch
