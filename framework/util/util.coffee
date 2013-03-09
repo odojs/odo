@@ -24,6 +24,11 @@ String::toTitleCase = () ->
 		else
 			match.charAt(0).toUpperCase() + match.substr(1)
 
+# pull back the names of parameters found in the function's arguments
+Function::params = ->
+	s = @.toString()
+	s.slice(s.indexOf('(')+1, s.indexOf(')')).match(/([^\s,]+)/g)
+
 # `min` and `max` define a range, if value is outside that range it will be set to either min or max, whichever is closest.
 Math.clamp = (value, min, max) ->
   Math.max(Math.min(value, max), min)
