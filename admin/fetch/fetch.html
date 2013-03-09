@@ -1,0 +1,32 @@
+<header>
+	<h1>&Psi;</h1>
+
+	<div class="container">
+		<div class="row">
+			<div class="span4 offset1">
+				<p class="note"><a href="/ψ/">&Psi;</a> <span class="divider">-&#62;</span> <a href="/ψ/fetch/" class="active">Fetching strategies</a></p>
+			</div>
+		</div>
+	</div>
+</header>
+
+<div class="container">
+	<div class="row">
+		<div class="span4 offset1">
+			<div id="admin-plugin" class="document">
+				<ul>{{#each strategies}}
+					<li>
+						{{name}}
+						{{#if specifications}}
+						<ul>{{#each specifications}}
+							<li>{{name}}</li>{{/each}}
+						</ul>{{/if}}
+					</li>{{/each}}
+				</ul>
+				<div class="row">
+					<a class="btn btn-final" href="/ψ/">Done</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
