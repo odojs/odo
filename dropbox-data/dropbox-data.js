@@ -24,7 +24,10 @@
 
   module.exports = {
     configure: function(app) {
-      return app.fetch.bind('pagenames', 'all', function(app, spec, cb) {
+      app.fetch.bind('sectionpaths', 'all', function(app, params, cb) {
+        return cb(null, ['Knowledge/Patterns and Practices', 'Knowledge/Work', 'Knowledge/Brain Dump', 'Knowledge/Leader of Men']);
+      });
+      return app.fetch.bind('pagenames', 'all', function(app, params, cb) {
         var client, error, req, section, sections, ___iced_passed_deferral, __iced_deferrals, __iced_k,
           _this = this;
         __iced_k = __iced_k_noop;
@@ -35,41 +38,65 @@
           cb(null, []);
           return;
         }
-        sections = ['Knowledge/Patterns and Practices', 'Knowledge/Work', 'Knowledge/Brain Dump', 'Knowledge/Leader of Men'];
-        sections = _(sections).map(function(section) {
-          return {
-            path: section
-          };
-        });
         (function(__iced_k) {
-          var _i, _len;
           __iced_deferrals = new iced.Deferrals(__iced_k, {
             parent: ___iced_passed_deferral,
             filename: "/Users/tcoats/Source/odo/dropbox-data/dropbox-data.coffee"
           });
-          for (_i = 0, _len = sections.length; _i < _len; _i++) {
-            section = sections[_i];
-            client.readdir(section.path, __iced_deferrals.defer({
-              assign_fn: (function(__slot_1) {
-                return function() {
-                  error = arguments[0];
-                  return __slot_1.items = arguments[1];
-                };
-              })(section),
-              lineno: 39
-            }));
-            if (error != null) cb(errors[error]);
-          }
+          app.fetch.exec('sectionpaths', 'all', app, null, __iced_deferrals.defer({
+            assign_fn: (function() {
+              return function() {
+                error = arguments[0];
+                return sections = arguments[1];
+              };
+            })(),
+            lineno: 34
+          }));
           __iced_deferrals._fulfill();
         })(function() {
-          var _i, _len;
-          for (_i = 0, _len = sections.length; _i < _len; _i++) {
-            section = sections[_i];
-            section.items = _(section.items).filter(function(item) {
-              return item.endsWith('.md');
+          if (typeof error !== "undefined" && error !== null) throw error;
+          sections = (function() {
+            var _i, _len, _results;
+            _results = [];
+            for (_i = 0, _len = sections.length; _i < _len; _i++) {
+              section = sections[_i];
+              _results.push({
+                path: section,
+                name: path.basename(section)
+              });
+            }
+            return _results;
+          })();
+          (function(__iced_k) {
+            var _i, _len;
+            __iced_deferrals = new iced.Deferrals(__iced_k, {
+              parent: ___iced_passed_deferral,
+              filename: "/Users/tcoats/Source/odo/dropbox-data/dropbox-data.coffee"
             });
-          }
-          return cb(null, sections);
+            for (_i = 0, _len = sections.length; _i < _len; _i++) {
+              section = sections[_i];
+              client.readdir(section.path, __iced_deferrals.defer({
+                assign_fn: (function(__slot_1) {
+                  return function() {
+                    error = arguments[0];
+                    return __slot_1.items = arguments[1];
+                  };
+                })(section),
+                lineno: 44
+              }));
+              if (error != null) cb(errors[error]);
+            }
+            __iced_deferrals._fulfill();
+          })(function() {
+            var _i, _len;
+            for (_i = 0, _len = sections.length; _i < _len; _i++) {
+              section = sections[_i];
+              section.items = _(section.items).filter(function(item) {
+                return item.endsWith('.md');
+              });
+            }
+            return cb(null, sections);
+          });
         });
       });
     }

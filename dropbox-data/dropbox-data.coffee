@@ -15,7 +15,15 @@ errors = {
 
 module.exports =
   configure: (app) ->
-    app.fetch.bind 'pagenames', 'all', (app, spec, cb) ->
+    app.fetch.bind 'sectionpaths', 'all', (app, params, cb) ->
+      cb null, [
+          'Knowledge/Patterns and Practices'
+          'Knowledge/Work'
+          'Knowledge/Brain Dump'
+          'Knowledge/Leader of Men'
+        ]
+
+    app.fetch.bind 'pagenames', 'all', (app, params, cb) ->
       req = app.inject.one 'req'
       client = app.inject.one('dropbox.client')()
 
@@ -23,15 +31,12 @@ module.exports =
         cb null, []
         return
 
-      sections = [
-        'Knowledge/Patterns and Practices'
-        'Knowledge/Work'
-        'Knowledge/Brain Dump'
-        'Knowledge/Leader of Men'
-      ]
+      await app.fetch.exec 'sectionpaths', 'all', app, null, defer error, sections
+      throw error if error?
 
-      sections = _(sections).map (section) ->
+      sections = for section in sections
         path: section
+        name: path.basename section
 
       await
         for section in sections
