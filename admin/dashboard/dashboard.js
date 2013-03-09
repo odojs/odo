@@ -16,7 +16,7 @@
           return plugin.id === 'admin';
         });
         res.locals.pluginsbycategory = _(adminplugin.plugins).filter(function(plugin) {
-          return plugin.config.disabled !== true;
+          return plugin.config.disabled !== true && (plugin.config.category != null);
         });
         res.locals.pluginsbycategory = _(res.locals.pluginsbycategory).groupBy(function(plugin) {
           return plugin.config.category.toLowerCase();
@@ -28,7 +28,7 @@
             bodyclasses: ['full-admin']
           },
           partials: {
-            content: 'dashboard'
+            content: 'dashboard/dashboard'
           }
         });
       });

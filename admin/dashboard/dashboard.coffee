@@ -9,11 +9,11 @@ module.exports =
 				plugin.id is 'admin'
 
 			res.locals.pluginsbycategory = _(adminplugin.plugins)
-				.filter (plugin) -> plugin.config.disabled isnt true
+				.filter (plugin) ->
+					plugin.config.disabled isnt true and plugin.config.category?
 
 			res.locals.pluginsbycategory = _(res.locals.pluginsbycategory)
-				.groupBy (plugin) ->
-					plugin.config.category.toLowerCase()
+				.groupBy (plugin) -> plugin.config.category.toLowerCase()
 
 			res.render
 				view: 'admin/layout'
@@ -21,4 +21,4 @@ module.exports =
 					title: 'Ψ'
 					bodyclasses: ['full-admin']
 				partials:
-					content: 'dashboard'
+					content: 'dashboard/dashboard'
