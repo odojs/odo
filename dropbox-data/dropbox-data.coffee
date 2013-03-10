@@ -37,9 +37,14 @@ module.exports =
     pagetitles = {}
     app.fetch.bind 'pagetitles', 'all', (app, params, cb) ->
       # check the cache
-      res = app.inject.one 'res'
-      if pagetitles[res.user]?
-        cb null, pagetitles[res.user]
+      req = app.inject.one 'req'
+      
+      if !req.user?
+        cb null, []
+        return
+      
+      if pagetitles[req.user]?
+        cb null, pagetitles[req.user]
         return
       
       client = app.inject.one('dropbox.client')()
@@ -48,6 +53,7 @@ module.exports =
         cb null, []
         return
 
+      # fetch sections
       await app.fetch.exec 'sectionpaths', 'all', app, null, defer error, sections
       throw error if error?
 
@@ -56,6 +62,7 @@ module.exports =
         file: path.basename section
         title: path.basename section
 
+      # fetch section contents from dropbox
       await
         for section in sections
           client.readdir section.path, defer error, section.pages
@@ -64,6 +71,7 @@ module.exports =
             cb utils.errors[error]
             return
 
+      # transform
       for section in sections
         section.pages = _(section.pages)
           .filter((page) ->
@@ -72,7 +80,7 @@ module.exports =
             file: page
             title: utils.maketitle page)
 
-      pagetitles[res.user] = sections
+      pagetitles[req.user] = sections
       cb null, sections
       
     app.fetch.bind 'pagecontents', 'bypath', (app, params, cb) ->
@@ -102,8 +110,6 @@ module.exports =
         return
       
       file = path.join params.section, params.page + utils.extension
-      
-      console.log file
       
       await client.readFile file, defer error, data
       
