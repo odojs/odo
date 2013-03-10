@@ -13,15 +13,19 @@ errors = {
   '${dropbox.ApiError.INVALID_METHOD}': 'Invalid method'
 }
 
+sectionpaths = []
+
 module.exports =
   configure: (app) ->
+    app.postal.channel().subscribe 'section.new', (section) ->
+      sectionpaths.push section.path
+
+    app.postal.channel().subscribe 'section.changepath', (message) ->
+      sectionpaths.remove message.oldpath
+      sectionpaths.push message.newpath
+
     app.fetch.bind 'sectionpaths', 'all', (app, params, cb) ->
-      cb null, [
-          'Knowledge/Patterns and Practices'
-          'Knowledge/Work'
-          'Knowledge/Brain Dump'
-          'Knowledge/Leader of Men'
-        ]
+      cb null, sectionpaths
 
     app.fetch.bind 'pagenames', 'all', (app, params, cb) ->
       req = app.inject.one 'req'
@@ -49,3 +53,28 @@ module.exports =
           item.endsWith '.md'
 
       cb null, sections
+
+  init: (app) ->
+    app.postal.publish 
+      topic: 'section.new'
+      data:
+        name: 'Patterns and Practices'
+        path: 'Knowledge/Patterns and Practices'
+
+    app.postal.publish 
+      topic: 'section.new'
+      data:
+        name: 'Work'
+        path: 'Knowledge/Work'
+      
+    app.postal.publish 
+      topic: 'section.new'
+      data:
+        name: 'Brain Dump'
+        path: 'Knowledge/Brain Dump'
+      
+    app.postal.publish 
+      topic: 'section.new'
+      data:
+        name: 'Leader of Men'
+        path: 'Knowledge/Leader of Men'
