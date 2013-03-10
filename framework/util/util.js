@@ -150,7 +150,7 @@
     express = require('express');
     module.exports = {
       configure: function(app) {
-        return app.use('/js', express["static"](__dirname));
+        return app.use('/js/util', express["static"](__dirname));
       },
       S4: S4,
       guid: guid,

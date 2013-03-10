@@ -56,6 +56,7 @@
             _results1.push((function(app, fetch, spec, implementation) {
               return app.get("/fetch/" + fetch + "/" + spec, function(req, res) {
                 return implementation(app, req.query, function(error, result) {
+                  if (error != null) console.log(error);
                   if (error != null) throw error;
                   return res.send(result);
                 });

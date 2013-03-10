@@ -1,15 +1,39 @@
-<header>
-	<h1>Odo</h1>
-</header>
+<div class="navbar navbar-static-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <ul class="nav">
+        <li><a href="/" class="brand">Odo</a></li>
+      </ul>
+      <ul class="nav pull-right">{{#if user}}
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{user.displayName}} <b class="caret"></b></a>
+          
+          <ul class="dropdown-menu">
+            <li><a href="/auth/dropbox/sign-out">Sign-out</a></li>
+          </ul>
+        </li>{{else}}
+        <li><a href="/auth/dropbox">Sign-in with Dropbox</a></li>{{/if}}
+      </ul>
+    </div>
+  </div>
+</div>
 
 <div class="container">
-	<div class="row">
-		<div class="offset2 span8">
-			<div class="document">
-				<input class="input-block-level" type="text" placeholder="What do you want to do today?"></input>
-				{{#if user}}{{user.displayName}} <a href="/auth/dropbox/sign-out">Sign-out</a>{{else}}
-				<a href="/auth/dropbox">Sign-in with Dropbox</a>{{/if}}
-			</div>
-		</div>
-	</div>
+  <div class="row-fluid">
+    <div class="menu span4">
+      <div class="well">
+        <form>
+          <input type="text" class="filter input-block-level" placeholder="Search pages">
+        </form>
+        
+        <ul class="nav nav-list pagemenu">{{#each sections}}
+          <li class="nav-header">{{title}}</li>{{#each pages}}
+          <li><a href="/fetch/pagecontents/bysectionandpage?section={{../path}}&page={{title}}">{{title}}</a></li>{{/each}}{{/each}}
+        </ul>
+      </div>
+    </div>
+    <div class="span8">
+      Testacular
+    </div>
+  </div>
 </div>

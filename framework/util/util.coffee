@@ -141,7 +141,7 @@ if module?
 
 	module.exports =
 		configure: (app) ->
-			app.use('/js', express.static(__dirname))
+			app.use('/js/util', express.static(__dirname))
 
 		S4: S4
 		guid: guid
