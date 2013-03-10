@@ -28,8 +28,8 @@ app.configure () =>
     secret: app.get 'session secret'
 
   # Create configured routes
-  for source, target of config.routes
-    app.use(source, express.static(__dirname + target))
+  for route in config.routes
+    app.use(route.source, express.static(__dirname + route.target))
 
   # Configure plugins
   await app.plugins.configure app, defer()

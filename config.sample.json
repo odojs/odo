@@ -16,7 +16,14 @@
     "cookie secret": "123",
     "session secret": "456"
   },
-  "routes": {
-    "/js": "/components"
-  }
+  "routes": [
+    {
+      "source": "/js",
+      "target": "/components"
+    },
+    {
+      "source": "/js",
+      "target": "/js"
+    }
+  ]
 }

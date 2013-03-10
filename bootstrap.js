@@ -49,7 +49,7 @@
         app.set(key, value);
       }
       app.configure(function() {
-        var source, target, ___iced_passed_deferral, __iced_deferrals, __iced_k, _ref1;
+        var route, ___iced_passed_deferral, __iced_deferrals, __iced_k, _i, _len, _ref1;
         __iced_k = __iced_k_noop;
         ___iced_passed_deferral = iced.findDeferral(arguments);
         app.use(express.compress());
@@ -61,9 +61,9 @@
           secret: app.get('session secret')
         }));
         _ref1 = config.routes;
-        for (source in _ref1) {
-          target = _ref1[source];
-          app.use(source, express["static"](__dirname + target));
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          route = _ref1[_i];
+          app.use(route.source, express["static"](__dirname + route.target));
         }
         (function(__iced_k) {
           __iced_deferrals = new iced.Deferrals(__iced_k, {
