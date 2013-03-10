@@ -38,6 +38,10 @@
     return s.slice(s.indexOf('(') + 1, s.indexOf(')')).match(/([^\s,]+)/g);
   };
 
+  Array.prototype.remove = function(item) {
+    return this.splice(this.indexOf(item), 1);
+  };
+
   Math.clamp = function(value, min, max) {
     return Math.max(Math.min(value, max), min);
   };

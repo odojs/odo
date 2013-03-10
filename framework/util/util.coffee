@@ -29,6 +29,9 @@ Function::params = ->
 	s = @.toString()
 	s.slice(s.indexOf('(')+1, s.indexOf(')')).match(/([^\s,]+)/g)
 
+Array::remove = (item) ->
+	@.splice @.indexOf(item), 1
+
 # `min` and `max` define a range, if value is outside that range it will be set to either min or max, whichever is closest.
 Math.clamp = (value, min, max) ->
   Math.max(Math.min(value, max), min)
