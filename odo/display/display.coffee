@@ -5,7 +5,7 @@ _ = require 'underscore'
 
 module.exports =
   configure: (app) ->
-    #app.use('/img', express.static(__dirname + '/img'))
+    app.use('/js/odo/display', express.static(__dirname + '/js'))
 
   init: (app) ->
     app.get '/', (req, res) ->
@@ -17,5 +17,8 @@ module.exports =
           title: 'Display'
           user: req.user
           sections: sections
+          javascripts: [
+            '/js/odo/display/display.js'
+          ]
         partials:
           content: 'display/display'

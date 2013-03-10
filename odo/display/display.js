@@ -10,7 +10,9 @@
   _ = require('underscore');
 
   module.exports = {
-    configure: function(app) {},
+    configure: function(app) {
+      return app.use('/js/odo/display', express["static"](__dirname + '/js'));
+    },
     init: function(app) {
       return app.get('/', function(req, res) {
         var error, sections, ___iced_passed_deferral, __iced_deferrals, __iced_k,
@@ -38,7 +40,8 @@
             data: {
               title: 'Display',
               user: req.user,
-              sections: sections
+              sections: sections,
+              javascripts: ['/js/odo/display/display.js']
             },
             partials: {
               content: 'display/display'
