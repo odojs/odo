@@ -10,7 +10,8 @@
     "jquery": "1.x",
     "showdown": "0.x",
     "underscore": "1.x",
-    "bootstrap-editable": "http://vitalets.github.com/x-editable/assets/zip/bootstrap-editable-1.4.1.zip"
+    "bootstrap-editable": "http://vitalets.github.com/x-editable/assets/zip/bootstrap-editable-1.4.1.zip",
+    "sugar": "1.x"
   },
   "ignore": [
     "node_modules/",
