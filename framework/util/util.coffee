@@ -55,7 +55,7 @@ S4 = () ->
 guid = () ->
 	(S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4())
 
-markdown = () ->
+markdown =
 	strip: (markdown) ->
 		markdown
 			.replace(
@@ -73,68 +73,71 @@ markdown = () ->
 		# prefix every new line with *
 		result = []
 		chunks = content.split '\n'
-		$.each chunks, (key, value) ->
+		for key, value of chunks
 			if value == ''
 				return
 			result.push('* ' + value)
 		return result.join('\n')
 
-linkify = (html, linkify) ->
-	if (!linkify)
-		linkify = (url) ->
-			'<a href="' + url + '">' + url + '</a>'
-	html.replace /(?:http|ftp|https):\/\/[\w\-_]+(?:\.[\w\-_]+)+(?:[\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&amp;/~\+#])/g, (match, index) ->
-		# skip anything inside an HTML tag
-		# skip anything already inside an anchor tag
-		if ((html.lastIndexOf('>', index) < html.lastIndexOf('<', index)) or (html.lastIndexOf('</a>', index) < html.lastIndexOf('<a ', index)))
-			return match
-		linkify(match)
+	linkify: (html, linkify) ->
+		if (!linkify)
+			linkify = (url) ->
+				"<a href=\"#{url}\">#{url}</a>"
+				
+		html.replace /(?:http|ftp|https):\/\/[\w\-_]+(?:\.[\w\-_]+)+(?:[\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&amp;/~\+#])/g, (match, index) ->
+			# skip anything inside an HTML tag
+			# skip anything already inside an anchor tag
+			if ((html.lastIndexOf('>', index) < html.lastIndexOf('<', index)) or (html.lastIndexOf('</a>', index) < html.lastIndexOf('<a ', index)))
+				return match
+			linkify(match)
 
-linkifyWord = (html, word, linkify) ->
-	if (!linkify)
-		linkify = (url, text) ->
-			"<a href=\"#" + (url.replace " ", "+") + "\">" + text + "</a>"
-	result = ''
-	lowerCaseword = word.toLowerCase()
-	
-	while (html.length > 0)
-		i = html.toLowerCase().indexOf(lowerCaseword, i);
-		if (i < 0)
-			return result + html;
-
-		# should we skip?
-		# skip if there is a letter before
-		# skip if there is a letter afterwards
-		# skip anything inside an HTML tag
-		# skip anything already inside an anchor tag
-		if ((i > 0 && /^[a-zA-Z]$/.test(html[i - 1])) or (i + word.length < html.length && /^[a-zA-Z]$/.test(html[i + lowerCaseword.length])) or (html.lastIndexOf('>', i) < html.lastIndexOf('<', i)) or (html.lastIndexOf('</a>', i) < html.lastIndexOf('<a ', i)))
-			i++
-			continue
+	linkifyWord: (html, word, linkify) ->
+		if (!linkify)
+			linkify = (url, text) ->
+				spaced = url.replace ' ', '+'
+				"<a href=\"#{spaced}\">#{url}</a>"
 		
-		# add the part that didn't, match plus our new content
-		result += html.substring(0, i) + linkify(word, html.substr(i, word.length))
+		result = ''
+		lowerCaseword = word.toLowerCase()
+		
+		while (html.length > 0)
+			i = html.toLowerCase().indexOf(lowerCaseword, i);
+			if (i < 0)
+				return result + html;
 
-		# we don't have to look at that part of the html
-		html = html.substr(i + word.length)
-		i = 0
-	
-	result
+			# should we skip?
+			# skip if there is a letter before
+			# skip if there is a letter afterwards
+			# skip anything inside an HTML tag
+			# skip anything already inside an anchor tag
+			if ((i > 0 && /^[a-zA-Z]$/.test(html[i - 1])) or (i + word.length < html.length && /^[a-zA-Z]$/.test(html[i + lowerCaseword.length])) or (html.lastIndexOf('>', i) < html.lastIndexOf('<', i)) or (html.lastIndexOf('</a>', i) < html.lastIndexOf('<a ', i)))
+				i++
+				continue
+			
+			# add the part that didn't, match plus our new content
+			result += html.substring(0, i) + linkify(word, html.substr(i, word.length))
 
-linkifyWiki = (html, pages, linkify) ->
-	newPages = _.clone pages
-	# sort by string length, longer ones at the start
-	newPages.sort (x, y) ->
-		if (x.length < y.length)
-			1
-		else if (x.length > y.length)
-			-1
-		else 0
-	# this means we are matching the longest articles first, 
-	# so we will get the most complete match
-	_.each newPages, (page) ->
-		html = $.linkifyWord(html, page, linkify)
-	
-	html
+			# we don't have to look at that part of the html
+			html = html.substr(i + word.length)
+			i = 0
+		
+		result
+
+	linkifyWiki: (html, pages, linkify) ->
+		newPages = _.clone pages
+		# sort by string length, longer ones at the start
+		newPages.sort (x, y) ->
+			if (x.length < y.length)
+				1
+			else if (x.length > y.length)
+				-1
+			else 0
+		# this means we are matching the longest articles first, 
+		# so we will get the most complete match
+		_.each newPages, (page) ->
+			html = markdown.linkifyWord(html, page, linkify)
+		
+		html
 
 if module?
 	express = require 'express'
@@ -146,14 +149,8 @@ if module?
 		S4: S4
 		guid: guid
 		markdown: markdown
-		linkify: linkify
-		linkifyWord: linkifyWord
-		linkifyWiki: linkifyWiki
 
 if window?
 	window.S4 = S4
 	window.guid = guid
 	window.markdown = markdown
-	window.linkify = linkify
-	window.linkifyWord = linkifyWord
-	window.linkifyWiki = linkifyWiki
