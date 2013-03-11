@@ -28,7 +28,7 @@
         
         <ul class="nav nav-list pagemenu">{{#each sections}}
           <li class="nav-header">{{title}}</li>{{#each pages}}
-          <li><a href="/fetch/pagecontents/bysectionandpage?section={{../path}}&page={{title}}">{{title}}</a></li>{{/each}}{{/each}}
+          <li><a class="pagelink" data-section="{{../path}}" data-title="{{title}}" href="{{../path}}/{{title}}">{{title}}</a></li>{{/each}}{{/each}}
         </ul>
       </div>
     </div>

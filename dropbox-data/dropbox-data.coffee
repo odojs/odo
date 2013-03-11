@@ -36,21 +36,15 @@ module.exports =
 
     pagetitles = {}
     app.fetch.bind 'pagetitles', 'all', (app, params, cb) ->
-      # check the cache
       req = app.inject.one 'req'
       
       if !req.user?
         cb null, []
         return
       
+      # check the cache
       if pagetitles[req.user]?
         cb null, pagetitles[req.user]
-        return
-      
-      client = app.inject.one('dropbox.client')()
-
-      if !client?
-        cb null, []
         return
 
       # fetch sections
@@ -63,6 +57,12 @@ module.exports =
         title: path.basename section
 
       # fetch section contents from dropbox
+      client = app.inject.one('dropbox.client')()
+
+      if !client?
+        cb null, []
+        return
+        
       await
         for section in sections
           client.readdir section.path, defer error, section.pages
@@ -82,11 +82,29 @@ module.exports =
 
       pagetitles[req.user] = sections
       cb null, sections
-      
+    
+    
+    pagecontents = {}
     app.fetch.bind 'pagecontents', 'bypath', (app, params, cb) ->
+      if !params.path or !params.path.endsWith utils.extension
+        cb null, []
+        return
+      
+      # Check the cache
+      req = app.inject.one 'req'
+      
+      if !req.user?
+        cb null, []
+        return
+      
+      if pagecontents[req.user]? and pagecontents[req.user][params.path]?
+        cb null, pagecontents[req.user][params.path]
+        return
+      
+      # Fetch content
       client = app.inject.one('dropbox.client')()
-
-      if !client? or !params.path or !params.path.endsWith utils.extension
+      
+      if !client?
         cb null, []
         return
       
@@ -96,20 +114,41 @@ module.exports =
         cb utils.errors[error]
         return
       
-      cb null,
+      # Transform
+      result =
         path: params.path
         file: path.basename params.path
         title: utils.maketitle params.path
         contents: data
+      
+      # Cache
+      if !pagecontents[req.user]?
+        pagecontents[req.user] = {}
+        
+      pagecontents[req.user][result.path] = result
+      
+      cb null, result
     
     app.fetch.bind 'pagecontents', 'bysectionandpage', (app, params, cb) ->
+      file = path.join params.section, params.page + utils.extension
+      
+      # Check the cache
+      req = app.inject.one 'req'
+      
+      if !req.user?
+        cb null, []
+        return
+      
+      if pagecontents[req.user]? and pagecontents[req.user][file]?
+        cb null, pagecontents[req.user][file]
+        return
+      
+      # Fetch content
       client = app.inject.one('dropbox.client')()
 
       if !client?
         cb null, []
         return
-      
-      file = path.join params.section, params.page + utils.extension
       
       await client.readFile file, defer error, data
       
@@ -117,11 +156,20 @@ module.exports =
         cb utils.errors[error]
         return
       
-      cb null,
+      # Transform
+      result =
         path: file
         file: path.basename file
         title: utils.maketitle file
         contents: data
+      
+      # Cache
+      if !pagecontents[req.user]?
+        pagecontents[req.user] = {}
+        
+      pagecontents[req.user][result.path] = result
+      
+      cb null, result
 
   init: (app) ->
     app.postal.publish 

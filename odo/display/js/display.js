@@ -2,33 +2,75 @@
 (function() {
 
   $(function() {
-    var $filter, $page, $pagelinks, $pages;
+    var $filter, $pages, linkify, linkifyWiki;
     $filter = $('.pagefilter');
     $pages = _($('.pagemenu li:not(.nav-header)')).map(function(el) {
+      var $a, $el;
+      $el = $(el);
+      $a = $el.find('a');
       return {
         $el: $(el),
-        text: $(el).find('a').text()
+        section: $a.attr('data-section'),
+        title: $a.attr('data-title')
       };
     });
-    $filter.keyup(function() {
+    linkify = function(converter) {
+      return [
+        {
+          type: 'output',
+          filter: function(source) {
+            return window.markdown.linkify(source);
+          }
+        }
+      ];
+    };
+    linkifyWiki = function(section, titles) {
+      return function(converter) {
+        return [
+          {
+            type: 'output',
+            filter: function(source) {
+              return window.markdown.linkifyWiki(source, titles, function(url, text) {
+                return "<a class=\"pagelink\" data-section=\"" + section + "\" data-title=\"" + url + "\" href=\"" + section + "/" + url + "\">" + url + "</a>";
+              });
+            }
+          }
+        ];
+      };
+    };
+    $filter.on('keyup change', function() {
       var val;
       val = $filter.val();
       return _($pages).each(function(page) {
-        if ((val == null) || page.text.caseInsensitiveContains(val)) {
+        if ((val == null) || page.title.caseInsensitiveContains(val)) {
           return page.$el.show();
         } else {
           return page.$el.hide();
         }
       });
     });
-    $pagelinks = $('.pagemenu a');
-    $page = $('.page');
-    return $pagelinks.click(function(e) {
-      var $this;
+    return $(document).on('click', 'a.pagelink', function(e) {
+      var $this, section, title, url;
       e.preventDefault();
       $this = $(this);
-      return $.get($this.attr('href'), function(data) {
-        return $page.html((new Showdown.converter()).makeHtml(data.contents));
+      section = $this.attr('data-section');
+      title = $this.attr('data-title');
+      url = "/fetch/pagecontents/bysectionandpage?section=" + section + "&page=" + title;
+      return $.get(url, function(data) {
+        var converter;
+        converter = new Showdown.converter({
+          extensions: [
+            linkify, linkifyWiki(section, _($pages).filter(function(page) {
+              return page.section === section;
+            }).map(function(page) {
+              return page.title;
+            }))
+          ]
+        });
+        $('.page').html(converter.makeHtml(data.contents));
+        $filter.val('');
+        $filter.trigger('change');
+        return window.scrollTo(0, 0);
       });
     });
   });

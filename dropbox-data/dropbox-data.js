@@ -34,7 +34,7 @@
 
   module.exports = {
     configure: function(app) {
-      var pagetitles;
+      var pagecontents, pagetitles;
       app.postal.channel().subscribe('section.new', function(section) {
         return sectionpaths.push(section.path);
       });
@@ -60,11 +60,6 @@
           cb(null, pagetitles[req.user]);
           return;
         }
-        client = app.inject.one('dropbox.client')();
-        if (client == null) {
-          cb(null, []);
-          return;
-        }
         (function(__iced_k) {
           __iced_deferrals = new iced.Deferrals(__iced_k, {
             parent: ___iced_passed_deferral,
@@ -77,7 +72,7 @@
                 return sections = arguments[1];
               };
             })(),
-            lineno: 57
+            lineno: 51
           }));
           __iced_deferrals._fulfill();
         })(function() {
@@ -95,6 +90,11 @@
             }
             return _results;
           })();
+          client = app.inject.one('dropbox.client')();
+          if (client == null) {
+            cb(null, []);
+            return;
+          }
           (function(__iced_k) {
             var _i, _len;
             __iced_deferrals = new iced.Deferrals(__iced_k, {
@@ -136,13 +136,27 @@
           });
         });
       });
+      pagecontents = {};
       app.fetch.bind('pagecontents', 'bypath', function(app, params, cb) {
-        var client, data, error, ___iced_passed_deferral, __iced_deferrals, __iced_k,
+        var client, data, error, req, result, ___iced_passed_deferral, __iced_deferrals, __iced_k,
           _this = this;
         __iced_k = __iced_k_noop;
         ___iced_passed_deferral = iced.findDeferral(arguments);
+        if (!params.path || !params.path.endsWith(utils.extension)) {
+          cb(null, []);
+          return;
+        }
+        req = app.inject.one('req');
+        if (req.user == null) {
+          cb(null, []);
+          return;
+        }
+        if ((pagecontents[req.user] != null) && (pagecontents[req.user][params.path] != null)) {
+          cb(null, pagecontents[req.user][params.path]);
+          return;
+        }
         client = app.inject.one('dropbox.client')();
-        if ((client == null) || !params.path || !params.path.endsWith(utils.extension)) {
+        if (client == null) {
           cb(null, []);
           return;
         }
@@ -158,7 +172,7 @@
                 return data = arguments[1];
               };
             })(),
-            lineno: 94
+            lineno: 112
           }));
           __iced_deferrals._fulfill();
         })(function() {
@@ -166,25 +180,37 @@
             cb(utils.errors[error]);
             return;
           }
-          return cb(null, {
+          result = {
             path: params.path,
             file: path.basename(params.path),
             title: utils.maketitle(params.path),
             contents: data
-          });
+          };
+          if (pagecontents[req.user] == null) pagecontents[req.user] = {};
+          pagecontents[req.user][result.path] = result;
+          return cb(null, result);
         });
       });
       return app.fetch.bind('pagecontents', 'bysectionandpage', function(app, params, cb) {
-        var client, data, error, file, ___iced_passed_deferral, __iced_deferrals, __iced_k,
+        var client, data, error, file, req, result, ___iced_passed_deferral, __iced_deferrals, __iced_k,
           _this = this;
         __iced_k = __iced_k_noop;
         ___iced_passed_deferral = iced.findDeferral(arguments);
+        file = path.join(params.section, params.page + utils.extension);
+        req = app.inject.one('req');
+        if (req.user == null) {
+          cb(null, []);
+          return;
+        }
+        if ((pagecontents[req.user] != null) && (pagecontents[req.user][file] != null)) {
+          cb(null, pagecontents[req.user][file]);
+          return;
+        }
         client = app.inject.one('dropbox.client')();
         if (client == null) {
           cb(null, []);
           return;
         }
-        file = path.join(params.section, params.page + utils.extension);
         (function(__iced_k) {
           __iced_deferrals = new iced.Deferrals(__iced_k, {
             parent: ___iced_passed_deferral,
@@ -197,7 +223,7 @@
                 return data = arguments[1];
               };
             })(),
-            lineno: 115
+            lineno: 154
           }));
           __iced_deferrals._fulfill();
         })(function() {
@@ -205,12 +231,15 @@
             cb(utils.errors[error]);
             return;
           }
-          return cb(null, {
+          result = {
             path: file,
             file: path.basename(file),
             title: utils.maketitle(file),
             contents: data
-          });
+          };
+          if (pagecontents[req.user] == null) pagecontents[req.user] = {};
+          pagecontents[req.user][result.path] = result;
+          return cb(null, result);
         });
       });
     },

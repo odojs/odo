@@ -1,23 +1,55 @@
 $ ->
+  
   $filter = $ '.pagefilter'
   $pages = _($ '.pagemenu li:not(.nav-header)').map (el) ->
-    $el: $ el
-    text: $(el).find('a').text()
+    $el = $ el
+    $a = $el.find 'a'
+    {
+      $el: $ el
+      section: $a.attr 'data-section'
+      title: $a.attr 'data-title'
+    }
   
-  $filter.keyup ->
+  linkify = (converter) ->
+    [
+      type: 'output'
+      filter: (source) ->
+        window.markdown.linkify source
+    ]
+  
+  linkifyWiki = (section, titles) ->
+    (converter) ->
+      [
+        type: 'output'
+        filter: (source) ->
+          window.markdown.linkifyWiki source, titles, (url, text) ->
+            "<a class=\"pagelink\" data-section=\"#{section}\" data-title=\"#{url}\" href=\"#{section}/#{url}\">#{url}</a>"
+      ]
+  
+  $filter.on 'keyup change', ->
     val = $filter.val()
     
     _($pages).each (page) ->
-      if !val? or page.text.caseInsensitiveContains val
+      if !val? or page.title.caseInsensitiveContains val
         page.$el.show()
       else
         page.$el.hide()
-    
-  $pagelinks = $ '.pagemenu a'
-  $page = $ '.page'
   
-  $pagelinks.click (e) ->
+  $(document).on 'click', 'a.pagelink', (e) ->
     e.preventDefault()
     $this = $ this
-    $.get $this.attr('href'), (data) ->
-      $page.html (new Showdown.converter()).makeHtml data.contents
+    section = $this.attr 'data-section'
+    title = $this.attr 'data-title'
+    url = "/fetch/pagecontents/bysectionandpage?section=#{section}&page=#{title}"
+    $.get url, (data) ->
+      converter = new Showdown.converter
+        extensions: [
+          linkify
+          linkifyWiki section, _($pages)
+            .filter((page) -> page.section is section)
+            .map((page) -> page.title)
+        ]
+      $('.page').html converter.makeHtml data.contents
+      $filter.val ''
+      $filter.trigger 'change'
+      window.scrollTo 0, 0
