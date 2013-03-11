@@ -7,13 +7,14 @@
     "express": "3.x",
     "underscore": "1.x",
     "handlebars": "1.x",
-    "consolidate": "0.7.x",
-    "moment": "1.7.x",
-    "dropbox": "0.9.x",
-    "passport": "0.1.x",
-    "passport-dropbox": "0.1.x",
-    "postal": "0.8.x",
-    "redis": "0.8.x",
-    "iced-coffee-script": "1.4.x"
+    "consolidate": "0.x",
+    "moment": "1.x",
+    "dropbox": "0.x",
+    "passport": "0.x",
+    "passport-dropbox": "0.x",
+    "postal": "0.x",
+    "redis": "0.x",
+    "iced-coffee-script": "1.x",
+    "sugar": "1.x"
   }
 }
