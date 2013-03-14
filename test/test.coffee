@@ -2,16 +2,27 @@ express = require 'express'
 
 module.exports =
   init: (app) ->
-    app.peek.get '/test', (req, res, next) ->
-      await res.render
+
+    app.peek.get '/test**', (req, res, next) ->
+      res.locals.user =
+        name: 'Thomas Coats'
+        title: 'Master'
+      next()
+
+    app.peek.get '/test**', (req, res, next) ->
+      res.render
         view: 'test/display'
         data:
           name: 'Thomas'
-        result: defer error, html
+        result: (error, html) ->
+          throw error if error?
+          res.locals.content = html
+          next()
 
-      res.locals.content = html
-
+    app.peek.get '/test**', (req, res, next) ->
+      res.locals.partials.menu = 'menu'
       next()
+
 
     app.get '/test', (req, res) ->
       res.render
