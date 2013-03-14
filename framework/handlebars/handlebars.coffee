@@ -21,7 +21,7 @@ express = require 'express'
 # Replace existing render with new version that adds more variables
 # and copies partials
 response.render = (options) ->
-	self = this
+	self = @
 	req = @req
 	app = req.app
 
@@ -72,14 +72,14 @@ module.exports =
 		# = this is a great template
 		handlebars.registerHelper 'render', (content, options) ->
 			if content?
-				return new handlebars.SafeString handlebars.compile(content)(this)
+				return new handlebars.SafeString handlebars.compile(content)(@)
 			''
 
 		# Provide an extension point that anyone can attach content to
 		# Will look for partials first, then variables
 		# Variables will be rendered as templates
 		handlebars.registerHelper 'hook', (partial, options) ->
-			if !this.partials[partial]?
-				return new handlebars.SafeString handlebars.compile('{{render ' + partial + '}}')(this)
+			if !@.partials[partial]?
+				return new handlebars.SafeString handlebars.compile('{{render ' + partial + '}}')(@)
 			
-			new handlebars.SafeString handlebars.compile('{{> ' + partial + '}}')(this)
+			new handlebars.SafeString handlebars.compile('{{> ' + partial + '}}')(@)
