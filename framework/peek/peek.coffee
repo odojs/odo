@@ -36,6 +36,7 @@ module.exports =
       method = req.method.toLowerCase()
       url = parseUrl req
       path = url.pathname
+      res.locals.partials = {}
 
       await
         for peek in peeks

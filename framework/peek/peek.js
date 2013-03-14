@@ -55,6 +55,7 @@
         method = req.method.toLowerCase();
         url = parseUrl(req);
         path = url.pathname;
+        res.locals.partials = {};
         (function(__iced_k) {
           var _j, _len1;
           __iced_deferrals = new iced.Deferrals(__iced_k, {
@@ -80,7 +81,7 @@
               ++i;
             }
             peek.callback(req, res, __iced_deferrals.defer({
-              lineno: 61
+              lineno: 62
             }));
           }
           __iced_deferrals._fulfill();
