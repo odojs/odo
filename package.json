@@ -1,5 +1,5 @@
 {
-  "name": "Odo",
+  "name": "odo",
   "description": "Odo, whatever you want it to be",
   "version": "6.0.1",
   "private": true,
@@ -15,6 +15,7 @@
     "postal": "0.x",
     "redis": "0.x",
     "iced-coffee-script": "1.x",
-    "sugar": "1.x"
+    "sugar": "1.x",
+    "tapinto": "0.x"
   }
 }
