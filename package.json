@@ -16,6 +16,7 @@
     "redis": "0.x",
     "iced-coffee-script": "1.x",
     "sugar": "1.x",
-    "tapinto": "0.x"
+    "tapinto": "0.x",
+    "injectinto": "0.x"
   }
 }
