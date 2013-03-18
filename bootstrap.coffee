@@ -1,6 +1,10 @@
 path = require 'path'
 fs = require 'fs'
 express = require 'express'
+inject = require 'injectinto'
+peek = require 'peekinto'
+postal = require 'postal'
+fetching = require 'fetching'
 app = express()
 
 # Configuration
@@ -31,6 +35,24 @@ app.configure () =>
   for route in config.routes
     app.use(route.source, express.static(__dirname + route.target))
 
+  # Dependency injection
+  app.inject = new inject
+  app.use (req, res, next) ->
+      app.inject.clear 'req'
+      app.inject.bind 'req', req
+      app.inject.clear 'res'
+      app.inject.bind 'res', res
+      next()
+
+  # Publish subscribe
+  app.postal = postal()    
+  
+  # Peek into a request, perform processing but not be responsible for the output.
+  peek app
+  
+  # Fetching strategies
+  app.fetch = new fetching
+
   # Configure plugins
   await app.plugins.configure app, defer()
   
@@ -42,6 +64,9 @@ app.configure () =>
     showStack: true
 
 app.listen(process.env.PORT || 80)
+
+# Fetching strategies middleware
+app.fetch.middleware app
 
 # Initialise plugins
 await app.plugins.init app, defer()

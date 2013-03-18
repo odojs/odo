@@ -17,6 +17,8 @@
     "iced-coffee-script": "1.x",
     "sugar": "1.x",
     "tapinto": "0.x",
-    "injectinto": "0.x"
+    "injectinto": "0.x",
+    "peekinto": "0.x",
+    "fetching": "0.x"
   }
 }
