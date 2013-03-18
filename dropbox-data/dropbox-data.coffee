@@ -1,4 +1,4 @@
-dropbox = require 'dropbox'
+dropbox = require 'dropbox-redis-cache'
 path = require 'path'
 _ = require 'underscore'
 
@@ -11,16 +11,16 @@ utils =
     result = path.basename file
     result = result.substr 0, result.length - utils.extension.length
     
-  errors: {
-    '${dropbox.ApiError.INVALID_TOKEN}': 'Invalid token'
-    '${dropbox.ApiError.NOT_FOUND}': 'Not found'
-    '${dropbox.ApiError.OVER_QUOTA}': 'Over quota'
-    '${dropbox.ApiError.RATE_LIMITED}': 'Rate limited'
-    '${dropbox.ApiError.NETWORK_ERROR}': 'Network error'
-    '${dropbox.ApiError.INVALID_PARAM}': 'Invalid parameter'
-    '${dropbox.ApiError.OAUTH_ERROR}': 'OAuth Error'
-    '${dropbox.ApiError.INVALID_METHOD}': 'Invalid method'
-  }
+  errors: { }
+  
+utils.errors["#{dropbox.ApiError.INVALID_TOKEN}"] = 'Invalid token'
+utils.errors["#{dropbox.ApiError.NOT_FOUND}"] = 'Not found'
+utils.errors["#{dropbox.ApiError.OVER_QUOTA}"] = 'Over quota'
+utils.errors["#{dropbox.ApiError.RATE_LIMITED}"] = 'Rate limited'
+utils.errors["#{dropbox.ApiError.NETWORK_ERROR}"] = 'Network error'
+utils.errors["#{dropbox.ApiError.INVALID_PARAM}"] = 'Invalid parameter'
+utils.errors["#{dropbox.ApiError.OAUTH_ERROR}"] = 'OAuth Error'
+utils.errors["#{dropbox.ApiError.INVALID_METHOD}"] = 'Invalid method'
 
 module.exports =
   configure: (app) ->
@@ -34,17 +34,11 @@ module.exports =
     app.fetch.bind 'sectionpaths', 'all', (app, params, cb) ->
       cb null, sectionpaths
 
-    pagetitles = {}
     app.fetch.bind 'pagetitles', 'all', (app, params, cb) ->
       req = app.inject.one 'req'
       
       if !req.user?
         cb null, []
-        return
-      
-      # check the cache
-      if pagetitles[req.user]?
-        cb null, pagetitles[req.user]
         return
 
       # fetch sections
@@ -80,11 +74,9 @@ module.exports =
             file: page
             title: utils.maketitle page)
 
-      pagetitles[req.user] = sections
       cb null, sections
     
     
-    pagecontents = {}
     app.fetch.bind 'pagecontents', 'bypath', (app, params, cb) ->
       if !params.path or !params.path.endsWith utils.extension
         cb null, []
@@ -95,10 +87,6 @@ module.exports =
       
       if !req.user?
         cb null, []
-        return
-      
-      if pagecontents[req.user]? and pagecontents[req.user][params.path]?
-        cb null, pagecontents[req.user][params.path]
         return
       
       # Fetch content
@@ -121,12 +109,6 @@ module.exports =
         title: utils.maketitle params.path
         contents: data
       
-      # Cache
-      if !pagecontents[req.user]?
-        pagecontents[req.user] = {}
-        
-      pagecontents[req.user][result.path] = result
-      
       cb null, result
     
     app.fetch.bind 'pagecontents', 'bysectionandpage', (app, params, cb) ->
@@ -137,10 +119,6 @@ module.exports =
       
       if !req.user?
         cb null, []
-        return
-      
-      if pagecontents[req.user]? and pagecontents[req.user][file]?
-        cb null, pagecontents[req.user][file]
         return
       
       # Fetch content
@@ -162,12 +140,6 @@ module.exports =
         file: path.basename file
         title: utils.maketitle file
         contents: data
-      
-      # Cache
-      if !pagecontents[req.user]?
-        pagecontents[req.user] = {}
-        
-      pagecontents[req.user][result.path] = result
       
       cb null, result
 

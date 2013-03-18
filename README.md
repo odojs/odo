@@ -7,15 +7,12 @@ A Nodejs framework for creating awesome things.
 
 ## Setup
 
-    bower install
-    npm install
-    cp config.sample.json config.json
-    subl config.json
+    ./configure.sh
 
 
 ## Run
 
-    sudo nodemon -e js,json bootstrap.js
+    ./run.sh
     redis-server
 
 

@@ -6,7 +6,7 @@
 
   passport = require('passport');
 
-  dropbox = require('dropbox');
+  dropbox = require('dropbox-redis-cache');
 
   DropboxStrategy = require('passport-dropbox').Strategy;
 

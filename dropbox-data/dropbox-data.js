@@ -5,7 +5,7 @@
   iced = require('iced-coffee-script').iced;
   __iced_k = __iced_k_noop = function() {};
 
-  dropbox = require('dropbox');
+  dropbox = require('dropbox-redis-cache');
 
   path = require('path');
 
@@ -20,21 +20,27 @@
       result = path.basename(file);
       return result = result.substr(0, result.length - utils.extension.length);
     },
-    errors: {
-      '${dropbox.ApiError.INVALID_TOKEN}': 'Invalid token',
-      '${dropbox.ApiError.NOT_FOUND}': 'Not found',
-      '${dropbox.ApiError.OVER_QUOTA}': 'Over quota',
-      '${dropbox.ApiError.RATE_LIMITED}': 'Rate limited',
-      '${dropbox.ApiError.NETWORK_ERROR}': 'Network error',
-      '${dropbox.ApiError.INVALID_PARAM}': 'Invalid parameter',
-      '${dropbox.ApiError.OAUTH_ERROR}': 'OAuth Error',
-      '${dropbox.ApiError.INVALID_METHOD}': 'Invalid method'
-    }
+    errors: {}
   };
+
+  utils.errors["" + dropbox.ApiError.INVALID_TOKEN] = 'Invalid token';
+
+  utils.errors["" + dropbox.ApiError.NOT_FOUND] = 'Not found';
+
+  utils.errors["" + dropbox.ApiError.OVER_QUOTA] = 'Over quota';
+
+  utils.errors["" + dropbox.ApiError.RATE_LIMITED] = 'Rate limited';
+
+  utils.errors["" + dropbox.ApiError.NETWORK_ERROR] = 'Network error';
+
+  utils.errors["" + dropbox.ApiError.INVALID_PARAM] = 'Invalid parameter';
+
+  utils.errors["" + dropbox.ApiError.OAUTH_ERROR] = 'OAuth Error';
+
+  utils.errors["" + dropbox.ApiError.INVALID_METHOD] = 'Invalid method';
 
   module.exports = {
     configure: function(app) {
-      var pagecontents, pagetitles;
       app.postal.channel().subscribe('section.new', function(section) {
         return sectionpaths.push(section.path);
       });
@@ -45,7 +51,6 @@
       app.fetch.bind('sectionpaths', 'all', function(app, params, cb) {
         return cb(null, sectionpaths);
       });
-      pagetitles = {};
       app.fetch.bind('pagetitles', 'all', function(app, params, cb) {
         var client, error, req, section, sections, ___iced_passed_deferral, __iced_deferrals, __iced_k,
           _this = this;
@@ -54,10 +59,6 @@
         req = app.inject.one('req');
         if (req.user == null) {
           cb(null, []);
-          return;
-        }
-        if (pagetitles[req.user] != null) {
-          cb(null, pagetitles[req.user]);
           return;
         }
         (function(__iced_k) {
@@ -72,7 +73,7 @@
                 return sections = arguments[1];
               };
             })(),
-            lineno: 51
+            lineno: 45
           }));
           __iced_deferrals._fulfill();
         })(function() {
@@ -110,7 +111,7 @@
                     return __slot_1.pages = arguments[1];
                   };
                 })(section),
-                lineno: 69
+                lineno: 63
               }));
               if (error != null) {
                 cb(utils.errors[error]);
@@ -131,12 +132,10 @@
                 };
               });
             }
-            pagetitles[req.user] = sections;
             return cb(null, sections);
           });
         });
       });
-      pagecontents = {};
       app.fetch.bind('pagecontents', 'bypath', function(app, params, cb) {
         var client, data, error, req, result, ___iced_passed_deferral, __iced_deferrals, __iced_k,
           _this = this;
@@ -149,10 +148,6 @@
         req = app.inject.one('req');
         if (req.user == null) {
           cb(null, []);
-          return;
-        }
-        if ((pagecontents[req.user] != null) && (pagecontents[req.user][params.path] != null)) {
-          cb(null, pagecontents[req.user][params.path]);
           return;
         }
         client = app.inject.one('dropbox.client')();
@@ -172,7 +167,7 @@
                 return data = arguments[1];
               };
             })(),
-            lineno: 112
+            lineno: 100
           }));
           __iced_deferrals._fulfill();
         })(function() {
@@ -186,8 +181,6 @@
             title: utils.maketitle(params.path),
             contents: data
           };
-          if (pagecontents[req.user] == null) pagecontents[req.user] = {};
-          pagecontents[req.user][result.path] = result;
           return cb(null, result);
         });
       });
@@ -200,10 +193,6 @@
         req = app.inject.one('req');
         if (req.user == null) {
           cb(null, []);
-          return;
-        }
-        if ((pagecontents[req.user] != null) && (pagecontents[req.user][file] != null)) {
-          cb(null, pagecontents[req.user][file]);
           return;
         }
         client = app.inject.one('dropbox.client')();
@@ -223,7 +212,7 @@
                 return data = arguments[1];
               };
             })(),
-            lineno: 154
+            lineno: 132
           }));
           __iced_deferrals._fulfill();
         })(function() {
@@ -237,8 +226,6 @@
             title: utils.maketitle(file),
             contents: data
           };
-          if (pagecontents[req.user] == null) pagecontents[req.user] = {};
-          pagecontents[req.user][result.path] = result;
           return cb(null, result);
         });
       });

@@ -1,5 +1,6 @@
 express = require 'express'
 dropbox = require 'dropbox-redis-cache'
+tapinto = require 'tapinto'
 
 module.exports =
 	init: (app) ->
