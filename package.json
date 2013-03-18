@@ -1,7 +1,7 @@
 {
   "name": "odo",
   "description": "Odo, whatever you want it to be",
-  "version": "6.0.1",
+  "version": "6.0.2",
   "private": true,
   "dependencies": {
     "express": "3.x",
