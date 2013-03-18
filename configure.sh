@@ -1,4 +1,5 @@
 #!/bin/bash
-# My first script
-
-echo "Hello World!"
+bower install
+npm install
+cp config.sample.json config.json
+open config.json
