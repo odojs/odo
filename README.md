@@ -7,16 +7,26 @@ A Nodejs framework for creating awesome things.
 
 ## Setup
 
-    ./configure.sh
-
+```
+./configure.sh
+```
 
 ## Run
 
-    ./run.sh
-    redis-server
+```
+./run.sh
+redis-server
+```
+
+## Unique technologies developed for Odo
+
+* [Tapinto](https://github.com/tcoats/tapinto) (tap into classes and methods)
+* [Injectinto](https://github.com/tcoats/injectinto) (dependency injection)
+* [Peekinto](https://github.com/tcoats/peekinto) (ui composition)
+* [Fetching](https://github.com/tcoats/fetching) (fetching strategies)
 
 
-## Technologies
+## Technologies used and available in nodejs
 
 * [Express](http://expressjs.com/) (http server)
 * [Moment.js](http://momentjs.com/) (date & time)
@@ -25,14 +35,24 @@ A Nodejs framework for creating awesome things.
 * [Handlebars](http://handlebarsjs.com/) (templating)
 * [Dropbox](https://www.dropbox.com/developers) (authentication & storage)
 * [Passport](http://passportjs.org/) (authentication)
-* [Posal.js](https://github.com/postaljs/postal.js) (messaging)
+* [Passport Dropbox](https://github.com/jaredhanson/passport-dropbox) (authentication)
+* [Postal.js](https://github.com/postaljs/postal.js) (messaging)
+* [Iced Coffee Script](http://maxtaco.github.com/coffee-script/) (await and defer)
 * [Underscore](http://underscorejs.org/) (collection utilities)
-* [Ember.js](http://emberjs.com/) (web application)
-* [D3](http://d3js.org/) (data driven documents)
+* [Sugar](http://sugarjs.com/) (collection utilities)
+
+
+## Technologies used and available in browser
+
 * [jQuery](http://jquery.com/) (dom manipulation)
+* [D3](http://d3js.org/) (data driven documents)
 * [Bootstrap](http://twitter.github.com/bootstrap/) (scaffolding)
 * [X-Editable](http://vitalets.github.com/x-editable/) (popup editor)
 * [Chai](http://chaijs.com/) (assertion framework)
+* [Handlebars](http://handlebarsjs.com/) (templating)
+* [Underscore](http://underscorejs.org/) (collection utilities)
+* [Sugar](http://sugarjs.com/) (collection utilities)
+* [Showdown](https://github.com/coreyti/showdown) (markdown rendering)
 
 
 ## Standards
