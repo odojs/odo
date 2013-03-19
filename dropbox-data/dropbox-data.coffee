@@ -1,4 +1,3 @@
-dropbox = require 'dropbox'
 path = require 'path'
 _ = require 'underscore'
 
@@ -11,16 +10,15 @@ utils =
     result = path.basename file
     result = result.substr 0, result.length - utils.extension.length
     
-  errors: { }
-  
-utils.errors["#{dropbox.ApiError.INVALID_TOKEN}"] = 'Invalid token'
-utils.errors["#{dropbox.ApiError.NOT_FOUND}"] = 'Not found'
-utils.errors["#{dropbox.ApiError.OVER_QUOTA}"] = 'Over quota'
-utils.errors["#{dropbox.ApiError.RATE_LIMITED}"] = 'Rate limited'
-utils.errors["#{dropbox.ApiError.NETWORK_ERROR}"] = 'Network error'
-utils.errors["#{dropbox.ApiError.INVALID_PARAM}"] = 'Invalid parameter'
-utils.errors["#{dropbox.ApiError.OAUTH_ERROR}"] = 'OAuth Error'
-utils.errors["#{dropbox.ApiError.INVALID_METHOD}"] = 'Invalid method'
+  errors:
+    0: 'Network error'
+    400: 'Invalid parameter'
+    401: 'Invalid token'
+    403: 'OAuth Error'
+    404: 'Not found'
+    405: 'Invalid method'
+    503: 'Rate limited'
+    507: 'Over quota'
 
 module.exports =
   configure: (app) ->

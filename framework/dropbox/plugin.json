@@ -1,0 +1,5 @@
+{
+  "name": "Dropbox",
+  "version": "1.0.0",
+  "main": "./dropbox.js"
+}

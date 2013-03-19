@@ -36,20 +36,6 @@ module.exports =
     app.ensureAuth = (req, res, next) ->
       return next() if req.isAuthenticated()
       res.redirect app.get 'dropbox fail'
-
-    app.inject.bind 'dropbox.client', () ->
-      req = app.inject.one 'req'
-
-      if !req.user?
-        return null
-
-      new dropbox.Client {
-        key: app.get 'dropbox key'
-        secret: app.get 'dropbox secret'
-        token: req.user.token
-        tokenSecret: req.user.tokenSecret
-        uid: req.user._json.uid
-      }
     
   init: (app) ->
     # GET /auth/dropbox

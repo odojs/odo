@@ -30,22 +30,10 @@
           tokenSecret: tokenSecret
         }));
       }));
-      app.ensureAuth = function(req, res, next) {
+      return app.ensureAuth = function(req, res, next) {
         if (req.isAuthenticated()) return next();
         return res.redirect(app.get('dropbox fail'));
       };
-      return app.inject.bind('dropbox.client', function() {
-        var req;
-        req = app.inject.one('req');
-        if (req.user == null) return null;
-        return new dropbox.Client({
-          key: app.get('dropbox key'),
-          secret: app.get('dropbox secret'),
-          token: req.user.token,
-          tokenSecret: req.user.tokenSecret,
-          uid: req.user._json.uid
-        });
-      });
     },
     init: function(app) {
       app.get('/auth/dropbox', passport.authenticate('dropbox'), function(req, res) {});

@@ -19,6 +19,7 @@
     "tapinto": "0.x",
     "injectinto": "0.x",
     "peekinto": "0.x",
-    "fetching": "0.x"
+    "fetching": "0.x",
+    "dropbox-cache": "0.0.2alpha"
   }
 }

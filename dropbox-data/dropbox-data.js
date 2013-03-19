@@ -20,24 +20,17 @@
       result = path.basename(file);
       return result = result.substr(0, result.length - utils.extension.length);
     },
-    errors: {}
+    errors: {
+      0: 'Network error',
+      400: 'Invalid parameter',
+      401: 'Invalid token',
+      403: 'OAuth Error',
+      404: 'Not found',
+      405: 'Invalid method',
+      503: 'Rate limited',
+      507: 'Over quota'
+    }
   };
-
-  utils.errors["" + dropbox.ApiError.INVALID_TOKEN] = 'Invalid token';
-
-  utils.errors["" + dropbox.ApiError.NOT_FOUND] = 'Not found';
-
-  utils.errors["" + dropbox.ApiError.OVER_QUOTA] = 'Over quota';
-
-  utils.errors["" + dropbox.ApiError.RATE_LIMITED] = 'Rate limited';
-
-  utils.errors["" + dropbox.ApiError.NETWORK_ERROR] = 'Network error';
-
-  utils.errors["" + dropbox.ApiError.INVALID_PARAM] = 'Invalid parameter';
-
-  utils.errors["" + dropbox.ApiError.OAUTH_ERROR] = 'OAuth Error';
-
-  utils.errors["" + dropbox.ApiError.INVALID_METHOD] = 'Invalid method';
 
   module.exports = {
     configure: function(app) {
@@ -73,7 +66,7 @@
                 return sections = arguments[1];
               };
             })(),
-            lineno: 45
+            lineno: 44
           }));
           __iced_deferrals._fulfill();
         })(function() {
@@ -111,7 +104,7 @@
                     return __slot_1.pages = arguments[1];
                   };
                 })(section),
-                lineno: 63
+                lineno: 62
               }));
               if (error != null) {
                 cb(utils.errors[error]);
@@ -167,7 +160,7 @@
                 return data = arguments[1];
               };
             })(),
-            lineno: 100
+            lineno: 99
           }));
           __iced_deferrals._fulfill();
         })(function() {
@@ -212,7 +205,7 @@
                 return data = arguments[1];
               };
             })(),
-            lineno: 132
+            lineno: 131
           }));
           __iced_deferrals._fulfill();
         })(function() {
