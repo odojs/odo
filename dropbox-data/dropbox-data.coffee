@@ -1,4 +1,4 @@
-dropbox = require 'dropbox-redis-cache'
+dropbox = require 'dropbox'
 path = require 'path'
 _ = require 'underscore'
 

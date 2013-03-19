@@ -5,7 +5,7 @@
   iced = require('iced-coffee-script').iced;
   __iced_k = __iced_k_noop = function() {};
 
-  dropbox = require('dropbox-redis-cache');
+  dropbox = require('dropbox');
 
   path = require('path');
 
