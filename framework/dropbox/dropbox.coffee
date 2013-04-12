@@ -1,4 +1,4 @@
-dropbox = require 'dropbox-cache'
+dropbox = require 'dropbox'
 
 module.exports =
   configure: (app) ->

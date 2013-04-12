@@ -2,7 +2,7 @@
 (function() {
   var dropbox;
 
-  dropbox = require('dropbox-cache');
+  dropbox = require('dropbox');
 
   module.exports = {
     configure: function(app) {
