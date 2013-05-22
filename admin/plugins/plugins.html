@@ -10,10 +10,10 @@
 	</div>
 </header>
 
-<div class="container">
+<div class="container note">
 	<div class="row">
 		<div class="span4 offset1">
-			<div id="admin-plugin" class="document">{{#each plugins}}
+			<div id="admin-plugin" class="card">{{#each plugins}}
 				<label class="checkbox{{#if config.disabled}} plugin-disabled{{/if}}">
 					<input type="checkbox" name="{{id}}"{{#unless config.disabled}} checked="checked"{{/unless}}> {{config.name}} ({{config.version}})
 				</label>

@@ -57,6 +57,70 @@ body {
   -o-box-shadow: none;
   box-shadow: none;
 }
+.note .card {
+  padding: 8px;
+  margin-bottom: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 4px;
+}
+.note .btn {
+  text-shadow: none;
+  background-color: transparent;
+  background-image: none;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  -o-box-shadow: none;
+  box-shadow: none;
+}
+.note .btn:hover {
+  background-color: none;
+  background-color: white;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+.note .btn-primary {
+  border-color: #50aaff;
+}
+.note .btn-primary:hover {
+  background-color: #50aaff;
+}
+.note .btn-info {
+  border-color: #7fdcdc;
+}
+.note .btn-info:hover {
+  background-color: #7fdcdc;
+}
+.note .btn-success {
+  border-color: #5bb75b;
+}
+.note .btn-success:hover {
+  background-color: #5bb75b;
+}
+.note .btn-warning {
+  border-color: #f89406;
+}
+.note .btn-warning:hover {
+  background-color: #f89406;
+}
+.note .btn-danger {
+  border-color: #bd362f;
+}
+.note .btn-danger:hover {
+  background-color: #bd362f;
+}
+.note .btn-inverse {
+  border-color: black;
+}
+.note .btn-inverse:hover {
+  background-color: black;
+}
+.note .btn-link {
+  border-color: transparent;
+}
+.note .btn-link:hover {
+  background-color: transparent;
+  color: white;
+}
 .btn-final {
   float: right;
 }
@@ -129,10 +193,13 @@ body.prompt .container {
   border-radius: 3px;
 }
 #admin-plugin label.plugin-disabled {
-  color: #ccc;
+  color: #777;
 }
 #admin-plugin label:hover {
-  background-color: #d4f2ff;
+  background-color: rgba(255, 255, 255, 0.3);
+}
+#admin-plugin label.plugin-disabled:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 #admin-plugin ul {
   list-style-type: none;

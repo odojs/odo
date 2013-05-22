@@ -2,24 +2,21 @@
 	<h1>&Psi;</h1>
 </header>
 
-<footer>
-	<div class="container">
-		<div class="row">
-			<div class="span3 note">
-				<h4>Platform</h4>
-				<ul class="unstyled">{{#each pluginsbycategory.platform}}
-					<li><a href="{{config.url}}">{{config.name}}</a></li>{{/each}}
-				</ul>
-			</div>
-			<div class="span3 note">
+<div class="container note">
+	<div class="row">
+		<div class="offset4 span4">
+			<div class="card">
 				<h4>Application</h4>
 				<ul class="unstyled">{{#each pluginsbycategory.application}}
 					<li><a href="{{config.url}}">{{config.name}}</a></li>{{/each}}
 				</ul>
 			</div>
-			<div class="span3 note">
-				<textarea class="span3" rows="30"></textarea>
+			<div class="card">
+				<h4>Platform</h4>
+				<ul class="unstyled">{{#each pluginsbycategory.platform}}
+					<li><a href="{{config.url}}">{{config.name}}</a></li>{{/each}}
+				</ul>
 			</div>
 		</div>
 	</div>
-</footer>
+</div>
