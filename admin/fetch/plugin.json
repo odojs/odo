@@ -1,7 +1,0 @@
-{
-  "name": "Fetching strategies",
-  "category": "Application",
-  "url": "/ψ/fetch/",
-  "version": "1.0.0",
-  "main": "./fetch.js"
-}

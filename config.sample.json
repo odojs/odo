@@ -1,29 +1,31 @@
 {
-  "plugins": {
-    "directories": [
-      "framework",
-      ""
-    ]
-  },
-  "config": {
-    "dropbox key": "xxxxxxxxxxxxxxx",
-    "dropbox secret": "xxxxxxxxxxxxxxxxx",
-    "dropbox callback": "http://mayhemmad.dyndns.org/auth/dropbox/callback",
-    "dropbox fail": "/",
-    "dropbox sign-in": "/",
-    "dropbox sign-out": "/",
-    "session key": "xyz",
-    "cookie secret": "123",
-    "session secret": "456"
-  },
-  "routes": [
-    {
-      "source": "/js",
-      "target": "/components"
-    },
-    {
-      "source": "/js",
-      "target": "/js"
-    }
-  ]
+	"plugins": {
+		"directories": [
+			"",
+			"odo"
+		]
+	},
+	"express": {
+		"session key": "xyz",
+		"cookie secret": "123",
+		"session secret": "456"
+	},
+	"config": {
+		"dropbox key": "xxxxxxxxxxxxxxx",
+		"dropbox secret": "xxxxxxxxxxxxxxxxx",
+		"dropbox callback": "http://mayhemmad.dyndns.org/auth/dropbox/callback",
+		"dropbox fail": "/",
+		"dropbox sign-in": "/",
+		"dropbox sign-out": "/",
+	},
+	"routes": [
+		{
+			"source": "/",
+			"target": "/bower_components"
+		},
+		{
+			"source": "/source-url",
+			"target": "/target-path"
+		}
+	]
 }

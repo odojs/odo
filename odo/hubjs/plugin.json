@@ -1,0 +1,5 @@
+{
+	"name": "Hubjs Helper",
+	"version": "1.0.0",
+	"main": "./hubjs.js"
+}

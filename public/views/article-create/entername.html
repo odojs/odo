@@ -1,0 +1,18 @@
+﻿<div class="panel panel-default" data-bind="shortcuts: { 'esc': close }">
+	<div class="panel-heading">
+		<button data-bind="click: close" type="button" class="close btn btn-default">&times;</button>
+		<h2 class="panel-title">What is the name of the article?</h2>
+	</div>
+	<form data-bind="submit: submit">
+	<div class="panel-body container">
+		<input data-bind="value: articlename" autofocus class="form-control mousetrap-yes-esc" type="text" placeholder="Type an article title...">
+	</div>
+	<div class="panel-body">
+		<ul class="actions">
+			<li>
+				<button data-bind="click: wizard.forward({ model: 'views/article-create/selectlocation', activationData: articlename() })" class="forward btn btn-default">Next &rarr;</button>
+			</li>
+		</ul>
+	</div>
+	</form>
+</div>

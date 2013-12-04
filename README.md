@@ -18,7 +18,8 @@ A Nodejs framework for creating awesome things.
 redis-server
 ```
 
-## Unique technologies developed for Odo
+
+## Unique technologies developed alongside Odo
 
 * [Tapinto](https://github.com/tcoats/tapinto) (tap into classes and methods)
 * [Injectinto](https://github.com/tcoats/injectinto) (dependency injection)
@@ -33,26 +34,24 @@ redis-server
 * [Redis](http://redis.io/) (storage)
 * [Consolidate](http://jsdoc.info/visionmedia/consolidate.js/) (templating)
 * [Handlebars](http://handlebarsjs.com/) (templating)
-* [Dropbox](https://www.dropbox.com/developers) (authentication & storage)
 * [Passport](http://passportjs.org/) (authentication)
-* [Passport Dropbox](https://github.com/jaredhanson/passport-dropbox) (authentication)
-* [Postal.js](https://github.com/postaljs/postal.js) (messaging)
+* [Passport Twitter](https://github.com/jaredhanson/passport-twitter) (authentication)
+* [hub.js](http://maxantoni.de/projects/hub.js/) (messaging)
 * [Iced Coffee Script](http://maxtaco.github.com/coffee-script/) (await and defer)
 * [Underscore](http://underscorejs.org/) (collection utilities)
-* [Sugar](http://sugarjs.com/) (collection utilities)
+* [Requirejs](http://requirejs.org/) (dependency injection)
 
 
 ## Technologies used and available in browser
 
+* [Durandaljs](http://durandaljs.com/) (single page app)
+* [Knockoutjs](http://knockoutjs.com/) (mvvm in browser)
 * [jQuery](http://jquery.com/) (dom manipulation)
-* [D3](http://d3js.org/) (data driven documents)
-* [Bootstrap](http://twitter.github.com/bootstrap/) (scaffolding)
-* [X-Editable](http://vitalets.github.com/x-editable/) (popup editor)
-* [Chai](http://chaijs.com/) (assertion framework)
-* [Handlebars](http://handlebarsjs.com/) (templating)
+* [Bootstrap](http://getbootstrap.com/) (scaffolding)
 * [Underscore](http://underscorejs.org/) (collection utilities)
-* [Sugar](http://sugarjs.com/) (collection utilities)
-* [Showdown](https://github.com/coreyti/showdown) (markdown rendering)
+* [Requirejs](http://requirejs.org/) (dependency injection)
+* [Animate.css](https://daneden.me/animate/) (css animations)
+* [Mousetrap](http://craig.is/killing/mice) (keyboard shortcuts)
 
 
 ## Standards
@@ -62,7 +61,6 @@ redis-server
 * SVG
 * REST
 * OAuth
-
 
 ## Goals
 

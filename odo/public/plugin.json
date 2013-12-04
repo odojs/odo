@@ -1,0 +1,5 @@
+{
+	"name": "Public Folder Helper",
+	"version": "1.0.0",
+	"main": "./public.js"
+}

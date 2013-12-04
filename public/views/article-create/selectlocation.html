@@ -1,0 +1,16 @@
+﻿<div class="panel panel-default" data-bind="shortcuts: { 'esc': close, 'up': up, 'down': down, 'enter': submit, 'left': wizard.back({ model: 'views/article-create/entername', activationData: articlename() }) }">
+	<div class="panel-heading">
+		<button data-bind="click: close" type="button" class="close btn btn-default">&times;</button>
+		<h2 class="panel-title">Where do you want the new article <span data-bind="text: articlename()"></span> to live?</h2>
+	</div>
+	<div class="panel-body">
+		<div class="list-group" data-bind="foreach: areas">
+			<a class="list-group-item" href="#" data-bind="css: { active: $parent.selectedIndex() == $index() }, click: $parent.selectArea"><span data-bind="text: $data"></span></a>
+		</div>
+	</div>
+	<div class="panel-body">
+		<ul class="actions">
+			<li><button data-bind="click: wizard.back({ model: 'views/article-create/entername', activationData: articlename() })" class="back btn btn-default">&larr; Change article name</button></li>
+		</ul>
+	</div>
+</div>

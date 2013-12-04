@@ -1,25 +1,20 @@
 {
-  "name": "odo",
-  "description": "Odo, whatever you want it to be",
-  "version": "6.0.2",
-  "private": true,
-  "dependencies": {
-    "express": "3.x",
-    "underscore": "1.x",
-    "handlebars": "1.x",
-    "consolidate": "0.x",
-    "moment": "1.x",
-    "dropbox": "0.x",
-    "passport": "0.x",
-    "passport-dropbox": "0.x",
-    "postal": "0.x",
-    "redis": "0.x",
-    "iced-coffee-script": "1.x",
-    "sugar": "1.x",
-    "tapinto": "0.x",
-    "injectinto": "0.x",
-    "peekinto": "0.x",
-    "fetching": "0.x",
-    "dropbox-cache": "0.0.2alpha"
-  }
+	"name": "odo",
+	"description": "Odo, whatever you want it to be",
+	"version": "6.0.2",
+	"private": true,
+	"dependencies": {
+		"express": "3.*",
+		"underscore": "1.*",
+		"consolidate": "0.*",
+		"iced-coffee-script": "1.*",
+		"peekinto": "0.*",
+		"requirejs": "*",
+		"moment": "*",
+		"passport": "*",
+		"passport-twitter": "*",
+		"redis": "*",
+		"handlebars": "*",
+		"hubjs": "*"
+	}
 }

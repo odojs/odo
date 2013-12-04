@@ -1,0 +1,3 @@
+﻿define [], () ->
+	class Welcome
+		constructor: ->
