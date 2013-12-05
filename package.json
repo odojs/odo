@@ -18,6 +18,7 @@
 		"hubjs": "*",
 		"eventstore": "*",
 		"eventstore.redis": "*",
-		"node-uuid": "*"
+		"node-uuid": "*",
+		"async": "*"
 	}
 }
