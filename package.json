@@ -9,6 +9,7 @@
 		"consolidate": "0.*",
 		"iced-coffee-script": "1.*",
 		"peekinto": "0.*",
+		"injectinto": "*",
 		"requirejs": "*",
 		"moment": "*",
 		"passport": "*",

@@ -2,7 +2,7 @@
 (function() {
 
 
-  define(['redis', 'eventstore', 'eventstore.redis', 'domain/itemcommands'], function(redis, eventstore, storage, itemcommands) {
+  define(['redis', 'eventstore', 'eventstore.redis', 'odo/injectinto', 'domain/itemcommands'], function(redis, eventstore, storage, inject, itemcommands) {
     return {
       start: function() {
         var addBinding, bindings, es, subscriber;
@@ -32,15 +32,16 @@
         }).start();
         subscriber = redis.createClient();
         subscriber.on('message', function(channel, message) {
-          var command;
+          var command, handler;
           command = JSON.parse(message);
           console.log('Received command from redis:');
           console.log(command);
-          if (bindings[command.command] == null) {
+          handler = inject.oneornone("commandhandler:" + command.command);
+          if (handler == null) {
             console.log("Could not find a command handler for " + command.command + ", this is an error!");
             return;
           }
-          return bindings[command.command](command.payload, {
+          return handler(command.payload, {
             applyHistoryThenCommand: function(aggregate, callback) {
               console.log("Load history for id= " + aggregate.id);
               return es.getEventStream(aggregate.id, function(err, stream) {

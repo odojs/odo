@@ -1,12 +1,5 @@
-define ['redis', 'eventstore', 'eventstore.redis', 'domain/itemcommands'], (redis, eventstore, storage, itemcommands) ->
+define ['redis', 'eventstore', 'eventstore.redis', 'odo/injectinto'], (redis, eventstore, storage, inject) ->
 	start: ->
-		# manually bind the command handlers (for now)
-		bindings = {}
-		addBinding = (binding) ->
-			for name, method of binding
-				bindings[name] = method
-		addBinding itemcommands
-
 		# Setup the event store to publish to redis
 		es = eventstore.createStore()
 		es.configure(->
@@ -29,12 +22,14 @@ define ['redis', 'eventstore', 'eventstore.redis', 'domain/itemcommands'], (redi
 			console.log 'Received command from redis:'
 			console.log command
 			
-			if !bindings[command.command]?
+			handler = inject.oneornone "commandhandler:#{command.command}"
+			
+			if !handler?
 				console.log "Could not find a command handler for #{command.command}, this is an error!"
 				return
 				
 			# Give the command handler a context
-			bindings[command.command] command.payload,
+			handler command.payload,
 				applyHistoryThenCommand: (aggregate, callback) ->
 					console.log "Load history for id= #{aggregate.id}"
 					es.getEventStream aggregate.id, (err, stream) ->
@@ -47,4 +42,5 @@ define ['redis', 'eventstore', 'eventstore.redis', 'domain/itemcommands'], (redi
 							else
 								stream.addEvent uncommitted[0]
 								stream.commit()
+		
 		subscriber.subscribe 'commands'

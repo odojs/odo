@@ -13,11 +13,11 @@
       plugins: './plugins',
       config: './config',
       odo: './odo',
-      service: './odo/eventstore/service'
+      service: './nodecqrs/service'
     }
   });
 
-  requirejs(['module', 'express', 'path', 'fs', 'peekinto', 'odo/plugins', 'odo/config', 'service/hub', 'http', 'socket.io', 'nodecqrs/routes'], function(module, express, path, fs, peek, plugins, config, hub, http, socket, routes) {
+  requirejs(['module', 'express', 'path', 'fs', 'peekinto', 'odo/plugins', 'odo/config', 'odo/eventstore/hub', 'http', 'socket.io', 'nodecqrs/routes'], function(module, express, path, fs, peek, plugins, config, hub, http, socket, routes) {
     var app, io, key, server, value, ___iced_passed_deferral, __iced_deferrals, __iced_k, _ref,
       _this = this;
     __iced_k = __iced_k_noop;
