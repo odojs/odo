@@ -1,4 +1,4 @@
-define ['hub', 'itemlistener'], (hub, itemlistener) ->
+define ['service/hub', 'service/itemlistener'], (hub, itemlistener) ->
 	start: ->
 		bindings = {}
 		addBinding = (binding) ->

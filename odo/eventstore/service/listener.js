@@ -2,7 +2,7 @@
 (function() {
 
 
-  define(['hub', 'itemlistener'], function(hub, itemlistener) {
+  define(['service/hub', 'service/itemlistener'], function(hub, itemlistener) {
     return {
       start: function() {
         var addBinding, bindings;

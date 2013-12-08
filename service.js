@@ -8,10 +8,12 @@
 
   requirejs.config({
     nodeRequire: require,
-    paths: {}
+    paths: {
+      service: './odo/eventstore/service'
+    }
   });
 
-  requirejs(['listener'], function(listener) {
+  requirejs(['service/listener'], function(listener) {
     listener.start();
     return console.log('Starting service');
   });

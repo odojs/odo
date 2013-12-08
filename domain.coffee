@@ -7,12 +7,10 @@ requirejs.config {
 		# are loaded relative to the top-level JS file.
 		nodeRequire: require
 		paths: {
-			plugins: './plugins'
-			config: './config'
-			odo: './odo'
+			domain: './odo/eventstore/domain'
 		}
 }
 
-requirejs ['odo/bootstrap'], (bootstrap) ->
-	bootstrap (app) ->
-		
+requirejs ['domain/handler'], (handler) ->
+	handler.start()
+	console.log 'Starting domain service'

@@ -2,7 +2,7 @@
 (function() {
 
 
-  define(['node-uuid', 'item'], function(uuid, Item) {
+  define(['node-uuid', 'domain/item'], function(uuid, Item) {
     return {
       createItem: function(command, context) {
         var id, item, newId;

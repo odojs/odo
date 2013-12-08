@@ -19,6 +19,8 @@
 		"eventstore": "*",
 		"eventstore.redis": "*",
 		"node-uuid": "*",
-		"async": "*"
+		"async": "*",
+		"socket.io": "*",
+		"jade": "*"
 	}
 }

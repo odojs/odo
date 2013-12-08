@@ -2,7 +2,7 @@
 (function() {
 
 
-  define(['redis', 'eventstore', 'eventstore.redis', 'itemcommands'], function(redis, eventstore, storage, itemcommands) {
+  define(['redis', 'eventstore', 'eventstore.redis', 'domain/itemcommands'], function(redis, eventstore, storage, itemcommands) {
     return {
       start: function() {
         var addBinding, bindings, es, subscriber;

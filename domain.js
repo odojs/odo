@@ -8,10 +8,12 @@
 
   requirejs.config({
     nodeRequire: require,
-    paths: {}
+    paths: {
+      domain: './odo/eventstore/domain'
+    }
   });
 
-  requirejs(['handler'], function(handler) {
+  requirejs(['domain/handler'], function(handler) {
     handler.start();
     return console.log('Starting domain service');
   });

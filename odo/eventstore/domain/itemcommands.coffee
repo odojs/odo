@@ -1,4 +1,4 @@
-define ['node-uuid', 'item'], (uuid, Item) ->
+define ['node-uuid', 'domain/item'], (uuid, Item) ->
 	createItem: (command, context) ->
 		id = uuid.v1()
 		newId = "item:#{id}"

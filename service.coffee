@@ -7,9 +7,10 @@ requirejs.config {
 		# are loaded relative to the top-level JS file.
 		nodeRequire: require
 		paths: {
+			service: './odo/eventstore/service'
 		}
 }
 
-requirejs ['listener'], (listener) ->
+requirejs ['service/listener'], (listener) ->
 	listener.start()
 	console.log 'Starting service'

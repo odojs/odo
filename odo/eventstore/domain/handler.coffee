@@ -1,4 +1,4 @@
-define ['redis', 'eventstore', 'eventstore.redis', 'itemcommands'], (redis, eventstore, storage, itemcommands) ->
+define ['redis', 'eventstore', 'eventstore.redis', 'domain/itemcommands'], (redis, eventstore, storage, itemcommands) ->
 	start: ->
 		# manually bind the command handlers (for now)
 		bindings = {}

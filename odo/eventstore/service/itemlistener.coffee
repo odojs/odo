@@ -1,4 +1,4 @@
-define ['storage'], (store) ->
+define ['service/storage'], (store) ->
 	itemCreated: (evt) ->
 		store.save
 			id: evt.payload.id
