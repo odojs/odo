@@ -11,7 +11,7 @@ requirejs.config {
 		}
 }
 
-requirejs ['odo/injectinto', 'nodecqrs/domain/itemcommands', 'odo/hub'], (inject, itemcommands, hub) ->
+requirejs ['odo/injectinto', 'nodecqrs/domain/itemcommands', 'odo/hub', 'odo/eventstore'], (inject, itemcommands, hub, eventstore) ->
 	
 	bindCommands = (handler) ->
 		for name, method of handler

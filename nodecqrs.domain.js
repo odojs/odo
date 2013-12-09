@@ -13,7 +13,7 @@
     }
   });
 
-  requirejs(['odo/injectinto', 'nodecqrs/domain/itemcommands', 'odo/hub'], function(inject, itemcommands, hub) {
+  requirejs(['odo/injectinto', 'nodecqrs/domain/itemcommands', 'odo/hub', 'odo/eventstore'], function(inject, itemcommands, hub, eventstore) {
     var bindCommands;
     bindCommands = function(handler) {
       var method, name, _results;

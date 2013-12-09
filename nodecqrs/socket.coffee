@@ -6,12 +6,12 @@ define ['socket.io', 'odo/hub'], (socket, hub) ->
 		# On receiving __commands__ from browser via socket.io emit them on the ĥub module (which will forward it to redis pubsub)
 		app.io.sockets.on 'connection', (socket) ->
 			conn = "#{socket.handshake.address.address}:#{socket.handshake.address.port}"
-			console.log "#{conn} -- connects to socket.io"
+			console.log "#{conn} connected to socket.io"
 			socket.on 'commands', (data) ->
-				console.log "#{conn} -- sending command #{data.command}"
-				hub.send data.command, conn, data
+				console.log "#{conn} -> #{data.command}"
+				hub.send data
 
 		# On receiving an __event__ from redis via the hub module forward it to connected browsers via socket.io
-		hub.on 'events', (data) ->
-			console.log "socket.io -- publish event #{data.event} to browser"
+		hub.eventstream (data) ->
+			console.log "#{data.event} -> browser"
 			app.io.sockets.emit 'events', data

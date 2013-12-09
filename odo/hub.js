@@ -2,67 +2,18 @@
 (function() {
 
 
-  define(['redis', 'eventstore', 'eventstore.redis', 'odo/injectinto'], function(redis, eventstore, storage, inject) {
-    var commandreceiver, commandsender, context, es, eventlistener, handlers, listeners, result, subscriptions;
-    es = eventstore.createStore();
-    es.configure(function() {
-      var eventpublisher;
-      eventpublisher = redis.createClient();
-      es.use({
-        publish: function(event) {
-          console.log('Publishing event to redis:');
-          console.log(event);
-          return eventpublisher.publish('events', JSON.stringify(event, null, 4));
-        }
-      });
-      return es.use(storage.createStorage());
-    }).start();
-    context = {
-      applyHistoryThenCommand: function(aggregate, command) {
-        return es.getEventStream(aggregate.id, function(err, stream) {
-          console.log("Apply existing events " + stream.events.length);
-          aggregate.loadFromHistory(stream.events);
-          console.log("Apply command " + command.command + " to aggregate");
-          return aggregate[command.command](command.payload, function(err, uncommitted) {
-            var event, _i, _len;
-            if (err) {
-              console.log(err);
-              return;
-            }
-            for (_i = 0, _len = uncommitted.length; _i < _len; _i++) {
-              event = uncommitted[_i];
-              stream.addEvent(event);
-            }
-            return stream.commit();
-          });
-        });
-      }
-    };
+  define(['redis', 'eventstore', 'eventstore.redis'], function(redis, eventstore, storage) {
+    var commandreceiver, commandsender, eventlistener, eventpublisher, handlers, listeners, result, subscriptions;
+    commandsender = redis.createClient();
+    eventpublisher = redis.createClient();
     subscriptions = [];
     listeners = {};
     handlers = {};
-    commandsender = redis.createClient();
     result = {
-      send: function(commandName, sender, message) {
-        console.log("hub -- publishing command " + commandName + " to redis:");
-        console.log(message);
-        message = JSON.stringify(message, null, 4);
-        return commandsender.publish('commands', message);
-      },
-      on: function(channel, callback) {
-        console.log(" -> " + channel);
-        subscriptions.push({
-          channel: channel,
-          callback: callback
-        });
-        return console.log("hub -- subscribers: " + subscriptions.length);
-      },
-      receive: function(event, callback) {
-        console.log(" -> " + event);
-        if (listeners[event] == null) {
-          listeners[event] = [];
-        }
-        return listeners[event].push(callback);
+      send: function(command) {
+        console.log("" + command.command + " -> redis");
+        command = JSON.stringify(command, null, 4);
+        return commandsender.publish('commands', command);
       },
       handle: function(command, callback) {
         console.log(" -> " + command);
@@ -71,36 +22,52 @@
           return;
         }
         return handlers[command] = callback;
+      },
+      publish: function(event) {
+        console.log("" + event.event + " -> redis");
+        return eventpublisher.publish('events', JSON.stringify(event, null, 4));
+      },
+      receive: function(event, callback) {
+        console.log(" -> " + event);
+        if (listeners[event] == null) {
+          listeners[event] = [];
+        }
+        return listeners[event].push(callback);
+      },
+      eventstream: function(callback) {
+        console.log(" -> eventstream");
+        return subscriptions.push(callback);
       }
     };
+    commandreceiver = redis.createClient();
+    commandreceiver.on('message', function(channel, command) {
+      command = JSON.parse(command);
+      if (handlers[command.command] != null) {
+        console.log("" + command.command + " ->");
+        return handlers[command.command](command);
+      }
+    });
+    commandreceiver.subscribe('commands');
     eventlistener = redis.createClient();
-    eventlistener.on('message', function(channel, message) {
-      var listener, _i, _len, _ref, _results;
-      message = JSON.parse(message);
-      subscriptions.forEach(function(subscriber) {
-        if (channel === subscriber.channel) {
-          return subscriber.callback(message);
-        }
-      });
-      if (channel === 'events' && (listeners[message.event] != null)) {
-        _ref = listeners[message.event];
+    eventlistener.on('message', function(channel, event) {
+      var listener, subscriber, _i, _j, _len, _len1, _ref, _results;
+      event = JSON.parse(event);
+      for (_i = 0, _len = subscriptions.length; _i < _len; _i++) {
+        subscriber = subscriptions[_i];
+        subscriber(event);
+      }
+      if (listeners[event.event] != null) {
+        console.log("" + event.event + " ->");
+        _ref = listeners[event.event];
         _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          listener = _ref[_i];
-          _results.push(listener(message));
+        for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+          listener = _ref[_j];
+          _results.push(listener(event));
         }
         return _results;
       }
     });
     eventlistener.subscribe('events');
-    commandreceiver = redis.createClient();
-    commandreceiver.on('message', function(channel, message) {
-      message = JSON.parse(message);
-      if (channel === 'commands' && (handlers[message.command] != null)) {
-        return handlers[message.command](message, context);
-      }
-    });
-    commandreceiver.subscribe('commands');
     return result;
   });
 

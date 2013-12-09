@@ -2,24 +2,24 @@
 (function() {
 
 
-  define(['node-uuid', 'nodecqrs/domain/item'], function(uuid, Item) {
+  define(['odo/eventstore', 'node-uuid', 'nodecqrs/domain/item'], function(eventstore, uuid, Item) {
     return {
-      createItem: function(command, context) {
+      createItem: function(command) {
         var id, item, newId;
         id = uuid.v1();
         newId = "item:" + id;
         item = new Item(newId);
-        return context.applyHistoryThenCommand(item, command);
+        return eventstore.applyHistoryThenCommand(item, command);
       },
-      deleteItem: function(command, context) {
+      deleteItem: function(command) {
         var item;
         item = new Item(command.payload.id);
-        return context.applyHistoryThenCommand(item, command);
+        return eventstore.applyHistoryThenCommand(item, command);
       },
-      changeItem: function(command, context) {
+      changeItem: function(command) {
         var item;
         item = new Item(command.payload.id);
-        return context.applyHistoryThenCommand(item, command);
+        return eventstore.applyHistoryThenCommand(item, command);
       }
     };
   });

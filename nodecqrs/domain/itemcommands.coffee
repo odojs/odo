@@ -1,14 +1,14 @@
-define ['node-uuid', 'nodecqrs/domain/item'], (uuid, Item) ->
-	createItem: (command, context) ->
+define ['odo/eventstore', 'node-uuid', 'nodecqrs/domain/item'], (eventstore, uuid, Item) ->
+	createItem: (command) ->
 		id = uuid.v1()
 		newId = "item:#{id}"
 		item = new Item newId
-		context.applyHistoryThenCommand item, command
+		eventstore.applyHistoryThenCommand item, command
 	
-	deleteItem: (command, context) ->
+	deleteItem: (command) ->
 		item = new Item command.payload.id
-		context.applyHistoryThenCommand item, command
+		eventstore.applyHistoryThenCommand item, command
 	
-	changeItem: (command, context) ->
+	changeItem: (command) ->
 		item = new Item command.payload.id
-		context.applyHistoryThenCommand item, command
+		eventstore.applyHistoryThenCommand item, command

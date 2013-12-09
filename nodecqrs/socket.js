@@ -9,14 +9,14 @@
         app.io.sockets.on('connection', function(socket) {
           var conn;
           conn = "" + socket.handshake.address.address + ":" + socket.handshake.address.port;
-          console.log("" + conn + " -- connects to socket.io");
+          console.log("" + conn + " connected to socket.io");
           return socket.on('commands', function(data) {
-            console.log("" + conn + " -- sending command " + data.command);
-            return hub.send(data.command, conn, data);
+            console.log("" + conn + " -> " + data.command);
+            return hub.send(data);
           });
         });
-        return hub.on('events', function(data) {
-          console.log("socket.io -- publish event " + data.event + " to browser");
+        return hub.eventstream(function(data) {
+          console.log("" + data.event + " -> browser");
           return app.io.sockets.emit('events', data);
         });
       }

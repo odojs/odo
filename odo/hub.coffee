@@ -1,62 +1,19 @@
-define ['redis', 'eventstore', 'eventstore.redis', 'odo/injectinto'], (redis, eventstore, storage, inject) ->
+define ['redis', 'eventstore', 'eventstore.redis'], (redis, eventstore, storage) ->
 
-	# The hub encapsulates functionality to send or receive messages from redis.
-	
-	# Setup the event store to publish to redis
-	es = eventstore.createStore()
-	es.configure(->
-		eventpublisher = redis.createClient()
-		
-		es.use
-			publish: (event) ->
-				console.log 'Publishing event to redis:'
-				console.log event
-				eventpublisher.publish 'events', JSON.stringify event, null, 4
-		es.use storage.createStorage()
-	).start()
-	
-	context =
-		applyHistoryThenCommand: (aggregate, command) ->
-			es.getEventStream aggregate.id, (err, stream) ->
-				console.log "Apply existing events #{stream.events.length}"
-				aggregate.loadFromHistory stream.events
-				console.log "Apply command #{command.command} to aggregate"
-				aggregate[command.command] command.payload, (err, uncommitted) ->
-					if err
-						console.log err
-						return
-					
-					for event in uncommitted
-						stream.addEvent event
-					stream.commit()
+	commandsender = redis.createClient()
+	eventpublisher = redis.createClient()
 	
 	subscriptions = []
 	listeners = {}
 	handlers = {}
-
-	commandsender = redis.createClient()
+	
+	# The hub encapsulates functionality to send or receive messages from redis.
 	result =
 		# send commands to redis __commands channel__
-		send: (commandName, sender, message) ->
-			console.log "hub -- publishing command #{commandName} to redis:"
-			console.log message
-			message = JSON.stringify message, null, 4
-			commandsender.publish 'commands', message
-
-		# store subscriptions for a channel (mostly __events__) in a array
-		on: (channel, callback) ->
-			console.log " -> #{channel}"
-			subscriptions.push
-				channel: channel
-				callback: callback
-
-			console.log "hub -- subscribers: #{subscriptions.length}"
-
-		receive: (event, callback) ->
-			console.log " -> #{event}"
-			if !listeners[event]?
-				listeners[event] = []
-			listeners[event].push callback
+		send: (command) ->
+			console.log "#{command.command} -> redis"
+			command = JSON.stringify command, null, 4
+			commandsender.publish 'commands', command
 			
 		handle: (command, callback) ->
 			console.log " -> #{command}"
@@ -65,32 +22,51 @@ define ['redis', 'eventstore', 'eventstore.redis', 'odo/injectinto'], (redis, ev
 				return
 			
 			handlers[command] = callback
-			
+		
+		# Don't use this - it's used interally by the event store
+		publish: (event) ->
+			console.log "#{event.event} -> redis"
+			eventpublisher.publish 'events', JSON.stringify event, null, 4
 
-	eventlistener = redis.createClient()
+		receive: (event, callback) ->
+			console.log " -> #{event}"
+			if !listeners[event]?
+				listeners[event] = []
+			listeners[event].push callback
+
+		# store subscriptions for a channel (mostly __events__) in a array
+		eventstream: (callback) ->
+			console.log " -> eventstream"
+			subscriptions.push callback
+	
+	commandreceiver = redis.createClient()
+	commandreceiver.on 'message', (channel, command) ->
+		command = JSON.parse command
+					
+		if handlers[command.command]?
+			console.log "#{command.command} ->"
+			handlers[command.command] command
+	
+	commandreceiver.subscribe 'commands'
+	
+	
+
 	# listen to events from redis and call each callback from subscribers
-	eventlistener.on 'message', (channel, message) ->
-		message = JSON.parse message
+	eventlistener = redis.createClient()
+	eventlistener.on 'message', (channel, event) ->
+		event = JSON.parse event
 		
-		subscriptions.forEach (subscriber) ->
-			if channel is subscriber.channel
-				subscriber.callback message
+		for subscriber in subscriptions
+			subscriber event
 		
-		if channel is 'events' and listeners[message.event]?
-			for listener in listeners[message.event]
-				listener message
+		if listeners[event.event]?
+			console.log "#{event.event} ->"
+			for listener in listeners[event.event]
+				listener event
 
 	# subscribe to __events channel__
 	eventlistener.subscribe 'events'
 	
 	
-	commandreceiver = redis.createClient()
-	commandreceiver.on 'message', (channel, message) ->
-		message = JSON.parse message
-					
-		if channel is 'commands' and handlers[message.command]?
-			handlers[message.command] message, context
-	
-	commandreceiver.subscribe 'commands'
 	
 	result
