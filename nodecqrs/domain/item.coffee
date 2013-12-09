@@ -1,4 +1,4 @@
-define ['node-uuid'], (uuid) ->
+define [], () ->
 	# The itemAggregate is the aggregationRoot for a single item all commands concerning this aggregate are handled inside this object. The itemAggregate has an internal state (id, text, destoyed)
 
 	class Item
@@ -6,7 +6,6 @@ define ['node-uuid'], (uuid) ->
 			@id = id
 			@text = ''
 			@_destroy = false
-			@uncommittedEvents = []
 			@
 			
 		# Each __command__ is mapped to an aggregate function
@@ -20,7 +19,7 @@ define ['node-uuid'], (uuid) ->
 			@new 'itemCreated',
 				id: @id
 				text: command.text
-			callback null, @uncommittedEvents
+			callback null
 
 		changeItem: (command, callback) =>
 			if command.text is ''
@@ -30,13 +29,13 @@ define ['node-uuid'], (uuid) ->
 			@new 'itemChanged',
 				id: @id
 				text: command.text
-			callback null, @uncommittedEvents
+			callback null
 
 		deleteItem: (command, callback) =>
 			@new 'itemDeleted',
 				id: @id
 				text: @text
-			callback null, @uncommittedEvents
+			callback null
 
 		_itemCreated: (event) =>
 			@text = event.payload.text
@@ -46,22 +45,3 @@ define ['node-uuid'], (uuid) ->
 
 		_itemDeleted: (event) =>
 			@_destroy = true
-
-		# create a new event and apply
-		new: (event, payload) =>
-			@apply
-				id: uuid.v1()
-				time: new Date()
-				payload: payload
-				event: event
-		
-		# Apply the event to the aggregate calling the matching function
-		apply: (event) =>
-			@["_#{event.event}"] event
-			@uncommittedEvents.push event unless event.fromHistory
-		
-		# Function to reload an itemAggregate from it's past events by applying each event again
-		loadFromHistory: (history) =>
-			for event in history
-				event.payload.fromHistory = true
-				@apply event.payload

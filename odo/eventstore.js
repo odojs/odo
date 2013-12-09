@@ -2,7 +2,7 @@
 (function() {
 
 
-  define(['eventstore', 'eventstore.redis', 'odo/hub'], function(eventstore, storage, hub) {
+  define(['node-uuid', 'eventstore', 'eventstore.redis', 'odo/hub'], function(uuid, eventstore, storage, hub) {
     var es;
     es = eventstore.createStore();
     es.configure(function() {
@@ -12,24 +12,74 @@
       return es.use(storage.createStorage());
     }).start();
     return {
-      applyHistoryThenCommand: function(aggregate, command) {
-        return es.getEventStream(aggregate.id, function(err, stream) {
-          console.log("applying " + stream.events.length + " events to " + aggregate.id);
-          aggregate.loadFromHistory(stream.events);
-          console.log("applying " + command.command);
-          return aggregate[command.command](command.payload, function(err, uncommitted) {
-            var event, _i, _len;
-            if (err) {
-              console.log(err);
-              return;
+      extend: function(aggregate) {
+        var bind, extensions, method, name, _results;
+        aggregate._uncommitted = [];
+        extensions = {
+          loadFromHistory: function(history) {
+            var event, _i, _len, _results;
+            _results = [];
+            for (_i = 0, _len = history.length; _i < _len; _i++) {
+              event = history[_i];
+              event.payload.fromHistory = true;
+              _results.push(this.apply(event.payload));
             }
-            for (_i = 0, _len = uncommitted.length; _i < _len; _i++) {
-              event = uncommitted[_i];
-              stream.addEvent(event);
+            return _results;
+          },
+          apply: function(event) {
+            this["_" + event.event](event);
+            if (!event.fromHistory) {
+              return this._uncommitted.push(event);
             }
-            return stream.commit();
-          });
-        });
+          },
+          "new": function(event, payload) {
+            return this.apply({
+              id: uuid.v1(),
+              time: new Date(),
+              payload: payload,
+              event: event
+            });
+          },
+          applyHistoryThenCommand: function(command, callback) {
+            var _this = this;
+            return es.getEventStream(this.id, function(err, stream) {
+              console.log("applying " + stream.events.length + " events to " + aggregate.id);
+              _this.loadFromHistory(stream.events);
+              console.log("applying " + command.command);
+              return _this[command.command](command.payload, function(err) {
+                var event, _i, _len, _ref;
+                if (err) {
+                  console.log(err);
+                  if (callback != null) {
+                    callback(err);
+                  }
+                  return;
+                }
+                _ref = _this._uncommitted;
+                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                  event = _ref[_i];
+                  stream.addEvent(event);
+                }
+                stream.commit();
+                _this._uncommitted = [];
+                if (callback != null) {
+                  return callback(null);
+                }
+              });
+            });
+          }
+        };
+        bind = function(method) {
+          return function() {
+            return method.apply(aggregate, arguments);
+          };
+        };
+        _results = [];
+        for (name in extensions) {
+          method = extensions[name];
+          _results.push(aggregate[name] = bind(method));
+        }
+        return _results;
       }
     };
   });

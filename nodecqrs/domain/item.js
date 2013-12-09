@@ -4,13 +4,10 @@
 
 
 
-  define(['node-uuid'], function(uuid) {
+  define([], function() {
     var Item;
     return Item = (function() {
       function Item(id) {
-        this.loadFromHistory = __bind(this.loadFromHistory, this);
-        this.apply = __bind(this.apply, this);
-        this["new"] = __bind(this["new"], this);
         this._itemDeleted = __bind(this._itemDeleted, this);
         this._itemChanged = __bind(this._itemChanged, this);
         this._itemCreated = __bind(this._itemCreated, this);
@@ -20,7 +17,6 @@
         this.id = id;
         this.text = '';
         this._destroy = false;
-        this.uncommittedEvents = [];
         this;
       }
 
@@ -33,7 +29,7 @@
           id: this.id,
           text: command.text
         });
-        return callback(null, this.uncommittedEvents);
+        return callback(null);
       };
 
       Item.prototype.changeItem = function(command, callback) {
@@ -45,7 +41,7 @@
           id: this.id,
           text: command.text
         });
-        return callback(null, this.uncommittedEvents);
+        return callback(null);
       };
 
       Item.prototype.deleteItem = function(command, callback) {
@@ -53,7 +49,7 @@
           id: this.id,
           text: this.text
         });
-        return callback(null, this.uncommittedEvents);
+        return callback(null);
       };
 
       Item.prototype._itemCreated = function(event) {
@@ -66,33 +62,6 @@
 
       Item.prototype._itemDeleted = function(event) {
         return this._destroy = true;
-      };
-
-      Item.prototype["new"] = function(event, payload) {
-        return this.apply({
-          id: uuid.v1(),
-          time: new Date(),
-          payload: payload,
-          event: event
-        });
-      };
-
-      Item.prototype.apply = function(event) {
-        this["_" + event.event](event);
-        if (!event.fromHistory) {
-          return this.uncommittedEvents.push(event);
-        }
-      };
-
-      Item.prototype.loadFromHistory = function(history) {
-        var event, _i, _len, _results;
-        _results = [];
-        for (_i = 0, _len = history.length; _i < _len; _i++) {
-          event = history[_i];
-          event.payload.fromHistory = true;
-          _results.push(this.apply(event.payload));
-        }
-        return _results;
       };
 
       return Item;
