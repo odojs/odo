@@ -2,7 +2,7 @@
 (function() {
 
 
-  define(['module', 'path', 'express', 'redis', 'odo/hubjs'], function(module, path, express, redis, hub) {
+  define(['module', 'path', 'express', 'redis'], function(module, path, express, redis) {
     return {
       configure: function(app) {
         return app.use('/articles', express["static"](path.dirname(module.uri) + '/public'));

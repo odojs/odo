@@ -1,4 +1,4 @@
-define ['module', 'path', 'express', 'redis', 'odo/hubjs'], (module, path, express, redis, hub) ->
+define ['module', 'path', 'express', 'redis'], (module, path, express, redis) ->
 	configure: (app) ->
 		app.use('/articles', express.static(path.dirname(module.uri) + '/public'))
 	

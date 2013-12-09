@@ -13,20 +13,18 @@
     }
   });
 
-  requirejs(['odo/injectinto', 'odo/commanddispatcher', 'nodecqrs/domain/itemcommands'], function(inject, dispatcher, itemcommands) {
+  requirejs(['odo/injectinto', 'nodecqrs/domain/itemcommands', 'odo/hub'], function(inject, itemcommands, hub) {
     var bindCommands;
     bindCommands = function(handler) {
       var method, name, _results;
       _results = [];
       for (name in handler) {
         method = handler[name];
-        _results.push(inject.bind("commandhandler:" + name, method));
+        _results.push(hub.handle(name, method));
       }
       return _results;
     };
-    bindCommands(itemcommands);
-    dispatcher.start();
-    return console.log('Starting domain service');
+    return bindCommands(itemcommands);
   });
 
 }).call(this);

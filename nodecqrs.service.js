@@ -13,20 +13,18 @@
     }
   });
 
-  requirejs(['odo/injectinto', 'odo/eventdispatcher', 'nodecqrs/service/itemevents'], function(inject, dispatcher, itemevents) {
+  requirejs(['odo/injectinto', 'odo/hub', 'nodecqrs/service/itemevents'], function(inject, hub, itemevents) {
     var bindEvents;
     bindEvents = function(listener) {
       var method, name, _results;
       _results = [];
       for (name in listener) {
         method = listener[name];
-        _results.push(inject.bind("eventlisteners:" + name, method));
+        _results.push(hub.receive(name, method));
       }
       return _results;
     };
-    bindEvents(itemevents);
-    dispatcher.start();
-    return console.log('Starting denormaliser service');
+    return bindEvents(itemevents);
   });
 
 }).call(this);

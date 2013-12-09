@@ -11,13 +11,10 @@ requirejs.config {
 		}
 }
 
-requirejs ['odo/injectinto', 'odo/commanddispatcher', 'nodecqrs/domain/itemcommands'], (inject, dispatcher, itemcommands) ->
+requirejs ['odo/injectinto', 'nodecqrs/domain/itemcommands', 'odo/hub'], (inject, itemcommands, hub) ->
 	
 	bindCommands = (handler) ->
 		for name, method of handler
-			inject.bind "commandhandler:#{name}", method
+			hub.handle name, method
 			
 	bindCommands itemcommands
-	
-	dispatcher.start()
-	console.log 'Starting domain service'

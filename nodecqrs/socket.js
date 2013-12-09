@@ -12,7 +12,7 @@
           console.log("" + conn + " -- connects to socket.io");
           return socket.on('commands', function(data) {
             console.log("" + conn + " -- sending command " + data.command);
-            return hub.emit(data.command, conn, data);
+            return hub.send(data.command, conn, data);
           });
         });
         return hub.on('events', function(data) {

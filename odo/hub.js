@@ -2,37 +2,105 @@
 (function() {
 
 
-  define(['redis'], function(redis) {
-    var cmd, evt, result, subscriptions;
-    cmd = redis.createClient();
-    evt = redis.createClient();
+  define(['redis', 'eventstore', 'eventstore.redis', 'odo/injectinto'], function(redis, eventstore, storage, inject) {
+    var commandreceiver, commandsender, context, es, eventlistener, handlers, listeners, result, subscriptions;
+    es = eventstore.createStore();
+    es.configure(function() {
+      var eventpublisher;
+      eventpublisher = redis.createClient();
+      es.use({
+        publish: function(event) {
+          console.log('Publishing event to redis:');
+          console.log(event);
+          return eventpublisher.publish('events', JSON.stringify(event, null, 4));
+        }
+      });
+      return es.use(storage.createStorage());
+    }).start();
+    context = {
+      applyHistoryThenCommand: function(aggregate, command) {
+        return es.getEventStream(aggregate.id, function(err, stream) {
+          console.log("Apply existing events " + stream.events.length);
+          aggregate.loadFromHistory(stream.events);
+          console.log("Apply command " + command.command + " to aggregate");
+          return aggregate[command.command](command.payload, function(err, uncommitted) {
+            var event, _i, _len;
+            if (err) {
+              console.log(err);
+              return;
+            }
+            for (_i = 0, _len = uncommitted.length; _i < _len; _i++) {
+              event = uncommitted[_i];
+              stream.addEvent(event);
+            }
+            return stream.commit();
+          });
+        });
+      }
+    };
     subscriptions = [];
+    listeners = {};
+    handlers = {};
+    commandsender = redis.createClient();
     result = {
-      emit: function(commandName, sender, message) {
+      send: function(commandName, sender, message) {
         console.log("hub -- publishing command " + commandName + " to redis:");
         console.log(message);
         message = JSON.stringify(message, null, 4);
-        return cmd.publish('commands', message);
+        return commandsender.publish('commands', message);
       },
       on: function(channel, callback) {
+        console.log(" -> " + channel);
         subscriptions.push({
           channel: channel,
           callback: callback
         });
         return console.log("hub -- subscribers: " + subscriptions.length);
+      },
+      receive: function(event, callback) {
+        console.log(" -> " + event);
+        if (listeners[event] == null) {
+          listeners[event] = [];
+        }
+        return listeners[event].push(callback);
+      },
+      handle: function(command, callback) {
+        console.log(" -> " + command);
+        if (handlers[command] != null) {
+          console.log("Error, handler already set for " + command);
+          return;
+        }
+        return handlers[command] = callback;
       }
     };
-    evt.on('message', function(channel, message) {
-      console.log("hub -- received event " + message.event + " from redis:");
+    eventlistener = redis.createClient();
+    eventlistener.on('message', function(channel, message) {
+      var listener, _i, _len, _ref, _results;
       message = JSON.parse(message);
-      console.log(message);
-      return subscriptions.forEach(function(subscriber) {
+      subscriptions.forEach(function(subscriber) {
         if (channel === subscriber.channel) {
           return subscriber.callback(message);
         }
       });
+      if (channel === 'events' && (listeners[message.event] != null)) {
+        _ref = listeners[message.event];
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          listener = _ref[_i];
+          _results.push(listener(message));
+        }
+        return _results;
+      }
     });
-    evt.subscribe('events');
+    eventlistener.subscribe('events');
+    commandreceiver = redis.createClient();
+    commandreceiver.on('message', function(channel, message) {
+      message = JSON.parse(message);
+      if (channel === 'commands' && (handlers[message.command] != null)) {
+        return handlers[message.command](message, context);
+      }
+    });
+    commandreceiver.subscribe('commands');
     return result;
   });
 

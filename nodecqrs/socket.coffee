@@ -9,7 +9,7 @@ define ['socket.io', 'odo/hub'], (socket, hub) ->
 			console.log "#{conn} -- connects to socket.io"
 			socket.on 'commands', (data) ->
 				console.log "#{conn} -- sending command #{data.command}"
-				hub.emit data.command, conn, data
+				hub.send data.command, conn, data
 
 		# On receiving an __event__ from redis via the hub module forward it to connected browsers via socket.io
 		hub.on 'events', (data) ->
