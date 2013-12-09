@@ -1,5 +1,5 @@
 define ['nodecqrs/storage'], (store) ->
-	(app) ->
+	init: (app) ->
 		app.get '/', (req, res) ->
 			res.render 'index'
 

@@ -10,11 +10,19 @@ requirejs.config {
 		}
 }
 
-requirejs ['module', 'express', 'path', 'fs', 'peekinto', 'odo/plugins', 'odo/config'], (module, express, path, fs, peek, plugins, config) ->
+requirejs ['module', 'http', 'express', 'path', 'peekinto', 'odo/config', 'odo/injectinto'], (module, http, express, path, peek, config, inject) ->
+	
 	app = express()
-
+	
 	# Plugins
-	await plugins.loadplugins ['', 'odo'], defer()
+	inject.bind 'express:plugins', [
+		requirejs './odo/bower'
+		requirejs './odo/durandal/durandal'
+		requirejs './odo/handlebars'
+		requirejs './odo/hubjsexpress'
+		requirejs './odo/twitterauth/server'
+		requirejs './articles/server'
+	]
 
 	# express config
 	for key, value of config.express
@@ -39,7 +47,9 @@ requirejs ['module', 'express', 'path', 'fs', 'peekinto', 'odo/plugins', 'odo/co
 		peek app
 
 		# Configure plugins
-		await plugins.configure app, defer()
+		for plugin in inject.many 'express:plugins'
+			if plugin.configure?
+				plugin.configure app
 		
 		app.use app.router
 
@@ -48,7 +58,10 @@ requirejs ['module', 'express', 'path', 'fs', 'peekinto', 'odo/plugins', 'odo/co
 			dumpExceptions: true
 			showStack: true
 
-	app.listen(process.env.PORT || 80)
+	server = http.createServer app
+	server.listen(process.env.PORT || 80)
 
 	# Initialise plugins
-	await plugins.init app, defer()
+	for plugin in inject.many 'express:plugins'
+		if plugin.init?
+			plugin.init app

@@ -3,18 +3,20 @@
 
 
   define(['nodecqrs/storage'], function(store) {
-    return function(app) {
-      app.get('/', function(req, res) {
-        return res.render('index');
-      });
-      return app.get('/allItems.json', function(req, res) {
-        return store.loadAll(function(err, items) {
-          if (err) {
-            res.json({});
-          }
-          return res.json(items);
+    return {
+      init: function(app) {
+        app.get('/', function(req, res) {
+          return res.render('index');
         });
-      });
+        return app.get('/allItems.json', function(req, res) {
+          return store.loadAll(function(err, items) {
+            if (err) {
+              res.json({});
+            }
+            return res.json(items);
+          });
+        });
+      }
     };
   });
 

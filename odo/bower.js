@@ -5,7 +5,7 @@
   define(['module', 'path', 'express'], function(module, path, express) {
     return {
       configure: function(app) {
-        return app.use('/', express["static"](path.dirname(module.uri) + '/../../bower_components'));
+        return app.use('/', express["static"](path.dirname(module.uri) + '/../bower_components'));
       }
     };
   });
