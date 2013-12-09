@@ -12,7 +12,7 @@
   });
 
   requirejs(['module', 'http', 'express', 'path', 'peekinto', 'odo/config', 'odo/injectinto'], function(module, http, express, path, peek, config, inject) {
-    var app, key, plugin, server, value, _i, _len, _ref, _ref1, _results,
+    var app, key, plugin, value, _i, _len, _ref, _ref1, _results,
       _this = this;
     app = express();
     inject.bind('express:plugins', [requirejs('./odo/bower'), requirejs('./odo/durandal/durandal'), requirejs('./odo/handlebars'), requirejs('./odo/hubjsexpress'), requirejs('./odo/twitterauth/server'), requirejs('./articles/server')]);
@@ -46,8 +46,8 @@
         showStack: true
       }));
     });
-    server = http.createServer(app);
-    server.listen(process.env.PORT || 80);
+    app.server = http.createServer(app);
+    app.server.listen(process.env.PORT || 80);
     _ref1 = inject.many('express:plugins');
     _results = [];
     for (_i = 0, _len = _ref1.length; _i < _len; _i++) {

@@ -11,8 +11,8 @@
     paths: {}
   });
 
-  requirejs(['module', 'http', 'express', 'path', 'peekinto', 'odo/config', 'odo/eventstore/hub', 'socket.io', 'odo/injectinto'], function(module, http, express, path, peek, config, hub, socket, inject) {
-    var app, io, key, plugin, server, value, _i, _len, _ref, _ref1, _results,
+  requirejs(['module', 'http', 'express', 'path', 'peekinto', 'odo/config', 'odo/eventstore/hub', 'odo/injectinto'], function(module, http, express, path, peek, config, hub, inject) {
+    var app, key, plugin, value, _i, _len, _ref, _ref1, _results,
       _this = this;
     app = express();
     inject.bind('express:plugins', [requirejs('./odo/handlebars'), requirejs('./nodecqrs/routes'), requirejs('./nodecqrs/socket')]);
@@ -46,9 +46,8 @@
         showStack: true
       }));
     });
-    server = http.createServer(app);
-    app.io = io = socket.listen(server);
-    server.listen(process.env.PORT || 3000);
+    app.server = http.createServer(app);
+    app.server.listen(process.env.PORT || 3000);
     _ref1 = inject.many('express:plugins');
     _results = [];
     for (_i = 0, _len = _ref1.length; _i < _len; _i++) {

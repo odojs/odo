@@ -1,6 +1,7 @@
-define ['odo/eventstore/hub'], (hub) ->
+define ['socket.io', 'odo/eventstore/hub'], (socket, hub) ->
 	init: (app) ->
 		# SETUP COMMUNICATION CHANNELS
+		app.io = socket.listen app.server
 
 		# On receiving __commands__ from browser via socket.io emit them on the ĥub module (which will forward it to redis pubsub)
 		app.io.sockets.on 'connection', (socket) ->
@@ -9,8 +10,6 @@ define ['odo/eventstore/hub'], (hub) ->
 			socket.on 'commands', (data) ->
 				console.log "#{conn} -- sending command #{data.command}"
 				hub.emit data.command, conn, data
-
-
 
 		# On receiving an __event__ from redis via the hub module forward it to connected browsers via socket.io
 		hub.on 'events', (data) ->

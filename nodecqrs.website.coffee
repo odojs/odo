@@ -10,7 +10,7 @@ requirejs.config {
 		}
 }
 
-requirejs ['module', 'http', 'express', 'path', 'peekinto', 'odo/config', 'odo/eventstore/hub', 'socket.io', 'odo/injectinto'], (module, http, express, path, peek, config, hub, socket, inject) ->
+requirejs ['module', 'http', 'express', 'path', 'peekinto', 'odo/config', 'odo/eventstore/hub', 'odo/injectinto'], (module, http, express, path, peek, config, hub, inject) ->
 	
 	app = express()
 
@@ -36,8 +36,7 @@ requirejs ['module', 'http', 'express', 'path', 'peekinto', 'odo/config', 'odo/e
 		app.use express.cookieSession
 			key: app.get 'session key'
 			secret: app.get 'session secret'
-		#app.set 'view engine', 'jade'
-		#app.set 'views', path.join(path.dirname(module.uri), '/nodecqrs/views')
+			
 		
 		app.use '/', express.static(path.join(path.dirname(module.uri), '/nodecqrs/public'))
 		
@@ -56,10 +55,9 @@ requirejs ['module', 'http', 'express', 'path', 'peekinto', 'odo/config', 'odo/e
 			dumpExceptions: true
 			showStack: true
 	
-	server = http.createServer app
-	app.io = io = socket.listen server
-	
-	server.listen(process.env.PORT || 3000)
+	# Put the server on app for extensibility
+	app.server = http.createServer app
+	app.server.listen(process.env.PORT || 3000)
 
 	# Initialise plugins
 	for plugin in inject.many 'express:plugins'

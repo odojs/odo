@@ -2,9 +2,10 @@
 (function() {
 
 
-  define(['odo/eventstore/hub'], function(hub) {
+  define(['socket.io', 'odo/eventstore/hub'], function(socket, hub) {
     return {
       init: function(app) {
+        app.io = socket.listen(app.server);
         app.io.sockets.on('connection', function(socket) {
           var conn;
           conn = "" + socket.handshake.address.address + ":" + socket.handshake.address.port;

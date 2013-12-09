@@ -58,8 +58,9 @@ requirejs ['module', 'http', 'express', 'path', 'peekinto', 'odo/config', 'odo/i
 			dumpExceptions: true
 			showStack: true
 
-	server = http.createServer app
-	server.listen(process.env.PORT || 80)
+	# Put the server on app for extensibility
+	app.server = http.createServer app
+	app.server.listen(process.env.PORT || 80)
 
 	# Initialise plugins
 	for plugin in inject.many 'express:plugins'
