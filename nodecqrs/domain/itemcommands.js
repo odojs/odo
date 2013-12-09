@@ -2,25 +2,24 @@
 (function() {
 
 
-  define(['node-uuid', 'domain/item'], function(uuid, Item) {
+  define(['node-uuid', 'nodecqrs/domain/item'], function(uuid, Item) {
     return {
       createItem: function(command, context) {
         var id, item, newId;
         id = uuid.v1();
         newId = "item:" + id;
-        console.log("create a new aggregate with id= " + newId);
         item = new Item(newId);
-        return context.applyHistoryThenCommand(item);
+        return context.applyHistoryThenCommand(item, command);
       },
       deleteItem: function(command, context) {
         var item;
-        item = new Item(command.id);
-        return context.applyHistoryThenCommand(item);
+        item = new Item(command.payload.id);
+        return context.applyHistoryThenCommand(item, command);
       },
       changeItem: function(command, context) {
         var item;
-        item = new Item(command.id);
-        return context.applyHistoryThenCommand(item);
+        item = new Item(command.payload.id);
+        return context.applyHistoryThenCommand(item, command);
       }
     };
   });

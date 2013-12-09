@@ -7,9 +7,6 @@ requirejs.config {
 		# are loaded relative to the top-level JS file.
 		nodeRequire: require
 		paths: {
-			plugins: './plugins'
-			config: './config'
-			odo: './odo'
 		}
 }
 
@@ -17,7 +14,7 @@ requirejs ['module', 'express', 'path', 'fs', 'peekinto', 'odo/plugins', 'odo/co
 	app = express()
 
 	# Plugins
-	await plugins.loadplugins config.plugins.directories, defer()
+	await plugins.loadplugins ['', 'odo'], defer()
 
 	# express config
 	for key, value of config.express
@@ -34,10 +31,6 @@ requirejs ['module', 'express', 'path', 'fs', 'peekinto', 'odo/plugins', 'odo/co
 		app.use express.cookieSession
 			key: app.get 'session key'
 			secret: app.get 'session secret'
-
-		# Create configured routes
-		for route in config.routes
-			app.use route.source, express.static(path.join(path.dirname(module.uri), './', route.target))
 		
 		
 		app.use('/', express.static(path.dirname(module.uri) + '/thomascoats.com/public'))

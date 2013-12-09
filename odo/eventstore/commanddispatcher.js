@@ -2,21 +2,10 @@
 (function() {
 
 
-  define(['redis', 'eventstore', 'eventstore.redis', 'odo/injectinto', 'domain/itemcommands'], function(redis, eventstore, storage, inject, itemcommands) {
+  define(['redis', 'eventstore', 'eventstore.redis', 'odo/injectinto'], function(redis, eventstore, storage, inject) {
     return {
       start: function() {
-        var addBinding, bindings, es, subscriber;
-        bindings = {};
-        addBinding = function(binding) {
-          var method, name, _results;
-          _results = [];
-          for (name in binding) {
-            method = binding[name];
-            _results.push(bindings[name] = method);
-          }
-          return _results;
-        };
-        addBinding(itemcommands);
+        var context, es, subscriber;
         es = eventstore.createStore();
         es.configure(function() {
           var publisher;
@@ -30,6 +19,27 @@
           });
           return es.use(storage.createStorage());
         }).start();
+        context = {
+          applyHistoryThenCommand: function(aggregate, command) {
+            return es.getEventStream(aggregate.id, function(err, stream) {
+              console.log("Apply existing events " + stream.events.length);
+              aggregate.loadFromHistory(stream.events);
+              console.log("Apply command " + command.command + " to aggregate");
+              return aggregate[command.command](command.payload, function(err, uncommitted) {
+                var event, _i, _len;
+                if (err) {
+                  console.log(err);
+                  return;
+                }
+                for (_i = 0, _len = uncommitted.length; _i < _len; _i++) {
+                  event = uncommitted[_i];
+                  stream.addEvent(event);
+                }
+                return stream.commit();
+              });
+            });
+          }
+        };
         subscriber = redis.createClient();
         subscriber.on('message', function(channel, message) {
           var command, handler;
@@ -41,24 +51,7 @@
             console.log("Could not find a command handler for " + command.command + ", this is an error!");
             return;
           }
-          return handler(command.payload, {
-            applyHistoryThenCommand: function(aggregate, callback) {
-              console.log("Load history for id= " + aggregate.id);
-              return es.getEventStream(aggregate.id, function(err, stream) {
-                console.log("Apply existing events " + stream.events.length);
-                aggregate.loadFromHistory(stream.events);
-                console.log("Apply command " + command.command + " to aggregate");
-                return aggregate[command.command](command.payload, function(err, uncommitted) {
-                  if (err) {
-                    return console.log(err);
-                  } else {
-                    stream.addEvent(uncommitted[0]);
-                    return stream.commit();
-                  }
-                });
-              });
-            }
-          });
+          return handler(command, context);
         });
         return subscriber.subscribe('commands');
       }

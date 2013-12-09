@@ -1,4 +1,4 @@
-define ['service/storage'], (store) ->
+define ['nodecqrs/storage'], (store) ->
 	(app) ->
 		app.get '/', (req, res) ->
 			res.render 'index'

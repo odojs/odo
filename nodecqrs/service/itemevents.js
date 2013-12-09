@@ -2,7 +2,7 @@
 (function() {
 
 
-  define(['service/storage'], function(store) {
+  define(['nodecqrs/storage'], function(store) {
     return {
       itemCreated: function(evt) {
         return store.save({

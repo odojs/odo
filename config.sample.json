@@ -1,10 +1,4 @@
 {
-	"plugins": {
-		"directories": [
-			"",
-			"odo"
-		]
-	},
 	"express": {
 		"session key": "xyz",
 		"cookie secret": "123",
@@ -17,15 +11,5 @@
 		"dropbox fail": "/",
 		"dropbox sign-in": "/",
 		"dropbox sign-out": "/",
-	},
-	"routes": [
-		{
-			"source": "/",
-			"target": "/bower_components"
-		},
-		{
-			"source": "/source-url",
-			"target": "/target-path"
-		}
-	]
+	}
 }

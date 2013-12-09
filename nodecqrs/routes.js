@@ -2,7 +2,7 @@
 (function() {
 
 
-  define(['service/storage'], function(store) {
+  define(['nodecqrs/storage'], function(store) {
     return function(app) {
       app.get('/', function(req, res) {
         return res.render('index');

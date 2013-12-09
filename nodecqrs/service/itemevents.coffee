@@ -1,4 +1,4 @@
-define ['service/storage'], (store) ->
+define ['nodecqrs/storage'], (store) ->
 	itemCreated: (evt) ->
 		store.save
 			id: evt.payload.id

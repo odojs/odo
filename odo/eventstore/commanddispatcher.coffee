@@ -13,6 +13,21 @@ define ['redis', 'eventstore', 'eventstore.redis', 'odo/injectinto'], (redis, ev
 			es.use storage.createStorage()
 		).start()
 		
+		context =
+			applyHistoryThenCommand: (aggregate, command) ->
+				es.getEventStream aggregate.id, (err, stream) ->
+					console.log "Apply existing events #{stream.events.length}"
+					aggregate.loadFromHistory stream.events
+					console.log "Apply command #{command.command} to aggregate"
+					aggregate[command.command] command.payload, (err, uncommitted) ->
+						if err
+							console.log err
+							return
+						
+						for event in uncommitted
+							stream.addEvent event
+						stream.commit()
+		
 		# Subscribe to commands and pass them 
 		subscriber = redis.createClient()
 		subscriber.on 'message', (channel, message) ->
@@ -29,18 +44,6 @@ define ['redis', 'eventstore', 'eventstore.redis', 'odo/injectinto'], (redis, ev
 				return
 				
 			# Give the command handler a context
-			handler command.payload,
-				applyHistoryThenCommand: (aggregate, callback) ->
-					console.log "Load history for id= #{aggregate.id}"
-					es.getEventStream aggregate.id, (err, stream) ->
-						console.log "Apply existing events #{stream.events.length}"
-						aggregate.loadFromHistory stream.events
-						console.log "Apply command #{command.command} to aggregate"
-						aggregate[command.command] command.payload, (err, uncommitted) ->
-							if err
-								console.log err
-							else
-								stream.addEvent uncommitted[0]
-								stream.commit()
+			handler command, context
 		
 		subscriber.subscribe 'commands'

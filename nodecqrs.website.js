@@ -9,12 +9,7 @@
 
   requirejs.config({
     nodeRequire: require,
-    paths: {
-      plugins: './plugins',
-      config: './config',
-      odo: './odo',
-      service: './nodecqrs/service'
-    }
+    paths: {}
   });
 
   requirejs(['module', 'express', 'path', 'fs', 'peekinto', 'odo/plugins', 'odo/config', 'odo/eventstore/hub', 'http', 'socket.io', 'nodecqrs/routes'], function(module, express, path, fs, peek, plugins, config, hub, http, socket, routes) {
@@ -64,10 +59,10 @@
     server.listen(process.env.PORT || 3000);
     __iced_deferrals = new iced.Deferrals(__iced_k, {
       parent: ___iced_passed_deferral,
-      filename: "/Users/tcoats/Source/odo/nodecqrs.coffee"
+      filename: "/Users/tcoats/Source/odo/nodecqrs.website.coffee"
     });
     plugins.init(app, __iced_deferrals.defer({
-      lineno: 97
+      lineno: 89
     }));
     __iced_deferrals._fulfill();
   });

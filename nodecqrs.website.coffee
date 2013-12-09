@@ -7,10 +7,6 @@ requirejs.config {
 		# are loaded relative to the top-level JS file.
 		nodeRequire: require
 		paths: {
-			plugins: './plugins'
-			config: './config'
-			odo: './odo'
-			service: './nodecqrs/service'
 		}
 }
 
@@ -39,10 +35,6 @@ requirejs ['module', 'express', 'path', 'fs', 'peekinto', 'odo/plugins', 'odo/co
 		console.log 'Binding'
 		console.log path.join(path.dirname(module.uri), '/nodecqrs/views')
 		app.set 'views', path.join(path.dirname(module.uri), '/nodecqrs/views')
-
-		# Create configured routes
-		#for route in config.routes
-		#	app.use route.source, express.static(path.join(path.dirname(module.uri), './', route.target))
 		
 		app.use '/', express.static(path.join(path.dirname(module.uri), '/nodecqrs/public'))
 		

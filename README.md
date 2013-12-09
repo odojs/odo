@@ -14,7 +14,7 @@ A Nodejs framework for creating awesome things.
 ## Run
 
 ```
-./run.sh
+./thomascoats.com.sh
 redis-server
 ```
 

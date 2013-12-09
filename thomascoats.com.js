@@ -9,11 +9,7 @@
 
   requirejs.config({
     nodeRequire: require,
-    paths: {
-      plugins: './plugins',
-      config: './config',
-      odo: './odo'
-    }
+    paths: {}
   });
 
   requirejs(['module', 'express', 'path', 'fs', 'peekinto', 'odo/plugins', 'odo/config'], function(module, express, path, fs, peek, plugins, config) {
@@ -27,8 +23,8 @@
         parent: ___iced_passed_deferral,
         filename: "/Users/tcoats/Source/odo/thomascoats.com.coffee"
       });
-      plugins.loadplugins(config.plugins.directories, __iced_deferrals.defer({
-        lineno: 19
+      plugins.loadplugins(['', 'odo'], __iced_deferrals.defer({
+        lineno: 16
       }));
       __iced_deferrals._fulfill();
     })(function() {
@@ -39,7 +35,7 @@
         app.set(key, value);
       }
       app.configure(function() {
-        var route, ___iced_passed_deferral1, __iced_deferrals, __iced_k, _i, _len, _ref1;
+        var ___iced_passed_deferral1, __iced_deferrals, __iced_k;
         __iced_k = __iced_k_noop;
         ___iced_passed_deferral1 = iced.findDeferral(arguments);
         app.use(express.compress());
@@ -50,11 +46,6 @@
           key: app.get('session key'),
           secret: app.get('session secret')
         }));
-        _ref1 = config.routes;
-        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-          route = _ref1[_i];
-          app.use(route.source, express["static"](path.join(path.dirname(module.uri), './', route.target)));
-        }
         app.use('/', express["static"](path.dirname(module.uri) + '/thomascoats.com/public'));
         peek(app);
         (function(__iced_k) {
@@ -63,7 +54,7 @@
             filename: "/Users/tcoats/Source/odo/thomascoats.com.coffee"
           });
           plugins.configure(app, __iced_deferrals.defer({
-            lineno: 48
+            lineno: 41
           }));
           __iced_deferrals._fulfill();
         })(function() {
@@ -80,7 +71,7 @@
         filename: "/Users/tcoats/Source/odo/thomascoats.com.coffee"
       });
       plugins.init(app, __iced_deferrals.defer({
-        lineno: 60
+        lineno: 53
       }));
       __iced_deferrals._fulfill();
     });

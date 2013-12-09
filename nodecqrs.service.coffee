@@ -11,7 +11,8 @@ requirejs.config {
 		}
 }
 
-requirejs ['odo/injectinto', 'odo/eventstore/eventdispatcher', 'service/itemevents'], (inject, dispatcher, itemevents) ->
+requirejs ['odo/injectinto', 'odo/eventstore/eventdispatcher', 'nodecqrs/service/itemevents'], (inject, dispatcher, itemevents) ->
+	
 	bindEvents = (listener) ->
 		for name, method of listener
 			inject.bind "eventlisteners:#{name}", method
@@ -19,4 +20,4 @@ requirejs ['odo/injectinto', 'odo/eventstore/eventdispatcher', 'service/itemeven
 	bindEvents itemevents
 	
 	dispatcher.start()
-	console.log 'Starting service'
+	console.log 'Starting denormaliser service'
