@@ -1,5 +1,0 @@
-{
-	"name": "EventStore",
-	"version": "1.0.0",
-	"main": "./eventstore.js"
-}
