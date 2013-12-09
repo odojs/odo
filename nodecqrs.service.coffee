@@ -11,7 +11,7 @@ requirejs.config {
 		}
 }
 
-requirejs ['odo/injectinto', 'odo/eventstore/eventdispatcher', 'nodecqrs/service/itemevents'], (inject, dispatcher, itemevents) ->
+requirejs ['odo/injectinto', 'odo/eventdispatcher', 'nodecqrs/service/itemevents'], (inject, dispatcher, itemevents) ->
 	
 	bindEvents = (listener) ->
 		for name, method of listener

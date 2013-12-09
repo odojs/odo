@@ -2,8 +2,11 @@
 (function() {
 
 
-  define(['nodecqrs/storage'], function(store) {
+  define(['module', 'express', 'path', 'nodecqrs/storage'], function(module, express, path, store) {
     return {
+      configure: function(app) {
+        return app.use('/', express["static"](path.join(path.dirname(module.uri), '/public')));
+      },
       init: function(app) {
         app.get('/', function(req, res) {
           return res.render({

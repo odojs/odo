@@ -2,7 +2,7 @@
 (function() {
 
 
-  define(['socket.io', 'odo/eventstore/hub'], function(socket, hub) {
+  define(['socket.io', 'odo/hub'], function(socket, hub) {
     return {
       init: function(app) {
         app.io = socket.listen(app.server);

@@ -13,7 +13,7 @@
     }
   });
 
-  requirejs(['odo/injectinto', 'odo/eventstore/eventdispatcher', 'nodecqrs/service/itemevents'], function(inject, dispatcher, itemevents) {
+  requirejs(['odo/injectinto', 'odo/eventdispatcher', 'nodecqrs/service/itemevents'], function(inject, dispatcher, itemevents) {
     var bindEvents;
     bindEvents = function(listener) {
       var method, name, _results;

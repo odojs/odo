@@ -5,7 +5,7 @@
   define(['module', 'path', 'express'], function(module, path, express) {
     return {
       configure: function(app) {
-        return app.use('/odo/durandal', express["static"](path.dirname(module.uri) + '/public'));
+        return app.use('/odo/durandal', express["static"](path.dirname(module.uri) + '/durandal-public'));
       }
     };
   });

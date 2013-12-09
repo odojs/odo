@@ -11,54 +11,10 @@
     paths: {}
   });
 
-  requirejs(['module', 'http', 'express', 'path', 'peekinto', 'odo/config', 'odo/eventstore/hub', 'odo/injectinto'], function(module, http, express, path, peek, config, hub, inject) {
-    var app, key, plugin, value, _i, _len, _ref, _ref1, _results,
-      _this = this;
-    app = express();
-    inject.bind('express:plugins', [requirejs('./odo/handlebars'), requirejs('./nodecqrs/routes'), requirejs('./nodecqrs/socket')]);
-    _ref = config.express;
-    for (key in _ref) {
-      value = _ref[key];
-      app.set(key, value);
-    }
-    app.configure(function() {
-      var plugin, _i, _len, _ref1;
-      app.use(express.compress());
-      app.use(express.bodyParser());
-      app.use(express.methodOverride());
-      app.use(express.cookieParser(app.get('cookie secret')));
-      app.use(express.cookieSession({
-        key: app.get('session key'),
-        secret: app.get('session secret')
-      }));
-      app.use('/', express["static"](path.join(path.dirname(module.uri), '/nodecqrs/public')));
-      peek(app);
-      _ref1 = inject.many('express:plugins');
-      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-        plugin = _ref1[_i];
-        if (plugin.configure != null) {
-          plugin.configure(app);
-        }
-      }
-      app.use(app.router);
-      return app.use(express.errorHandler({
-        dumpExceptions: true,
-        showStack: true
-      }));
-    });
-    app.server = http.createServer(app);
-    app.server.listen(process.env.PORT || 3000);
-    _ref1 = inject.many('express:plugins');
-    _results = [];
-    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-      plugin = _ref1[_i];
-      if (plugin.init != null) {
-        _results.push(plugin.init(app));
-      } else {
-        _results.push(void 0);
-      }
-    }
-    return _results;
+  requirejs(['odo/express'], function(express) {
+    var app;
+    process.env.PORT = 3000;
+    return app = express([requirejs('./odo/peek'), requirejs('./odo/handlebars'), requirejs('./nodecqrs/socket'), requirejs('./nodecqrs/routes')]);
   });
 
 }).call(this);

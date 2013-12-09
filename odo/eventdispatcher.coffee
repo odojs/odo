@@ -1,4 +1,4 @@
-define ['odo/eventstore/hub', 'odo/injectinto'], (hub, inject) ->
+define ['odo/hub', 'odo/injectinto'], (hub, inject) ->
 	start: ->
 		hub.on 'events', (data) ->
 			console.log data

@@ -1,4 +1,4 @@
-define ['socket.io', 'odo/eventstore/hub'], (socket, hub) ->
+define ['socket.io', 'odo/hub'], (socket, hub) ->
 	init: (app) ->
 		# SETUP COMMUNICATION CHANNELS
 		app.io = socket.listen app.server

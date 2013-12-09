@@ -1,4 +1,8 @@
-define ['nodecqrs/storage'], (store) ->
+define ['module', 'express', 'path', 'nodecqrs/storage'], (module, express, path, store) ->
+	
+	configure: (app) ->
+		app.use '/', express.static(path.join(path.dirname(module.uri), '/public'))
+	
 	init: (app) ->
 		app.get '/', (req, res) ->
 			res.render
