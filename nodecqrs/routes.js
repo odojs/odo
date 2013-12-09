@@ -6,7 +6,15 @@
     return {
       init: function(app) {
         app.get('/', function(req, res) {
-          return res.render('index');
+          return res.render({
+            view: 'nodecqrs/layout',
+            data: {
+              title: 'nodecqrs example'
+            },
+            partials: {
+              content: 'index'
+            }
+          });
         });
         return app.get('/allItems.json', function(req, res) {
           return store.loadAll(function(err, items) {

@@ -15,7 +15,7 @@
     var app, io, key, plugin, server, value, _i, _len, _ref, _ref1, _results,
       _this = this;
     app = express();
-    inject.bind('express:plugins', [requirejs('./nodecqrs/routes'), requirejs('./nodecqrs/socket')]);
+    inject.bind('express:plugins', [requirejs('./odo/handlebars'), requirejs('./nodecqrs/routes'), requirejs('./nodecqrs/socket')]);
     _ref = config.express;
     for (key in _ref) {
       value = _ref[key];
@@ -31,10 +31,6 @@
         key: app.get('session key'),
         secret: app.get('session secret')
       }));
-      app.set('view engine', 'jade');
-      console.log('Binding');
-      console.log(path.join(path.dirname(module.uri), '/nodecqrs/views'));
-      app.set('views', path.join(path.dirname(module.uri), '/nodecqrs/views'));
       app.use('/', express["static"](path.join(path.dirname(module.uri), '/nodecqrs/public')));
       peek(app);
       _ref1 = inject.many('express:plugins');

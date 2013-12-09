@@ -16,6 +16,7 @@ requirejs ['module', 'http', 'express', 'path', 'peekinto', 'odo/config', 'odo/e
 
 	# Plugins
 	inject.bind 'express:plugins', [
+		requirejs './odo/handlebars'
 		requirejs './nodecqrs/routes'
 		requirejs './nodecqrs/socket'
 	]
@@ -35,10 +36,8 @@ requirejs ['module', 'http', 'express', 'path', 'peekinto', 'odo/config', 'odo/e
 		app.use express.cookieSession
 			key: app.get 'session key'
 			secret: app.get 'session secret'
-		app.set 'view engine', 'jade'
-		console.log 'Binding'
-		console.log path.join(path.dirname(module.uri), '/nodecqrs/views')
-		app.set 'views', path.join(path.dirname(module.uri), '/nodecqrs/views')
+		#app.set 'view engine', 'jade'
+		#app.set 'views', path.join(path.dirname(module.uri), '/nodecqrs/views')
 		
 		app.use '/', express.static(path.join(path.dirname(module.uri), '/nodecqrs/public'))
 		
