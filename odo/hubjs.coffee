@@ -1,2 +1,0 @@
-define ['hubjs'], (hub) ->
-	hub()

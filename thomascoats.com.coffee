@@ -19,7 +19,6 @@ requirejs ['odo/express'], (express) ->
 		requirejs './odo/bower'
 		requirejs './odo/durandal'
 		requirejs './odo/handlebars'
-		requirejs './odo/hubjsexpress'
 		requirejs './odo/twitterauth'
 		requirejs './articles/server'
 		requirejs './thomascoats.com/routes'

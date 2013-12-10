@@ -14,7 +14,7 @@
   requirejs(['odo/express'], function(express) {
     var app;
     process.env.PORT = 80;
-    return app = express([requirejs('./odo/peek'), requirejs('./odo/bower'), requirejs('./odo/durandal'), requirejs('./odo/handlebars'), requirejs('./odo/hubjsexpress'), requirejs('./odo/twitterauth'), requirejs('./articles/server'), requirejs('./thomascoats.com/routes')]);
+    return app = express([requirejs('./odo/peek'), requirejs('./odo/bower'), requirejs('./odo/durandal'), requirejs('./odo/handlebars'), requirejs('./odo/twitterauth'), requirejs('./articles/server'), requirejs('./thomascoats.com/routes')]);
   });
 
 }).call(this);

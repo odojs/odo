@@ -16,7 +16,6 @@
 		"passport-twitter": "*",
 		"redis": "*",
 		"handlebars": "*",
-		"hubjs": "*",
 		"eventstore": "*",
 		"eventstore.redis": "*",
 		"node-uuid": "*",
