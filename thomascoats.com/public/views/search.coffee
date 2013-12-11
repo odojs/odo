@@ -1,4 +1,4 @@
-﻿define ['knockout', 'jquery', 'plugins/router', 'components/dialog', 'articles/client', 'odo/auth/twitter'], (ko, $, router, Dialog, ArticleLogic, twitterauth) ->
+﻿define ['q', 'knockout', 'plugins/router', 'components/dialog', 'articles/client', 'odo/auth/twitter'], (Q, ko, router, Dialog, ArticleLogic, twitterauth) ->
 	class Search
 		constructor: ->
 			@articles = ko.observableArray []
@@ -27,26 +27,29 @@
 			@articleLogic = new ArticleLogic()
 		
 		canActivate: =>
-			$.Deferred((deferred) =>
-				twitterauth.getUser (err, user) ->
-					if err?
-						deferred.resolve {
-							redirect: '#welcome'
-						}
-						return
-					deferred.resolve yes
-			).promise()
+			dfd = Q.defer()
+			twitterauth.getUser()
+				.then(->
+					dfd.resolve yes
+				)
+				.fail(->
+					dfd.resolve {
+						redirect: '#welcome'
+					}
+				)
+			dfd.promise
 		
 		activate: =>
-			$.Deferred((deferred) =>
-				@articleLogic.getArticlesForAutocomplete()
-					.then((articles) =>
-						for article in articles
-							@articles.push article
-						deferred.resolve()
-					)
-					.fail((err) => deferred.reject err)
-			).promise()
+			dfd = Q.defer()
+			@articleLogic.getArticlesForAutocomplete()
+				.then((articles) =>
+					for article in articles
+						@articles.push article
+					dfd.resolve()
+				)
+				.fail((err) => dfd.reject err)
+				
+			dfd.promise
 			
 		up: =>
 			index = @selectedIndex()

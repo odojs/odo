@@ -1,4 +1,4 @@
-﻿define ['jquery', 'odo/auth/twitter', 'uuid'], ($, twitterauth, uuid) ->
+﻿define ['q', 'jquery', 'odo/auth/twitter', 'uuid'], (Q, $, twitterauth, uuid) ->
 	areas = [
 		'Patterns & Practices'
 		'Leader of Men'
@@ -8,13 +8,9 @@
 		constructor: ->
 	
 		getArticlesForAutocomplete: =>
-			$.Deferred((deferred) =>
-				twitterauth.getUser (err, user) ->
-					if err?
-						deferred.reject err
-						return
-					
-					$.get("user/#{user.id}/articles")
+			twitterauth.getUser()
+				.then((user) ->
+					Q($.get("user/#{user.id}/articles"))
 						.then((articles) =>
 							articles = articles.sort (a, b) ->
 								a = a.name.toLowerCase()
@@ -23,43 +19,31 @@
 								return -1 if a < b
 								return 1 if a > b
 								0
-							deferred.resolve articles
+							articles
 						)
-						.fail((xhr, err) => deferred.reject err)
-			).promise()
+				)
 		
 		getArticleForDisplay: (id) =>
-			$.Deferred((deferred) =>
-				$.get("article/#{id}")
-					.then((article) =>
-						article.url = @getUrlForArticle article
-						deferred.resolve article
-					)
-					.fail((xhr, err) => deferred.reject err)
-			).promise()
+			Q($.get("article/#{id}"))
+				.then((article) =>
+					article.url = @getUrlForArticle article
+					article
+				)
 		
 		getAreasForAutocomplete: =>
-			$.Deferred((deferred) =>
-				deferred.resolve areas
-			).promise()
+			dfd = Q.defer()
+			dfd.resolve areas
+			dfd.promise
 		
 		getUrlForArticle: (article) =>
 			"articles/#{article.id}/#{article.name}"
 		
 		createArticle: (article) =>
-			$.Deferred((deferred) =>
-				article.id = uuid.v1()
-				$.post("article/#{article.id}", article)
-					.then(=> deferred.resolve())
-					.fail((xhr, err) => deferred.reject err)
-			).promise()
+			article.id = uuid.v1()
+			Q($.post("article/#{article.id}", article))
 		
 		deleteArticle: (id) =>
-			$.Deferred((deferred) =>
-				$.ajax({
-					url: "article/#{id}"
-					type: 'DELETE'
-				})
-					.then(=> deferred.resolve())
-					.fail((xhr, err) => deferred.reject err)
-			).promise()
+			Q($.ajax({
+				url: "article/#{id}"
+				type: 'DELETE'
+			}))

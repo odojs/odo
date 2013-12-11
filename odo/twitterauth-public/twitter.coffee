@@ -1,12 +1,17 @@
-﻿define ['jquery'], ($) ->
+﻿define ['jquery', 'q'], ($, Q) ->
 	cache = null
 	
-	getUser: (done) =>
+	getUser: () =>
+		dfd = Q.defer()
+		
 		if @cache?
-			done null, @cache
-		$.get('/auth/user').then((data) ->
-			@cache = data
-			done null, data
-		).fail((xhr, err) ->
-			done err
-		)
+			dfd.resolve @cache
+		Q($.get('/auth/user'))
+			.then((data) =>
+				@cache = data
+				dfd.resolve data
+			)
+			.fail(->
+				dfd.reject())
+			
+		dfd.promise

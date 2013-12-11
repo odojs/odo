@@ -13,6 +13,7 @@
 		transitions: 'odo/durandal/transitions'
 		components: 'odo/durandal/components'
 		odo: 'odo'
+		q: 'q/q'
 
 	shim:
 		bootstrap:

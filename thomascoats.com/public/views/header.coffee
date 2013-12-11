@@ -1,15 +1,16 @@
-define ['knockout', 'odo/auth/twitter'], (ko, twitterauth) ->
+define ['q', 'knockout', 'odo/auth/twitter'], (Q, ko, twitterauth) ->
 	class Header
 		activate: =>
-			$.Deferred((deferred) =>
-				twitterauth.getUser (err, user) =>
-					if err?
-						deferred.resolve false
-						return
-					
+			dfd = Q.defer()
+			twitterauth.getUser()
+				.then((user) =>
 					@user user
-					deferred.resolve true
-			).promise()
+					dfd.resolve yes
+				)
+				.fail(->
+					dfd.resolve no
+				)
+			dfd.promise
 		
 		user: ko.observable null
 		

@@ -37,9 +37,9 @@ redis-server
 * [Passport](http://passportjs.org/) (authentication)
 * [Passport Twitter](https://github.com/jaredhanson/passport-twitter) (authentication)
 * [hub.js](http://maxantoni.de/projects/hub.js/) (messaging)
-* [Iced Coffee Script](http://maxtaco.github.com/coffee-script/) (await and defer)
 * [Underscore](http://underscorejs.org/) (collection utilities)
 * [Requirejs](http://requirejs.org/) (dependency injection)
+* [Q](https://github.com/kriskowal/q) (promises)
 
 
 ## Technologies used and available in browser
@@ -52,6 +52,7 @@ redis-server
 * [Requirejs](http://requirejs.org/) (dependency injection)
 * [Animate.css](https://daneden.me/animate/) (css animations)
 * [Mousetrap](http://craig.is/killing/mice) (keyboard shortcuts)
+* [Q](https://github.com/kriskowal/q) (promises)
 
 
 ## Standards

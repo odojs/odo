@@ -1,31 +1,32 @@
-﻿define ['knockout', 'jquery', 'articles/client', 'plugins/router'], (ko, $, ArticleLogic, router) ->
+﻿define ['q', 'knockout', 'articles/client', 'plugins/router'], (Q, ko, ArticleLogic, router) ->
 	class ViewArticle
 		constructor: ->
 			@article = ko.observable null
 			@articleLogic = new ArticleLogic()
 		
 		canActivate: (id, name) =>
-			$.Deferred((deferred) =>
-				@articleLogic.getArticleForDisplay(id)
-					.then(-> deferred.resolve yes)
-					.fail(-> deferred.resolve no)
-			).promise()
+			dfd = Q.defer()
+			@articleLogic.getArticleForDisplay(id)
+				.then(->
+					dfd.resolve yes)
+				.fail((err) ->
+					dfd.resolve no)
+			dfd.promise
 		
 		activate: (id, name) =>
-			$.Deferred((deferred) =>
-				@articleLogic.getArticleForDisplay(id)
-					.then((article) =>
+			dfd = Q.defer()
+			@articleLogic.getArticleForDisplay(id)
+				.then((article) =>
+				
+					@article {
+						id: ko.observable article.id
+						name: ko.observable article.name
+						url: ko.observable article.url
+					}
 					
-						@article {
-							id: ko.observable article.id
-							name: ko.observable article.name
-							url: ko.observable article.url
-						}
-						
-						deferred.resolve yes
-					)
-					.fail(=> deferred.resolve no)
-			).promise()
+					dfd.resolve yes
+				)
+				.fail(=> dfd.resolve no)
 			
 		deleteArticle: =>
 			@articleLogic.deleteArticle(@article().id())

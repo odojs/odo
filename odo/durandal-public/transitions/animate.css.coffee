@@ -1,12 +1,12 @@
-define ['durandal/system', 'jquery'], (system, $) ->
+define ['durandal/system', 'jquery', 'q'], (system, $, Q) ->
 	class Animate
 		create: (@settings) =>
-			$.Deferred (deferred) =>
-				@deferred = deferred
-				if @settings.child
-					@startTransition()
-				else
-					@endTransition()
+			@deferred = Q.defer()
+			if @settings.child
+				@startTransition()
+			else
+				@endTransition()
+			@deferred.promise
 				
 		startTransition: () =>
 			if @settings.activeView?
