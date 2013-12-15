@@ -34,7 +34,6 @@ define [], () ->
 		deleteItem: (command, callback) =>
 			@new 'itemDeleted',
 				id: @id
-				text: @text
 			callback null
 
 		_itemCreated: (event) =>
