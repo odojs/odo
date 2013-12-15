@@ -26,7 +26,8 @@
         }
         this["new"]('articleCreated', {
           id: this.id,
-          name: command.name
+          name: command.name,
+          by: command.by
         });
         return callback(null);
       };
@@ -38,14 +39,16 @@
         }
         this["new"]('contentUpdated', {
           id: this.id,
-          content: command.content
+          content: command.content,
+          by: command.by
         });
         return callback(null);
       };
 
       Item.prototype.deleteArticle = function(command, callback) {
         this["new"]('articleDeleted', {
-          id: this.id
+          id: this.id,
+          by: command.by
         });
         return callback(null);
       };

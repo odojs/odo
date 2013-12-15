@@ -1,7 +1,7 @@
-define ['odo/eventstore', 'node-uuid', 'thomascoats.com/article'], (es, uuid, Item) ->
+define ['odo/eventstore', 'node-uuid', 'thomascoats.com/article'], (es, uuid, Article) ->
 	
 	defaultHandler = (command) ->
-		updateArticleContent = new Item command.payload.id
+		article = new Article command.payload.id
 		es.extend article
 		article.applyHistoryThenCommand command
 	

@@ -17,6 +17,7 @@ define [], () ->
 			@new 'articleCreated',
 				id: @id
 				name: command.name
+				by: command.by
 			callback null
 		
 		updateArticleContent: (command, callback) =>
@@ -27,11 +28,13 @@ define [], () ->
 			@new 'contentUpdated',
 				id: @id,
 				content: command.content
+				by: command.by
 			callback null
 		
 		deleteArticle: (command, callback) =>
 			@new 'articleDeleted',
 				id: @id
+				by: command.by
 			callback null
 		
 		_articleCreated: (event) =>

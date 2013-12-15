@@ -1,4 +1,5 @@
-define ['module', 'path', 'express', 'redis'], (module, path, express, redis) ->
+define ['module', 'path', 'express', 'redis', 'odo/hub', 'thomascoats.com/articlecontentprojection', 'thomascoats.com/articleownershipprojection'], (module, path, express, redis, hub, articlecontent, articleownership) ->
+	
 	configure: (app) ->
 		app.use('/articles', express.static(path.dirname(module.uri) + '/public'))
 	
@@ -11,6 +12,11 @@ define ['module', 'path', 'express', 'redis'], (module, path, express, redis) ->
 			if req.user.id isnt req.params.id
 				res.send 403, 'authentication required'
 				return
+				
+			articleownership.get req.params.id, (err, articles) ->
+				console.log 'Loaded articleownership projection'
+				console.log articles
+			
 				
 			client = redis.createClient()
 			
@@ -33,6 +39,10 @@ define ['module', 'path', 'express', 'redis'], (module, path, express, redis) ->
 			if !req.user?
 				res.send 403, 'authentication required'
 				return
+			
+			articlecontent.get req.params.id, (err, article) ->
+				console.log 'Loaded articlecontent projection'
+				console.log article
 				
 			client = redis.createClient()
 			
@@ -68,6 +78,14 @@ define ['module', 'path', 'express', 'redis'], (module, path, express, redis) ->
 			article = req.body
 			article.userid = req.user.id
 			
+			console.log 'Sending createArticle'
+			hub.send
+				command: 'createArticle'
+				payload:
+					id: req.params.id
+					name: req.body.name
+					by: req.user.id
+					
 			client = redis.createClient()
 			
 			client.multi()
@@ -91,6 +109,13 @@ define ['module', 'path', 'express', 'redis'], (module, path, express, redis) ->
 			if !req.user?
 				res.send 403, 'authentication required'
 				return
+			
+			console.log 'Sending deleteArticle'
+			hub.send
+				command: 'deleteArticle'
+				payload:
+					id: req.params.id
+					by: req.user.id
 			
 			client = redis.createClient()
 			
