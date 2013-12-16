@@ -1,3 +1,3 @@
-define ['module', 'path', 'express'], (module, path, express) ->
+define ['module'], (module) ->
 	configure: (app) ->
-		app.use('/odo/durandal', express.static(path.dirname(module.uri) + '/durandal-public'))
+		app.route '/odo/durandal', app.modulepath(module.uri) + '/durandal-public'

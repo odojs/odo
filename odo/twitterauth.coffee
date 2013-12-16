@@ -1,6 +1,6 @@
-define ['module', 'path', 'express', 'passport', 'passport-twitter', 'odo/config', 'redis'], (module, path, express, passport, passporttwitter, config, redis) ->
+define ['module', 'passport', 'passport-twitter', 'odo/config', 'redis'], (module, passport, passporttwitter, config, redis) ->
 	configure: (app) ->
-		app.use('/odo/auth', express.static(path.dirname(module.uri) + '/twitterauth-public'))
+		app.route '/odo/auth', app.modulepath(module.uri) + '/twitterauth-public'
 		
 		app.use passport.initialize()
 		app.use passport.session()

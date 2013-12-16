@@ -19,6 +19,14 @@ define ['http', 'express', 'odo/config'], (http, express, config) ->
 			app.use express.cookieSession
 				key: app.get 'session key'
 				secret: app.get 'session secret'
+			
+			app.modulepath = (uri) ->
+				items = uri.split '/'
+				items.pop()
+				items.join '/'
+			
+			app.route = (source, target) ->
+				app.use source, express.static target
 
 			# Configure plugins
 			for plugin in plugins

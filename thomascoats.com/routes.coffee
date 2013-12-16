@@ -1,3 +1,3 @@
-define ['module', 'express', 'path'], (module, express, path) ->
+define ['module'], (module) ->
 	configure: (app) ->
-		app.use('/', express.static(path.dirname(module.uri) + '/public'))
+		app.route '/', app.modulepath(module.uri) + '/public'

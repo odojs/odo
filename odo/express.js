@@ -21,6 +21,15 @@
           key: app.get('session key'),
           secret: app.get('session secret')
         }));
+        app.modulepath = function(uri) {
+          var items;
+          items = uri.split('/');
+          items.pop();
+          return items.join('/');
+        };
+        app.route = function(source, target) {
+          return app.use(source, express["static"](target));
+        };
         for (_i = 0, _len = plugins.length; _i < _len; _i++) {
           plugin = plugins[_i];
           if (plugin.configure != null) {
