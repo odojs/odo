@@ -4,18 +4,19 @@ define ['redis'], (redis) ->
 	receive:
 		articleCreated: (event) ->
 			userid = event.payload.by
-			articleid = event.payload.id
+			id = event.payload.id
+			name = event.payload.name
 			
-			db.sadd "ownedarticles:#{userid}", articleid
+			db.hset "ownedarticles:#{userid}", id, name
 
 		articleDeleted: (event) ->
 			userid = event.payload.by
-			articleid = event.payload.id
+			id = event.payload.id
 			
-			db.srem "ownedarticles:#{userid}", articleid
+			db.hdel "ownedarticles:#{userid}", id
 	
 	get: (userid, callback) ->
-		db.smembers "ownedarticles:#{userid}", (err, articles) ->
+		db.hgetall "ownedarticles:#{userid}", (err, articles) ->
 			if err?
 				callback err
 				return

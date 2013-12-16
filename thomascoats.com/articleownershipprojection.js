@@ -6,20 +6,21 @@
     return {
       receive: {
         articleCreated: function(event) {
-          var articleid, userid;
+          var id, name, userid;
           userid = event.payload.by;
-          articleid = event.payload.id;
-          return db.sadd("ownedarticles:" + userid, articleid);
+          id = event.payload.id;
+          name = event.payload.name;
+          return db.hset("ownedarticles:" + userid, id, name);
         },
         articleDeleted: function(event) {
-          var articleid, userid;
+          var id, userid;
           userid = event.payload.by;
-          articleid = event.payload.id;
-          return db.srem("ownedarticles:" + userid, articleid);
+          id = event.payload.id;
+          return db.hdel("ownedarticles:" + userid, id);
         }
       },
       get: function(userid, callback) {
-        return db.smembers("ownedarticles:" + userid, function(err, articles) {
+        return db.hgetall("ownedarticles:" + userid, function(err, articles) {
           if (err != null) {
             callback(err);
             return;
