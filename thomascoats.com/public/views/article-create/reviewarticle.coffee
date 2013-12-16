@@ -1,4 +1,4 @@
-﻿define ['knockout', 'articles/client'], (ko, ArticleLogic) ->
+﻿define ['knockout', 'articles'], (ko, ArticleLogic) ->
 	class ReviewArticle
 		constructor: ->
 			@articlename = ko.observable ''

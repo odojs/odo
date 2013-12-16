@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['q', 'knockout', 'plugins/router', 'components/dialog', 'articles/client', 'odo/auth/twitter'], function(Q, ko, router, Dialog, ArticleLogic, twitterauth) {
+  define(['q', 'knockout', 'plugins/router', 'components/dialog', 'articles', 'odo/auth/twitter'], function(Q, ko, router, Dialog, ArticleLogic, twitterauth) {
     var Search;
     return Search = (function() {
       function Search() {

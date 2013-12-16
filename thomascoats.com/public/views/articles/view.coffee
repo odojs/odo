@@ -1,4 +1,4 @@
-﻿define ['q', 'knockout', 'articles/client', 'plugins/router'], (Q, ko, ArticleLogic, router) ->
+﻿define ['q', 'knockout', 'articles', 'plugins/router'], (Q, ko, ArticleLogic, router) ->
 	class ViewArticle
 		constructor: ->
 			@article = ko.observable null

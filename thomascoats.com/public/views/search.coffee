@@ -1,4 +1,4 @@
-﻿define ['q', 'knockout', 'plugins/router', 'components/dialog', 'articles/client', 'odo/auth/twitter'], (Q, ko, router, Dialog, ArticleLogic, twitterauth) ->
+﻿define ['q', 'knockout', 'plugins/router', 'components/dialog', 'articles', 'odo/auth/twitter'], (Q, ko, router, Dialog, ArticleLogic, twitterauth) ->
 	class Search
 		constructor: ->
 			@articles = ko.observableArray []

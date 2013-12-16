@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['q', 'knockout', 'articles/client', 'plugins/router'], function(Q, ko, ArticleLogic, router) {
+  define(['q', 'knockout', 'articles', 'plugins/router'], function(Q, ko, ArticleLogic, router) {
     var ViewArticle;
     return ViewArticle = (function() {
       function ViewArticle() {

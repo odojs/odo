@@ -20,6 +20,6 @@ requirejs ['odo/express'], (express) ->
 		requirejs './odo/durandal'
 		requirejs './odo/handlebars'
 		requirejs './odo/twitterauth'
-		requirejs './articles/server'
 		requirejs './thomascoats.com/routes'
+		requirejs './thomascoats.com/articleroutes'
 	]

@@ -1,7 +1,4 @@
-define ['module', 'path', 'express', 'odo/hub', 'thomascoats.com/articlecontentprojection', 'thomascoats.com/articleownershipprojection'], (module, path, express, hub, articlecontent, articleownership) ->
-	
-	configure: (app) ->
-		app.use('/articles', express.static(path.dirname(module.uri) + '/public'))
+define ['odo/hub', 'thomascoats.com/articlecontentprojection', 'thomascoats.com/articleownershipprojection'], (hub, articlecontent, articleownership) ->
 	
 	init: (app) ->
 		app.get '/user/:id/articles', (req, res) ->
