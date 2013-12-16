@@ -15,11 +15,11 @@ requirejs ['odo/express'], (express) ->
 	process.env.PORT = 80
 	
 	app = express [
-		requirejs './odo/peek'
-		requirejs './odo/bower'
-		requirejs './odo/durandal'
-		requirejs './odo/handlebars'
-		requirejs './odo/twitterauth'
-		requirejs './thomascoats.com/routes'
-		requirejs './thomascoats.com/articleroutes'
+		requirejs './odo/plugins/peek'
+		requirejs './odo/plugins/bower'
+		requirejs './odo/plugins/durandal'
+		requirejs './odo/plugins/handlebars'
+		requirejs './odo/plugins/twitterauth'
+		requirejs './thomascoats.com/plugins/public'
+		requirejs './thomascoats.com/plugins/article'
 	]

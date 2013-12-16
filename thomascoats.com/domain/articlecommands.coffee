@@ -1,4 +1,4 @@
-define ['odo/eventstore', 'node-uuid', 'thomascoats.com/article'], (es, uuid, Article) ->
+define ['odo/eventstore', 'node-uuid', 'thomascoats.com/domain/article'], (es, uuid, Article) ->
 	
 	defaultHandler = (command) ->
 		article = new Article command.payload.id

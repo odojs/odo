@@ -10,10 +10,15 @@ requirejs.config {
 		}
 }
 
-requirejs ['odo/injectinto', 'thomascoats.com/articlecommands', 'odo/hub', 'odo/eventstore'], (inject, articlecommands, hub, eventstore) ->
+requirejs [
+	'odo/hub'
+	'thomascoats.com/domain/articlecommands'
+	# add more command handlers here
+], (hub, handlers...) ->
 	
 	bindCommands = (handler) ->
 		for name, method of handler
 			hub.handle name, method
-			
-	bindCommands articlecommands
+		
+	for handler in handlers
+		bindCommands handler

@@ -12,8 +12,9 @@ requirejs.config {
 
 requirejs [
 	'odo/hub'
-	'thomascoats.com/articlecontentprojection'
-	'thomascoats.com/articleownershipprojection'
+	'thomascoats.com/projections/articlecontent'
+	'thomascoats.com/projections/articleownership'
+	# add more event listeners here
 ], (hub, listeners...) ->
 	
 	bindEvents = (listener) ->
@@ -22,26 +23,3 @@ requirejs [
 		
 	for listener in listeners
 		bindEvents listener.receive
-	
-	
-	fakepublish = (event) ->
-		for listener in listeners
-			if listener.receive[event.event]?
-				listener.receive[event.event] event
-	
-	
-	#fakepublish
-	#	event: 'articleCreated'
-	#	payload:
-	#		id: 'c933e5e8-fb3f-47cb-8690-f634391533d3'
-	#		name: 'Test Article'
-	#
-	#fakepublish
-	#	event: 'articleContentUpdated'
-	#	payload:
-	#		id: 'c933e5e8-fb3f-47cb-8690-f634391533d3'
-	#		content: 'Test Article Content'
-	
-	
-		
-		

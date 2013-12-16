@@ -1,4 +1,4 @@
-define ['odo/hub', 'thomascoats.com/articlecontentprojection', 'thomascoats.com/articleownershipprojection'], (hub, articlecontent, articleownership) ->
+define ['odo/hub', 'thomascoats.com/projections/articlecontent', 'thomascoats.com/projections/articleownership'], (hub, articlecontent, articleownership) ->
 	
 	init: (app) ->
 		app.get '/user/:id/articles', (req, res) ->

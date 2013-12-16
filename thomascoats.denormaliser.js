@@ -10,8 +10,8 @@
     paths: {}
   });
 
-  requirejs(['odo/hub', 'thomascoats.com/articlecontentprojection', 'thomascoats.com/articleownershipprojection'], function() {
-    var bindEvents, fakepublish, hub, listener, listeners, _i, _len;
+  requirejs(['odo/hub', 'thomascoats.com/projections/articlecontent', 'thomascoats.com/projections/articleownership'], function() {
+    var bindEvents, hub, listener, listeners, _i, _len, _results;
     hub = arguments[0], listeners = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
     bindEvents = function(listener) {
       var method, name, _results;
@@ -22,23 +22,12 @@
       }
       return _results;
     };
+    _results = [];
     for (_i = 0, _len = listeners.length; _i < _len; _i++) {
       listener = listeners[_i];
-      bindEvents(listener.receive);
+      _results.push(bindEvents(listener.receive));
     }
-    return fakepublish = function(event) {
-      var _j, _len1, _results;
-      _results = [];
-      for (_j = 0, _len1 = listeners.length; _j < _len1; _j++) {
-        listener = listeners[_j];
-        if (listener.receive[event.event] != null) {
-          _results.push(listener.receive[event.event](event));
-        } else {
-          _results.push(void 0);
-        }
-      }
-      return _results;
-    };
+    return _results;
   });
 
 }).call(this);

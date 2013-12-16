@@ -12,7 +12,7 @@
   requirejs(['odo/express'], function(express) {
     var app;
     process.env.PORT = 80;
-    return app = express([requirejs('./odo/peek'), requirejs('./odo/bower'), requirejs('./odo/durandal'), requirejs('./odo/handlebars'), requirejs('./odo/twitterauth'), requirejs('./thomascoats.com/routes'), requirejs('./thomascoats.com/articleroutes')]);
+    return app = express([requirejs('./odo/plugins/peek'), requirejs('./odo/plugins/bower'), requirejs('./odo/plugins/durandal'), requirejs('./odo/plugins/handlebars'), requirejs('./odo/plugins/twitterauth'), requirejs('./thomascoats.com/plugins/public'), requirejs('./thomascoats.com/plugins/article')]);
   });
 
 }).call(this);

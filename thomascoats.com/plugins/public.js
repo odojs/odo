@@ -3,7 +3,7 @@
   define(['module'], function(module) {
     return {
       configure: function(app) {
-        return app.route('/odo/durandal', app.modulepath(module.uri) + '/durandal-public');
+        return app.route('/', app.modulepath(module.uri) + '/../public');
       }
     };
   });
