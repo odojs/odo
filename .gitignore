@@ -13,7 +13,6 @@ npm-debug.log
 bower_components
 .DS_Store
 node_modules
-components
 config.json
 *.sublime-workspace
 *.sublime-project
