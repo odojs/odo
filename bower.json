@@ -1,26 +1,12 @@
 {
-	"name": "ThomasCoats",
-	"description": "Patterns & Practices",
-	"version": "0.0.1",
+	"name": "odo",
+	"description": "Odo, whatever you want it to be",
+	"version": "6.0.3",
 	"dependencies": {
-		"durandal": "2.*",
-		"underscore": "1.*",
-		"bootstrap": "3.*",
-		"jquery": "2.*",
-		"knockout.js": "2.*",
-		"requirejs": "2.*",
-		"requirejs-text": "2.*",
-		"animate.css": "2.*",
-		"mousetrap": "*",
-		"node-uuid": "*",
-		"q": "*"
 	},
 	"ignore": [
 		"node_modules/",
 		"config.json",
 		"bower_components"
-	],
-	"resolutions": {
-		"jquery": "2.*"
-	}
+	]
 }
