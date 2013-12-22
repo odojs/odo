@@ -7,7 +7,7 @@
       app = express();
       plugins = plugins.map(function(plugin) {
         if (typeof plugin === 'function') {
-          return new plugin;
+          return new plugin(app);
         }
         return plugin;
       });
