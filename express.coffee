@@ -2,6 +2,11 @@ define ['http', 'express', 'odo/config'], (http, express, config) ->
 	
 	(plugins) ->
 		app = express()
+		
+		plugins = plugins.map (plugin) ->
+			if typeof(plugin) is 'function'
+				return new plugin
+			plugin
 
 		# express config
 		for key, value of config.express

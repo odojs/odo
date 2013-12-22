@@ -5,6 +5,12 @@
       var app, key, plugin, value, _i, _len, _ref,
         _this = this;
       app = express();
+      plugins = plugins.map(function(plugin) {
+        if (typeof plugin === 'function') {
+          return new plugin;
+        }
+        return plugin;
+      });
       _ref = config.express;
       for (key in _ref) {
         value = _ref[key];
