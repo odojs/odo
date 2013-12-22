@@ -3,7 +3,7 @@
   define(['module'], function(module) {
     return {
       configure: function(app) {
-        return app.route('/', app.modulepath(module.uri) + '/../../bower_components');
+        return app.route('/', app.modulepath(module.uri) + '/../../../bower_components');
       }
     };
   });
