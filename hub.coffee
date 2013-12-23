@@ -1,4 +1,4 @@
-define ['redis', 'eventstore', 'eventstore.redis'], (redis, eventstore, storage) ->
+define ['redis'], (redis) ->
 
 	commandsender = redis.createClient()
 	eventpublisher = redis.createClient()
