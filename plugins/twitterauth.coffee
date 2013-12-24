@@ -8,7 +8,7 @@ define ['module', 'passport', 'passport-twitter', 'odo/config', 'redis'], (modul
 		passport.use new passporttwitter.Strategy(
 			consumerKey: config.passport.twitter['consumer key']
 			consumerSecret: config.passport.twitter['consumer secret']
-			callbackURL: 'http://thomascoats.com/auth/twitter/callback'
+			callbackURL: config.passport.twitter['host'] + '/auth/twitter/callback'
 		, (token, tokenSecret, profile, done) ->
 			user = {
 				id: profile.id

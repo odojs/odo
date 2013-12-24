@@ -9,7 +9,7 @@
         passport.use(new passporttwitter.Strategy({
           consumerKey: config.passport.twitter['consumer key'],
           consumerSecret: config.passport.twitter['consumer secret'],
-          callbackURL: 'http://thomascoats.com/auth/twitter/callback'
+          callbackURL: config.passport.twitter['host'] + '/auth/twitter/callback'
         }, function(token, tokenSecret, profile, done) {
           var client, user;
           user = {
