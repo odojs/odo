@@ -27,11 +27,13 @@ A Nodejs framework for creating awesome things.
 ./configure.sh
 ```
 
-## Run
+## Run (for a project0
 
 ```
-./thomascoats.com.sh
 redis-server
+./run.website.sh
+./run.projections.sh
+./run.domain.sh
 ```
 
 
