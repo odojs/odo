@@ -16,6 +16,9 @@
       Animate.prototype.create = function(settings) {
         this.settings = settings;
         this.deferred = Q.defer();
+        if (this.settings.scrolltop == null) {
+          this.settings.scrolltop = true;
+        }
         if (this.settings.child) {
           this.startTransition();
         } else {
@@ -57,6 +60,11 @@
         $newView = $(this.settings.child).removeClass([this.settings.outAnimation, this.settings.inAnimation]).addClass('animated');
         $newView.css('display', '');
         $newView.addClass(this.settings.inAnimation);
+        if (this.settings.scrolltop($(window).scrollTop() > $newView.offset().top)) {
+          $('html, body').animate({
+            scrollTop: $newView.offset().top
+          }, 300);
+        }
         return setTimeout(function() {
           $newView.removeClass(_this.settings.inAnimation + ' ' + _this.settings.outAnimation + ' animated');
           return _this.endTransition();
