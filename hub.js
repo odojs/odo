@@ -11,7 +11,7 @@
       send: function(command) {
         console.log("" + command.command + " -> redis");
         command = JSON.stringify(command, null, 4);
-        return commandsender.publish("" + config.hub.channel + ".commands", command);
+        return commandsender.publish("" + config.odo.domain + ".commands", command);
       },
       handle: function(command, callback) {
         console.log(" -> " + command);
@@ -23,7 +23,7 @@
       },
       publish: function(event) {
         console.log("" + event.event + " -> redis");
-        return eventpublisher.publish("" + config.hub.channel + ".events", JSON.stringify(event, null, 4));
+        return eventpublisher.publish("" + config.odo.domain + ".events", JSON.stringify(event, null, 4));
       },
       receive: function(event, callback) {
         console.log(" -> " + event);
@@ -45,7 +45,7 @@
         return handlers[command.command](command);
       }
     });
-    commandreceiver.subscribe("" + config.hub.channel + ".commands");
+    commandreceiver.subscribe("" + config.odo.domain + ".commands");
     eventlistener = redis.createClient();
     eventlistener.on('message', function(channel, event) {
       var listener, subscriber, _i, _j, _len, _len1, _ref, _results;
@@ -65,7 +65,7 @@
         return _results;
       }
     });
-    eventlistener.subscribe("" + config.hub.channel + ".events");
+    eventlistener.subscribe("" + config.odo.domain + ".events");
     return result;
   });
 

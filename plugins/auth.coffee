@@ -1,4 +1,4 @@
-define ['module', 'passport', 'passport-twitter', 'odo/config', 'redis'], (module, passport, passporttwitter, config, redis) ->
+define ['module', 'passport', 'passport-twitter', 'odo/config', 'odo/hub', 'node-uuid', 'odo/projections/userprofile', 'odo/projections/usertwitter'], (module, passport, passporttwitter, config, hub, uuid, UserProfile, UserTwitter) ->
 	configure: (app) ->
 		app.route '/odo', app.modulepath(module.uri) + '/auth-public'
 		
@@ -9,35 +9,48 @@ define ['module', 'passport', 'passport-twitter', 'odo/config', 'redis'], (modul
 			consumerKey: config.passport.twitter['consumer key']
 			consumerSecret: config.passport.twitter['consumer secret']
 			callbackURL: config.passport.twitter['host'] + '/auth/twitter/callback'
-		, (token, tokenSecret, profile, done) ->
-			user = {
-				id: profile.id
-				provider: profile.provider
-				displayName: profile.displayName
-			}
+			passReqToCallback: true
+		, (req, token, tokenSecret, profile, done) ->
+			userid = null
 			
-			client = redis.createClient()
-			client.set('user:' + profile.id, JSON.stringify(user), (err) ->
+			if req.user?
+				console.log 'user already exists, using it\'s id'
+				userid = req.user.id
+			
+			new UserTwitter().get profile.id, (err, userid) ->
 				if err?
 					done err
+					return
 				
-				client.quit()
+				if !userid?
+					console.log 'no user exists yet, creating a new id'
+					userid = uuid.v1()
+					hub.send
+						command: 'startTrackingUser'
+						payload:
+							id: userid
+							profile: profile
+					
+					console.log 'attaching twitter to user'
+					hub.send
+						command: 'attachTwitterToUser'
+						payload:
+							id: userid
+							profile: profile
+				
+				user = {
+					id: userid
+					profile: profile
+				}
+				
 				done null, user
-			)
 		)
 		
 		passport.serializeUser (user, done) ->
 			done null, user.id
 
 		passport.deserializeUser (id, done) ->
-			client = redis.createClient()
-			client.get('user:' + id, (err, user) ->
-				if err?
-					done err
-				
-				client.quit()
-				done null, JSON.parse(user)
-			)
+			new UserProfile().get id, done
 		
 	
 	init: (app) ->
