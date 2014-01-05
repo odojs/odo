@@ -39,7 +39,7 @@ define ['durandal/system', 'jquery', 'q'], (system, $, Q) ->
 			$newView.addClass @settings.inAnimation
 			
 			# scroll to the top of the element for a transition
-			if @settings.scrolltop $(window).scrollTop() > $newView.offset().top
+			if @settings.scrolltop? and $(window).scrollTop() > $newView.offset().top
 				$('html, body').animate({
 						scrollTop: $newView.offset().top
 				}, 300);

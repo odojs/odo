@@ -60,7 +60,7 @@
         $newView = $(this.settings.child).removeClass([this.settings.outAnimation, this.settings.inAnimation]).addClass('animated');
         $newView.css('display', '');
         $newView.addClass(this.settings.inAnimation);
-        if (this.settings.scrolltop($(window).scrollTop() > $newView.offset().top)) {
+        if ((this.settings.scrolltop != null) && $(window).scrollTop() > $newView.offset().top) {
           $('html, body').animate({
             scrollTop: $newView.offset().top
           }, 300);
