@@ -15,6 +15,12 @@ define [], () ->
 				profile: command.profile
 			callback null
 		
+		attachFacebookToUser: (command, callback) =>
+			@new 'userFacebookAttached',
+				id: @id,
+				profile: command.profile
+			callback null
+		
 		createLocalSigninForUser: (command, callback) =>
 			@new 'userHasLocalSignin',
 				id: @id,
@@ -23,4 +29,5 @@ define [], () ->
 		
 		_userTrackingStarted: (event) =>
 		_userTwitterAttached: (event) =>
+		_userFacebookAttached: (event) =>
 		_userHasLocalSignin: (event) =>

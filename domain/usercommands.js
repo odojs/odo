@@ -11,6 +11,7 @@
     return {
       startTrackingUser: defaultHandler,
       attachTwitterToUser: defaultHandler,
+      attachFacebookToUser: defaultHandler,
       createLocalSigninForUser: defaultHandler
     };
   });

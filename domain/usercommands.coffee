@@ -7,4 +7,5 @@ define ['odo/eventstore', 'odo/domain/user'], (es, User) ->
 	
 	startTrackingUser: defaultHandler
 	attachTwitterToUser: defaultHandler
+	attachFacebookToUser: defaultHandler
 	createLocalSigninForUser: defaultHandler
