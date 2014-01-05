@@ -1,4 +1,4 @@
-define ['redis'], (redis) ->
+define ['redis', 'odo/config'], (redis, config) ->
 
 	commandsender = redis.createClient()
 	eventpublisher = redis.createClient()
@@ -13,7 +13,7 @@ define ['redis'], (redis) ->
 		send: (command) ->
 			console.log "#{command.command} -> redis"
 			command = JSON.stringify command, null, 4
-			commandsender.publish 'commands', command
+			commandsender.publish "#{config.hub.channel}.commands", command
 			
 		handle: (command, callback) ->
 			console.log " -> #{command}"
@@ -26,7 +26,7 @@ define ['redis'], (redis) ->
 		# Don't use this - it's used interally by the event store
 		publish: (event) ->
 			console.log "#{event.event} -> redis"
-			eventpublisher.publish 'events', JSON.stringify event, null, 4
+			eventpublisher.publish "#{config.hub.channel}.events", JSON.stringify event, null, 4
 
 		receive: (event, callback) ->
 			console.log " -> #{event}"
@@ -47,7 +47,7 @@ define ['redis'], (redis) ->
 			console.log "#{command.command} ->"
 			handlers[command.command] command
 	
-	commandreceiver.subscribe 'commands'
+	commandreceiver.subscribe "#{config.hub.channel}.commands"
 	
 	
 
@@ -65,7 +65,7 @@ define ['redis'], (redis) ->
 				listener event
 
 	# subscribe to __events channel__
-	eventlistener.subscribe 'events'
+	eventlistener.subscribe "#{config.hub.channel}.events"
 	
 	
 	
