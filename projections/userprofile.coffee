@@ -19,6 +19,20 @@ define ['redis', 'odo/config'], (redis, config) ->
 					}
 					
 					db.hset "#{config.odo.domain}:users", event.payload.id, JSON.stringify user
+					
+				userHasLocalSignin: (event) =>
+					db.hget "#{config.odo.domain}:users", event.payload.id, (err, user) =>
+						if err?
+							return
+						
+						user = JSON.parse user
+						
+						user.profile.username = event.payload.profile.username
+						user.profile.password = event.payload.profile.password
+						
+						user = JSON.stringify user
+						
+						db.hset "#{config.odo.domain}:users", event.payload.id, user
 		
 		get: (id, callback) ->
 			db.hget "#{config.odo.domain}:users", id, (err, data) =>

@@ -22,6 +22,18 @@
               profile: event.payload.profile
             };
             return db.hset("" + config.odo.domain + ":users", event.payload.id, JSON.stringify(user));
+          },
+          userHasLocalSignin: function(event) {
+            return db.hget("" + config.odo.domain + ":users", event.payload.id, function(err, user) {
+              if (err != null) {
+                return;
+              }
+              user = JSON.parse(user);
+              user.profile.username = event.payload.profile.username;
+              user.profile.password = event.payload.profile.password;
+              user = JSON.stringify(user);
+              return db.hset("" + config.odo.domain + ":users", event.payload.id, user);
+            });
           }
         };
       }

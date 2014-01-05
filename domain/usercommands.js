@@ -10,7 +10,8 @@
     };
     return {
       startTrackingUser: defaultHandler,
-      attachTwitterToUser: defaultHandler
+      attachTwitterToUser: defaultHandler,
+      createLocalSigninForUser: defaultHandler
     };
   });
 
