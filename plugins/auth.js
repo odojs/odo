@@ -3,7 +3,7 @@
   define(['module', 'passport', 'passport-twitter', 'odo/config', 'redis'], function(module, passport, passporttwitter, config, redis) {
     return {
       configure: function(app) {
-        app.route('/odo/auth', app.modulepath(module.uri) + '/twitterauth-public');
+        app.route('/odo', app.modulepath(module.uri) + '/auth-public');
         app.use(passport.initialize());
         app.use(passport.session());
         passport.use(new passporttwitter.Strategy({
