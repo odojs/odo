@@ -20,7 +20,8 @@ define ['node-uuid', 'eventstore', 'eventstore.redis', 'odo/hub'], (uuid, events
 			
 			# Apply the event to the aggregate calling the matching function
 			apply: (event) ->
-				@["_#{event.event}"] event
+				if @["_#{event.event}"]?
+					@["_#{event.event}"] event
 				@_uncommitted.push event unless event.fromHistory
 				
 			# create a new event and apply
