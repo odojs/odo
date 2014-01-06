@@ -1,20 +1,21 @@
-define ['passport', 'passport-facebook', 'odo/config', 'odo/hub', 'node-uuid', 'redis'], (passport, passportfacebook, config, hub, uuid, redis) ->
+define ['passport', 'passport-google', 'odo/config', 'odo/hub', 'node-uuid', 'redis'], (passport, passportgoogle, config, hub, uuid, redis) ->
 	db = redis.createClient()
 	
-	class FacebookAuthentication
+	class GoogleAuthentication
 		constructor: ->
 			@receive =
-				userFacebookAttached: (event) =>
-					db.hset "#{config.odo.domain}:userfacebook", event.payload.profile.id, event.payload.id
+				userGoogleAttached: (event) =>
+					db.hset "#{config.odo.domain}:usergoogle", event.payload.profile.id, event.payload.id
 		
 		configure: (app) =>
-			passport.use new passportfacebook.Strategy(
-				clientID: config.passport.facebook['app id']
-				clientSecret: config.passport.facebook['app secret']
-				callbackURL: config.passport.facebook['host'] + '/auth/facebook/callback'
+			passport.use new passportgoogle.Strategy(
+				realm: config.passport.google['realm']
+				returnURL: config.passport.google['host'] + '/auth/google/callback'
 				passReqToCallback: true
-			, (req, accessToken, refreshToken, profile, done) =>
+			, (req, identifier, profile, done) =>
 				userid = null
+				
+				profile.id = identifier
 				
 				if req.user?
 					console.log 'user already exists, using it\'s id'
@@ -34,9 +35,9 @@ define ['passport', 'passport-facebook', 'odo/config', 'odo/hub', 'node-uuid', '
 								id: userid
 								profile: profile
 						
-						console.log 'attaching facebook to user'
+						console.log 'attaching google to user'
 						hub.send
-							command: 'attachFacebookToUser'
+							command: 'attachGoogleToUser'
 							payload:
 								id: userid
 								profile: profile
@@ -50,14 +51,14 @@ define ['passport', 'passport-facebook', 'odo/config', 'odo/hub', 'node-uuid', '
 			)
 			
 		init: (app) =>
-			app.get '/auth/facebook', passport.authenticate 'facebook'
-			app.get '/auth/facebook/callback', passport.authenticate('facebook', {
+			app.get '/auth/google', passport.authenticate 'google'
+			app.get '/auth/google/callback', passport.authenticate('google', {
 				successRedirect: '/'
 				failureRedirect: '/'
 			})
 		
 		get: (id, callback) ->
-			db.hget "#{config.odo.domain}:userfacebook", id, (err, data) =>
+			db.hget "#{config.odo.domain}:usergoogle", id, (err, data) =>
 				if err?
 					callback err
 					return
@@ -67,7 +68,7 @@ define ['passport', 'passport-facebook', 'odo/config', 'odo/hub', 'node-uuid', '
 					return
 				
 				# retry once for possible slowness
-				db.hget "#{config.odo.domain}:userfacebook", id, (err, data) =>
+				db.hget "#{config.odo.domain}:usergoogle", id, (err, data) =>
 					if err?
 						callback err
 						return

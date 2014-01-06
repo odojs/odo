@@ -20,14 +20,15 @@ define [], () ->
 				id: @id,
 				profile: command.profile
 			callback null
+			
+		attachGoogleToUser: (command, callback) =>
+			@new 'userGoogleAttached',
+				id: @id,
+				profile: command.profile
+			callback null
 		
 		createLocalSigninForUser: (command, callback) =>
 			@new 'userHasLocalSignin',
 				id: @id,
 				profile: command.profile
 			callback null
-		
-		_userTrackingStarted: (event) =>
-		_userTwitterAttached: (event) =>
-		_userFacebookAttached: (event) =>
-		_userHasLocalSignin: (event) =>

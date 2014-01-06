@@ -12,6 +12,7 @@
       startTrackingUser: defaultHandler,
       attachTwitterToUser: defaultHandler,
       attachFacebookToUser: defaultHandler,
+      attachGoogleToUser: defaultHandler,
       createLocalSigninForUser: defaultHandler
     };
   });

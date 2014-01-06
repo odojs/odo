@@ -2,31 +2,31 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['passport', 'passport-facebook', 'odo/config', 'odo/hub', 'node-uuid', 'redis'], function(passport, passportfacebook, config, hub, uuid, redis) {
-    var FacebookAuthentication, db;
+  define(['passport', 'passport-google', 'odo/config', 'odo/hub', 'node-uuid', 'redis'], function(passport, passportgoogle, config, hub, uuid, redis) {
+    var GoogleAuthentication, db;
     db = redis.createClient();
-    return FacebookAuthentication = (function() {
-      function FacebookAuthentication() {
+    return GoogleAuthentication = (function() {
+      function GoogleAuthentication() {
         this.init = __bind(this.init, this);
         this.configure = __bind(this.configure, this);
         var _this = this;
         this.receive = {
-          userFacebookAttached: function(event) {
-            return db.hset("" + config.odo.domain + ":userfacebook", event.payload.profile.id, event.payload.id);
+          userGoogleAttached: function(event) {
+            return db.hset("" + config.odo.domain + ":usergoogle", event.payload.profile.id, event.payload.id);
           }
         };
       }
 
-      FacebookAuthentication.prototype.configure = function(app) {
+      GoogleAuthentication.prototype.configure = function(app) {
         var _this = this;
-        return passport.use(new passportfacebook.Strategy({
-          clientID: config.passport.facebook['app id'],
-          clientSecret: config.passport.facebook['app secret'],
-          callbackURL: config.passport.facebook['host'] + '/auth/facebook/callback',
+        return passport.use(new passportgoogle.Strategy({
+          realm: config.passport.google['realm'],
+          returnURL: config.passport.google['host'] + '/auth/google/callback',
           passReqToCallback: true
-        }, function(req, accessToken, refreshToken, profile, done) {
+        }, function(req, identifier, profile, done) {
           var userid;
           userid = null;
+          profile.id = identifier;
           if (req.user != null) {
             console.log('user already exists, using it\'s id');
             userid = req.user.id;
@@ -47,9 +47,9 @@
                   profile: profile
                 }
               });
-              console.log('attaching facebook to user');
+              console.log('attaching google to user');
               hub.send({
-                command: 'attachFacebookToUser',
+                command: 'attachGoogleToUser',
                 payload: {
                   id: userid,
                   profile: profile
@@ -65,17 +65,17 @@
         }));
       };
 
-      FacebookAuthentication.prototype.init = function(app) {
-        app.get('/auth/facebook', passport.authenticate('facebook'));
-        return app.get('/auth/facebook/callback', passport.authenticate('facebook', {
+      GoogleAuthentication.prototype.init = function(app) {
+        app.get('/auth/google', passport.authenticate('google'));
+        return app.get('/auth/google/callback', passport.authenticate('google', {
           successRedirect: '/',
           failureRedirect: '/'
         }));
       };
 
-      FacebookAuthentication.prototype.get = function(id, callback) {
+      GoogleAuthentication.prototype.get = function(id, callback) {
         var _this = this;
-        return db.hget("" + config.odo.domain + ":userfacebook", id, function(err, data) {
+        return db.hget("" + config.odo.domain + ":usergoogle", id, function(err, data) {
           if (err != null) {
             callback(err);
             return;
@@ -84,7 +84,7 @@
             callback(null, data);
             return;
           }
-          return db.hget("" + config.odo.domain + ":userfacebook", id, function(err, data) {
+          return db.hget("" + config.odo.domain + ":usergoogle", id, function(err, data) {
             if (err != null) {
               callback(err);
               return;
@@ -94,7 +94,7 @@
         });
       };
 
-      return FacebookAuthentication;
+      return GoogleAuthentication;
 
     })();
   });
