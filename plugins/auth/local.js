@@ -40,7 +40,7 @@
                 done(err);
                 return;
               }
-              if (user.profile.password !== password) {
+              if (user.local.profile.password !== password) {
                 console.log('Password not correct');
                 done(null, false, {
                   message: 'Incorrect username or password.'
@@ -55,10 +55,69 @@
       };
 
       LocalAuthentication.prototype.init = function(app) {
-        return app.post('/auth/local', passport.authenticate('local', {
+        var _this = this;
+        app.post('/auth/local', passport.authenticate('local', {
           successRedirect: '/',
           failureRedirect: '/'
         }));
+        return app.post('/auth/local/signup', function(req, res) {
+          var profile, userid;
+          if (req.body.displayName == null) {
+            res.send(400, 'Full name required');
+          }
+          if (req.body.username == null) {
+            res.send(400, 'Email address required');
+          }
+          if (req.body.password == null) {
+            res.send(400, 'Password required');
+          }
+          if (req.body.password !== req.body.passwordconfirm) {
+            res.send(400, 'Passwords must match');
+          }
+          userid = null;
+          profile = {
+            displayName: req.body.displayName,
+            username: req.body.username,
+            password: req.body.password
+          };
+          if (req.user != null) {
+            console.log('user already exists, creating local signin');
+            userid = req.user.id;
+            profile.id = req.user.id;
+          } else {
+            console.log('no user exists yet, creating a new id');
+            userid = uuid.v1();
+            profile.id = userid;
+            hub.send({
+              command: 'startTrackingUser',
+              payload: {
+                id: userid,
+                profile: profile
+              }
+            });
+          }
+          console.log('creating a local signin for user');
+          hub.send({
+            command: 'createLocalSigninForUser',
+            payload: {
+              id: userid,
+              profile: profile
+            }
+          });
+          return new UserProfile().get(userid, function(err, user) {
+            if (err != null) {
+              res.send(500, 'Couldn\'t find user');
+              return;
+            }
+            return req.login(user, function(err) {
+              if (err != null) {
+                res.send(500, 'Couldn\'t login user');
+                return;
+              }
+              return res.redirect('/');
+            });
+          });
+        });
       };
 
       LocalAuthentication.prototype.get = function(username, callback) {

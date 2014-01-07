@@ -18,28 +18,6 @@ define ['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'red
 						done err
 						return
 					
-					# Use this code for signup - first command if this is a new user, second command for both new user and to link an existing user to a local sign in account. Creating a new user needs more information - displayName, etc.
-					#if !userid?
-					#	console.log 'no user exists yet, creating a new id'
-					#	userid = uuid.v1()
-					#	hub.send
-					#		command: 'startTrackingUser'
-					#		payload:
-					#			id: userid
-					#			profile:
-					#				username: username
-					#				password: password
-					#	
-					#	console.log 'attaching twitter to user'
-					#	hub.send
-					#		command: 'createLocalSigninForUser'
-					#		payload:
-					#			id: userid
-					#			profile:
-					#				username: username
-					#				password: password
-					
-					
 					if !userid?
 						console.log 'User not found'
 						done null, false, { message: 'Incorrect username or password.' }
@@ -50,7 +28,7 @@ define ['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'red
 							done err
 							return
 					
-						if user.profile.password isnt password
+						if user.local.profile.password isnt password
 							console.log 'Password not correct'
 							done null, false, { message: 'Incorrect username or password.' }
 							return
@@ -63,6 +41,58 @@ define ['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'red
 				successRedirect: '/'
 				failureRedirect: '/'
 			})
+			
+			app.post '/auth/local/signup', (req, res) =>
+				if !req.body.displayName?
+					res.send 400, 'Full name required'
+				if !req.body.username?
+					res.send 400, 'Email address required'
+				if !req.body.password?
+					res.send 400, 'Password required'
+				if req.body.password isnt req.body.passwordconfirm
+					res.send 400, 'Passwords must match'
+				
+				userid = null
+				
+				profile =
+					displayName: req.body.displayName
+					username: req.body.username
+					password: req.body.password
+				
+				if req.user?
+					console.log 'user already exists, creating local signin'
+					userid = req.user.id
+					profile.id = req.user.id
+				
+				else
+					console.log 'no user exists yet, creating a new id'
+					userid = uuid.v1()
+					profile.id = userid
+					hub.send
+						command: 'startTrackingUser'
+						payload:
+							id: userid
+							profile: profile
+					
+				console.log 'creating a local signin for user'
+				hub.send
+					command: 'createLocalSigninForUser'
+					payload:
+						id: userid
+						profile: profile
+				
+				new UserProfile().get userid, (err, user) =>
+					if err?
+						res.send 500, 'Couldn\'t find user'
+						return
+						
+					req.login user, (err) =>
+						if err?
+							res.send 500, 'Couldn\'t login user'
+							return
+						
+						res.redirect '/'
+				
 		
 		get: (username, callback) ->
 			console.log 

@@ -7,32 +7,49 @@ define ['redis', 'odo/config'], (redis, config) ->
 				userTrackingStarted: (event) =>
 					user = {
 						id: event.payload.id
-						profile: event.payload.profile
+						displayName: event.payload.profile.displayName
 					}
 					
 					db.hset "#{config.odo.domain}:users", event.payload.id, JSON.stringify user
 
 				userTwitterAttached: (event) =>
-					user = {
-						id: event.payload.id
-						profile: event.payload.profile
-					}
-					
-					db.hset "#{config.odo.domain}:users", event.payload.id, JSON.stringify user
+					@addOrRemoveValues event, (user) =>
+						user.twitter =
+							id: event.payload.profile.id
+							profile: event.payload.profile
+						user
+				
+				userFacebookAttached: (event) =>
+					@addOrRemoveValues event, (user) =>
+						user.facebook =
+							id: event.payload.profile.id
+							profile: event.payload.profile
+						user
+				
+				userGoogleAttached: (event) =>
+					@addOrRemoveValues event, (user) =>
+						user.google =
+							id: event.payload.profile.id
+							profile: event.payload.profile
+						user
 					
 				userHasLocalSignin: (event) =>
-					db.hget "#{config.odo.domain}:users", event.payload.id, (err, user) =>
-						if err?
-							return
-						
-						user = JSON.parse user
-						
-						user.profile.username = event.payload.profile.username
-						user.profile.password = event.payload.profile.password
-						
-						user = JSON.stringify user
-						
-						db.hset "#{config.odo.domain}:users", event.payload.id, user
+					@addOrRemoveValues event, (user) =>
+						user.local =
+							id: event.payload.id
+							profile: event.payload.profile
+						user
+		
+		addOrRemoveValues: (event, callback) =>
+			db.hget "#{config.odo.domain}:users", event.payload.id, (err, user) =>
+				if err?
+					return
+				
+				user = JSON.parse user
+				user = callback user
+				user = JSON.stringify user
+				
+				db.hset "#{config.odo.domain}:users", event.payload.id, user
 		
 		get: (id, callback) ->
 			db.hget "#{config.odo.domain}:users", id, (err, data) =>

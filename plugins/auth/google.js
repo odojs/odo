@@ -27,17 +27,23 @@
           var userid;
           userid = null;
           profile.id = identifier;
-          if (req.user != null) {
-            console.log('user already exists, using it\'s id');
-            userid = req.user.id;
-          }
           return _this.get(profile.id, function(err, userid) {
             var user;
             if (err != null) {
               done(err);
               return;
             }
-            if (userid == null) {
+            if (req.user != null) {
+              console.log('user already exists, attaching google to user');
+              userid = req.user.id;
+              hub.send({
+                command: 'attachGoogleToUser',
+                payload: {
+                  id: userid,
+                  profile: profile
+                }
+              });
+            } else if (userid == null) {
               console.log('no user exists yet, creating a new id');
               userid = uuid.v1();
               hub.send({

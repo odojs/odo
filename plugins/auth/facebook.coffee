@@ -16,16 +16,21 @@ define ['passport', 'passport-facebook', 'odo/config', 'odo/hub', 'node-uuid', '
 			, (req, accessToken, refreshToken, profile, done) =>
 				userid = null
 				
-				if req.user?
-					console.log 'user already exists, using it\'s id'
-					userid = req.user.id
-				
 				@get profile.id, (err, userid) =>
 					if err?
 						done err
 						return
+						
+					if req.user?
+						console.log 'user already exists, attaching facebook to user'
+						userid = req.user.id
+						hub.send
+							command: 'attachFacebookToUser'
+							payload:
+								id: userid
+								profile: profile
 					
-					if !userid?
+					else if !userid?
 						console.log 'no user exists yet, creating a new id'
 						userid = uuid.v1()
 						hub.send
