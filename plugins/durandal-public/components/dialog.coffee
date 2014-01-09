@@ -1,4 +1,5 @@
-﻿define ['knockout', 'durandal/system', 'plugins/dialog'], (ko, system, dialog) ->
+﻿define ['knockout', 'jquery', 'durandal/system', 'plugins/dialog'], (ko, $, system, dialog) ->
+	
 	class Dialog
 		constructor: (options) ->
 			activationData = {
@@ -12,7 +13,7 @@
 			@shouldShake = ko.observable false
 		
 		show: =>
-			dialog.show @
+			dialog.showOdoDialog @
 		
 		close: (response) =>
 			dialog.close @, response

@@ -3,6 +3,40 @@
   define(['knockout', 'jquery'], function(ko, $) {
     return {
       init: function(requirejs, config) {
+        if (config.dialog) {
+          requirejs(['plugins/dialog'], function(dialog) {
+            return dialog.addContext('OdoDialog', {
+              compositionComplete: function(child, parent, context) {
+                var $child, $host, options, theDialog;
+                $child = $(child);
+                options = {
+                  backdrop: 'static'
+                };
+                theDialog = dialog.getDialog(context.model);
+                $host = $(theDialog.host);
+                $host.modal(options);
+                if ($child.hasClass('autoclose')) {
+                  return $host.one('shown.bs.modal', function() {
+                    return $host.one('click.dismiss.modal', function() {
+                      return theDialog.close();
+                    });
+                  });
+                }
+              },
+              addHost: function(theDialog) {
+                var body, host;
+                body = $('body');
+                host = $('<div class="modal fade" id="odo-modal" tabindex="-1" role="dialog" aria-hidden="true">').appendTo(body);
+                return theDialog.host = host.get(0);
+              },
+              removeHost: function(theDialog) {
+                return $(theDialog.host).one('hidden.bs.modal', function() {
+                  return ko.removeNode(theDialog.host);
+                }).modal('hide');
+              }
+            });
+          });
+        }
         if (config.mousetrap) {
           requirejs(['mousetrap'], function(Mousetrap) {
             Mousetrap = (function(Mousetrap) {
@@ -88,7 +122,6 @@
             init: function(element, valueAccessor) {
               var options;
               options = ko.unwrap(valueAccessor());
-              console.log('popover initialized');
               return $(element).popover(options);
             }
           };

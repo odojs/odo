@@ -1,5 +1,38 @@
 define ['knockout', 'jquery'], (ko, $) ->
 	init: (requirejs, config) ->
+		if config.dialog
+			requirejs ['plugins/dialog'], (dialog) ->
+				dialog.addContext 'OdoDialog',
+					compositionComplete: (child, parent, context) ->
+						$child = $ child
+						
+						options =
+							backdrop: 'static'
+						
+						theDialog = dialog.getDialog context.model
+						$host = $ theDialog.host
+						$host.modal(options)
+						
+						# in practice we use a dialog component so this doesn't work -- probably should rethink how this works
+						if $child.hasClass 'autoclose'
+							$host.one 'shown.bs.modal', ->
+								$host.one 'click.dismiss.modal', ->
+									theDialog.close()
+						
+					
+					addHost: (theDialog) ->
+						body = $ 'body'
+						host = $('<div class="modal fade" id="odo-modal" tabindex="-1" role="dialog" aria-hidden="true">')
+							.appendTo(body)
+						theDialog.host = host.get 0
+					
+					removeHost: (theDialog) ->
+						$(theDialog.host)
+							.one('hidden.bs.modal', ->
+								ko.removeNode theDialog.host
+							)
+							.modal 'hide'
+		
 		if config.mousetrap
 			requirejs ['mousetrap'], (Mousetrap) ->
 		
@@ -74,7 +107,6 @@ define ['knockout', 'jquery'], (ko, $) ->
 		if config.bootstrap
 			ko.bindingHandlers.popover = init: (element, valueAccessor) ->
 				options = ko.unwrap valueAccessor()
-				console.log 'popover initialized'
 				$(element).popover options
 				
 		if config.marked
