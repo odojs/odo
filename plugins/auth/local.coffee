@@ -37,12 +37,12 @@ define ['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'red
 						done null, user
 			
 		init: (app) =>
-			app.post '/auth/local', passport.authenticate('local', {
+			app.post '/odo/auth/local', passport.authenticate('local', {
 				successRedirect: '/'
 				failureRedirect: '/'
 			})
 			
-			app.post '/auth/local/signup', (req, res) =>
+			app.post '/odo/auth/local/signup', (req, res) =>
 				if !req.body.displayName?
 					res.send 400, 'Full name required'
 				if !req.body.username?

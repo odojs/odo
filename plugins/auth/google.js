@@ -21,7 +21,7 @@
         var _this = this;
         return passport.use(new passportgoogle.Strategy({
           realm: config.passport.google['realm'],
-          returnURL: config.passport.google['host'] + '/auth/google/callback',
+          returnURL: config.passport.google['host'] + '/odo/auth/google/callback',
           passReqToCallback: true
         }, function(req, identifier, profile, done) {
           var userid;
@@ -72,8 +72,8 @@
       };
 
       GoogleAuthentication.prototype.init = function(app) {
-        app.get('/auth/google', passport.authenticate('google'));
-        return app.get('/auth/google/callback', passport.authenticate('google', {
+        app.get('/odo/auth/google', passport.authenticate('google'));
+        return app.get('/odo/auth/google/callback', passport.authenticate('google', {
           successRedirect: '/',
           failureRedirect: '/'
         }));

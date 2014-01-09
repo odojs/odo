@@ -11,7 +11,7 @@
         if (_this.cache != null) {
           dfd.resolve(_this.cache);
         }
-        Q($.get('/auth/user')).then(function(data) {
+        Q($.get('/odo/auth/user')).then(function(data) {
           _this.cache = data;
           return dfd.resolve(data);
         }).fail(function() {

@@ -22,7 +22,7 @@
         return passport.use(new passportfacebook.Strategy({
           clientID: config.passport.facebook['app id'],
           clientSecret: config.passport.facebook['app secret'],
-          callbackURL: config.passport.facebook['host'] + '/auth/facebook/callback',
+          callbackURL: config.passport.facebook['host'] + '/odo/auth/facebook/callback',
           passReqToCallback: true
         }, function(req, accessToken, refreshToken, profile, done) {
           var userid;
@@ -72,8 +72,8 @@
       };
 
       FacebookAuthentication.prototype.init = function(app) {
-        app.get('/auth/facebook', passport.authenticate('facebook'));
-        return app.get('/auth/facebook/callback', passport.authenticate('facebook', {
+        app.get('/odo/auth/facebook', passport.authenticate('facebook'));
+        return app.get('/odo/auth/facebook/callback', passport.authenticate('facebook', {
           successRedirect: '/',
           failureRedirect: '/'
         }));

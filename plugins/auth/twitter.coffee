@@ -13,7 +13,7 @@ define ['passport', 'passport-twitter', 'odo/config', 'odo/hub', 'node-uuid', 'r
 			passport.use new passporttwitter.Strategy(
 				consumerKey: config.passport.twitter['consumer key']
 				consumerSecret: config.passport.twitter['consumer secret']
-				callbackURL: config.passport.twitter['host'] + '/auth/twitter/callback'
+				callbackURL: config.passport.twitter['host'] + '/odo/auth/twitter/callback'
 				passReqToCallback: true
 			, (req, token, tokenSecret, profile, done) =>
 				userid = null
@@ -57,8 +57,8 @@ define ['passport', 'passport-twitter', 'odo/config', 'odo/hub', 'node-uuid', 'r
 			)
 			
 		init: (app) =>
-			app.get '/auth/twitter', passport.authenticate 'twitter'
-			app.get '/auth/twitter/callback', passport.authenticate('twitter', {
+			app.get '/odo/auth/twitter', passport.authenticate 'twitter'
+			app.get '/odo/auth/twitter/callback', passport.authenticate('twitter', {
 				successRedirect: '/'
 				failureRedirect: '/'
 			})

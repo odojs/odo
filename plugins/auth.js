@@ -14,11 +14,11 @@
         });
       },
       init: function(app) {
-        app.get('/auth/signout', function(req, res) {
+        app.get('/odo/auth/signout', function(req, res) {
           req.logout();
           return res.redirect('/');
         });
-        return app.get('/auth/user', function(req, res) {
+        return app.get('/odo/auth/user', function(req, res) {
           if (req.user == null) {
             res.send(403, 'authentication required');
             return;

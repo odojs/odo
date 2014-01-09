@@ -6,7 +6,7 @@
 		
 		if @cache?
 			dfd.resolve @cache
-		Q($.get('/auth/user'))
+		Q($.get('/odo/auth/user'))
 			.then((data) =>
 				@cache = data
 				dfd.resolve data

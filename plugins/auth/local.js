@@ -56,11 +56,11 @@
 
       LocalAuthentication.prototype.init = function(app) {
         var _this = this;
-        app.post('/auth/local', passport.authenticate('local', {
+        app.post('/odo/auth/local', passport.authenticate('local', {
           successRedirect: '/',
           failureRedirect: '/'
         }));
-        return app.post('/auth/local/signup', function(req, res) {
+        return app.post('/odo/auth/local/signup', function(req, res) {
           var profile, userid;
           if (req.body.displayName == null) {
             res.send(400, 'Full name required');

@@ -23,7 +23,7 @@
         return passport.use(new passporttwitter.Strategy({
           consumerKey: config.passport.twitter['consumer key'],
           consumerSecret: config.passport.twitter['consumer secret'],
-          callbackURL: config.passport.twitter['host'] + '/auth/twitter/callback',
+          callbackURL: config.passport.twitter['host'] + '/odo/auth/twitter/callback',
           passReqToCallback: true
         }, function(req, token, tokenSecret, profile, done) {
           var userid;
@@ -73,8 +73,8 @@
       };
 
       TwitterAuthentication.prototype.init = function(app) {
-        app.get('/auth/twitter', passport.authenticate('twitter'));
-        return app.get('/auth/twitter/callback', passport.authenticate('twitter', {
+        app.get('/odo/auth/twitter', passport.authenticate('twitter'));
+        return app.get('/odo/auth/twitter/callback', passport.authenticate('twitter', {
           successRedirect: '/',
           failureRedirect: '/'
         }));

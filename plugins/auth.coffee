@@ -12,11 +12,11 @@ define ['module', 'passport', 'odo/projections/userprofile'], (module, passport,
 			new UserProfile().get id, done
 		
 	init: (app) ->
-		app.get '/auth/signout', (req, res) ->
+		app.get '/odo/auth/signout', (req, res) ->
 			req.logout()
 			res.redirect '/'
 		
-		app.get '/auth/user', (req, res) ->
+		app.get '/odo/auth/user', (req, res) ->
 			if !req.user?
 				res.send 403, 'authentication required'
 				return

@@ -10,7 +10,7 @@ define ['passport', 'passport-google', 'odo/config', 'odo/hub', 'node-uuid', 're
 		configure: (app) =>
 			passport.use new passportgoogle.Strategy(
 				realm: config.passport.google['realm']
-				returnURL: config.passport.google['host'] + '/auth/google/callback'
+				returnURL: config.passport.google['host'] + '/odo/auth/google/callback'
 				passReqToCallback: true
 			, (req, identifier, profile, done) =>
 				userid = null
@@ -56,8 +56,8 @@ define ['passport', 'passport-google', 'odo/config', 'odo/hub', 'node-uuid', 're
 			)
 			
 		init: (app) =>
-			app.get '/auth/google', passport.authenticate 'google'
-			app.get '/auth/google/callback', passport.authenticate('google', {
+			app.get '/odo/auth/google', passport.authenticate 'google'
+			app.get '/odo/auth/google/callback', passport.authenticate('google', {
 				successRedirect: '/'
 				failureRedirect: '/'
 			})
