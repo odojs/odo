@@ -1,0 +1,38 @@
+.actions {
+  padding-left: 0;
+  margin: 20px 0;
+  height: 0px;
+  overflow: visible;
+  text-align: center;
+  list-style: none;
+}
+.actions li {
+  height: 0px;
+  overflow: visible;
+}
+.actions .forward {
+  float: right;
+}
+.actions .back {
+  float: left;
+}
+.panel-heading .actions,
+.modal-heading .actions {
+  margin: -6px -12px -6px 0;
+  text-align: left;
+  float: right;
+  height: auto;
+}
+.panel-heading .actions li,
+.modal-heading .actions li {
+  height: auto;
+}
+.modal-footer .actions {
+  margin-top: 0;
+}
+.wizard .animated {
+  -webkit-animation-duration: 0.3s;
+  -moz-animation-duration: 0.3s;
+  -o-animation-duration: 0.3s;
+  animation-duration: 0.3s;
+}
