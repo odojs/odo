@@ -37,6 +37,19 @@
             });
           });
         }
+        if (config.validation) {
+          requirejs(['ko.validation'], function() {
+            return ko.validation.configure({
+              registerExtenders: true,
+              messagesOnModified: true,
+              insertMessages: true,
+              parseInputAttributes: true,
+              messageTemplate: null,
+              errorMessageClass: 'help-block',
+              errorElementClass: 'has-error'
+            });
+          });
+        }
         if (config.mousetrap) {
           requirejs(['mousetrap'], function(Mousetrap) {
             Mousetrap = (function(Mousetrap) {

@@ -33,6 +33,17 @@ define ['knockout', 'jquery'], (ko, $) ->
 							)
 							.modal 'hide'
 		
+		if config.validation
+			requirejs ['ko.validation'], () ->
+				ko.validation.configure
+					registerExtenders: true
+					messagesOnModified: true
+					insertMessages: true
+					parseInputAttributes: true
+					messageTemplate: null
+					errorMessageClass: 'help-block'
+					errorElementClass: 'has-error'
+		
 		if config.mousetrap
 			requirejs ['mousetrap'], (Mousetrap) ->
 		
