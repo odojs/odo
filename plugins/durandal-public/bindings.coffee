@@ -37,10 +37,7 @@ define ['knockout', 'jquery'], (ko, $) ->
 			requirejs ['ko.validation'], () ->
 				ko.validation.configure
 					registerExtenders: true
-					messagesOnModified: true
-					insertMessages: true
 					parseInputAttributes: true
-					messageTemplate: null
 					errorMessageClass: 'help-block'
 					errorElementClass: 'has-error'
 		
