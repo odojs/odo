@@ -60,19 +60,54 @@
           successRedirect: '/',
           failureRedirect: '/'
         }));
+        app.get('/odo/auth/local/usernameavailability', function(req, res) {
+          if (req.query.username == null) {
+            res.send({
+              isAvailable: false,
+              message: 'Required'
+            });
+            return;
+          }
+          return _this.get(req.query.username, function(err, userid) {
+            if (err != null) {
+              console.log(err);
+              res.send(500, 'Woops');
+              return;
+            }
+            if (userid == null) {
+              res.send({
+                isAvailable: true,
+                message: 'Available'
+              });
+              return;
+            }
+            res.send({
+              isAvailable: false,
+              message: 'Taken'
+            });
+          });
+        });
         return app.post('/odo/auth/local/signup', function(req, res) {
           var profile, userid;
           if (req.body.displayName == null) {
             res.send(400, 'Full name required');
+            return;
           }
           if (req.body.username == null) {
-            res.send(400, 'Email address required');
+            res.send(400, 'Username required');
+            return;
           }
           if (req.body.password == null) {
             res.send(400, 'Password required');
+            return;
+          }
+          if (req.body.password.length < 8) {
+            res.send(400, 'Password needs to be at least eight letters long');
+            return;
           }
           if (req.body.password !== req.body.passwordconfirm) {
             res.send(400, 'Passwords must match');
+            return;
           }
           userid = null;
           profile = {

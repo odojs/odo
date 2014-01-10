@@ -42,15 +42,50 @@ define ['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'red
 				failureRedirect: '/'
 			})
 			
+			app.get '/odo/auth/local/usernameavailability', (req, res) =>
+				if !req.query.username?
+					res.send
+						isAvailable: no
+						message: 'Required'
+					return
+				
+				@get req.query.username, (err, userid) =>
+					if err?
+						console.log err
+						res.send 500, 'Woops'
+						return
+					
+					if !userid?
+						res.send
+							isAvailable: yes
+							message: 'Available'
+						return
+					
+					res.send
+						isAvailable: no
+						message: 'Taken'
+					return
+			
 			app.post '/odo/auth/local/signup', (req, res) =>
 				if !req.body.displayName?
 					res.send 400, 'Full name required'
+					return
+					
 				if !req.body.username?
-					res.send 400, 'Email address required'
+					res.send 400, 'Username required'
+					return
+					
 				if !req.body.password?
 					res.send 400, 'Password required'
+					return
+					
+				if req.body.password.length < 8
+					res.send 400, 'Password needs to be at least eight letters long'
+					return
+					
 				if req.body.password isnt req.body.passwordconfirm
 					res.send 400, 'Passwords must match'
+					return
 				
 				userid = null
 				

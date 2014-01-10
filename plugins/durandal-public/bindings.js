@@ -42,6 +42,7 @@
             return ko.validation.configure({
               registerExtenders: true,
               parseInputAttributes: true,
+              insertMessages: false,
               errorMessageClass: 'help-block',
               errorElementClass: 'has-error'
             });
