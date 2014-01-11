@@ -158,11 +158,7 @@
             return;
           }
           userid = null;
-          profile = {
-            displayName: req.body.displayName,
-            username: req.body.username,
-            password: req.body.password
-          };
+          profile = req.body;
           if (req.user != null) {
             console.log('user already exists, creating local signin');
             userid = req.user.id;

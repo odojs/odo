@@ -131,10 +131,8 @@ define ['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'red
 				
 				userid = null
 				
-				profile =
-					displayName: req.body.displayName
-					username: req.body.username
-					password: req.body.password
+				# this is so applications can add their own parameters to the local profile
+				profile = req.body
 				
 				if req.user?
 					console.log 'user already exists, creating local signin'
