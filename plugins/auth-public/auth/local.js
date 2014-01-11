@@ -7,6 +7,12 @@
         return $.get('/odo/auth/local/usernameavailability', {
           username: username
         });
+      },
+      testAuthentication: function(username, password) {
+        return $.get('/odo/auth/local/test', {
+          username: username,
+          password: password
+        });
       }
     };
   });

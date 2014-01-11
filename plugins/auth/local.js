@@ -60,6 +60,54 @@
           successRedirect: '/',
           failureRedirect: '/'
         }));
+        app.get('/odo/auth/local/test', function(req, res) {
+          if (req.query.username == null) {
+            res.send({
+              isValid: false,
+              message: 'Username required'
+            });
+            return;
+          }
+          if (req.query.password == null) {
+            res.send({
+              isValid: false,
+              message: 'Password required'
+            });
+            return;
+          }
+          return _this.get(req.query.username, function(err, userid) {
+            if (err != null) {
+              console.log(err);
+              res.send(500, 'Woops');
+              return;
+            }
+            if (userid == null) {
+              res.send({
+                isValid: false,
+                message: 'Incorrect username or password'
+              });
+              return;
+            }
+            return new UserProfile().get(userid, function(err, user) {
+              if (err != null) {
+                console.log(err);
+                res.send(500, 'Woops');
+                return;
+              }
+              if (user.local.profile.password !== req.query.password) {
+                res.send({
+                  isValid: false,
+                  message: 'Incorrect username or password'
+                });
+                return;
+              }
+              res.send({
+                isValid: true,
+                message: 'Correct username and password'
+              });
+            });
+          });
+        });
         app.get('/odo/auth/local/usernameavailability', function(req, res) {
           if (req.query.username == null) {
             res.send({

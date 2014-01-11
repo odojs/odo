@@ -42,6 +42,48 @@ define ['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'red
 				failureRedirect: '/'
 			})
 			
+			app.get '/odo/auth/local/test', (req, res) =>
+				if !req.query.username?
+					res.send
+						isValid: no
+						message: 'Username required'
+					return
+				
+				if !req.query.password?
+					res.send
+						isValid: no
+						message: 'Password required'
+					return
+				
+				@get req.query.username, (err, userid) =>
+					if err?
+						console.log err
+						res.send 500, 'Woops'
+						return
+					
+					if !userid?
+						res.send
+							isValid: no
+							message: 'Incorrect username or password'
+						return
+					
+					new UserProfile().get userid, (err, user) =>
+						if err?
+							console.log err
+							res.send 500, 'Woops'
+							return
+						
+						if user.local.profile.password isnt req.query.password
+							res.send
+								isValid: no
+								message: 'Incorrect username or password'
+							return
+						
+						res.send
+							isValid: yes
+							message: 'Correct username and password'
+						return
+			
 			app.get '/odo/auth/local/usernameavailability', (req, res) =>
 				if !req.query.username?
 					res.send
