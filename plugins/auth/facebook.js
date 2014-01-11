@@ -17,6 +17,27 @@
         };
       }
 
+      FacebookAuthentication.prototype.get = function(id, callback) {
+        var _this = this;
+        return db.hget("" + config.odo.domain + ":userfacebook", id, function(err, data) {
+          if (err != null) {
+            callback(err);
+            return;
+          }
+          if (data != null) {
+            callback(null, data);
+            return;
+          }
+          return db.hget("" + config.odo.domain + ":userfacebook", id, function(err, data) {
+            if (err != null) {
+              callback(err);
+              return;
+            }
+            return callback(null, data);
+          });
+        });
+      };
+
       FacebookAuthentication.prototype.configure = function(app) {
         var _this = this;
         return passport.use(new passportfacebook.Strategy({
@@ -61,6 +82,14 @@
                   profile: profile
                 }
               });
+              console.log('assigning a displayName for user');
+              hub.send({
+                command: 'assignDisplayNameToUser',
+                payload: {
+                  id: userid,
+                  displayName: profile.displayName
+                }
+              });
             }
             user = {
               id: userid,
@@ -77,27 +106,6 @@
           successRedirect: '/',
           failureRedirect: '/'
         }));
-      };
-
-      FacebookAuthentication.prototype.get = function(id, callback) {
-        var _this = this;
-        return db.hget("" + config.odo.domain + ":userfacebook", id, function(err, data) {
-          if (err != null) {
-            callback(err);
-            return;
-          }
-          if (data != null) {
-            callback(null, data);
-            return;
-          }
-          return db.hget("" + config.odo.domain + ":userfacebook", id, function(err, data) {
-            if (err != null) {
-              callback(err);
-              return;
-            }
-            return callback(null, data);
-          });
-        });
       };
 
       return FacebookAuthentication;

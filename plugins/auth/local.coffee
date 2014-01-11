@@ -8,6 +8,32 @@ define ['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'red
 					console.log 'LocalAuthentication userHasLocalSignin'
 					
 					db.hset "#{config.odo.domain}:localusers", event.payload.profile.username, event.payload.id
+				
+				# if they have a local sign in we should update the sign in check
+				userHasUsername: (event) =>
+					console.log 'LocalAuthentication userHasUsername'
+					
+					@get event.payload.username, (err, userid) =>
+						if err?
+							console.log err
+							return
+						
+						if !userid?
+							return
+					
+						db.hset "#{config.odo.domain}:localusers", event.payload.username, event.payload.id
+				
+		
+		get: (username, callback) ->
+			console.log 
+			
+			db.hget "#{config.odo.domain}:localusers", username, (err, data) =>
+				if err?
+					callback err
+					return
+					
+				callback null, data
+				
 		
 		configure: (app) =>
 			passport.use new passportlocal.Strategy (username, password, done) =>
@@ -156,6 +182,20 @@ define ['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'red
 						id: userid
 						profile: profile
 				
+				console.log 'assigning a username for user'
+				hub.send
+					command: 'assignUsernameToUser'
+					payload:
+						id: userid
+						username: profile.username
+				
+				console.log 'assigning a displayName for user'
+				hub.send
+					command: 'assignDisplayNameToUser'
+					payload:
+						id: userid
+						displayName: profile.displayName
+				
 				new UserProfile().get userid, (err, user) =>
 					if err?
 						res.send 500, 'Couldn\'t find user'
@@ -167,14 +207,3 @@ define ['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'red
 							return
 						
 						res.redirect '/'
-				
-		
-		get: (username, callback) ->
-			console.log 
-			
-			db.hget "#{config.odo.domain}:localusers", username, (err, data) =>
-				if err?
-					callback err
-					return
-					
-				callback null, data

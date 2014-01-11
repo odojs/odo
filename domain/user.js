@@ -10,6 +10,9 @@
         this.attachGoogleToUser = __bind(this.attachGoogleToUser, this);
         this.attachFacebookToUser = __bind(this.attachFacebookToUser, this);
         this.attachTwitterToUser = __bind(this.attachTwitterToUser, this);
+        this.assignUsernameToUser = __bind(this.assignUsernameToUser, this);
+        this.assignDisplayNameToUser = __bind(this.assignDisplayNameToUser, this);
+        this.assignEmailAddressToUser = __bind(this.assignEmailAddressToUser, this);
         this.startTrackingUser = __bind(this.startTrackingUser, this);
         this.id = id;
       }
@@ -18,6 +21,30 @@
         this["new"]('userTrackingStarted', {
           id: this.id,
           profile: command.profile
+        });
+        return callback(null);
+      };
+
+      User.prototype.assignEmailAddressToUser = function(command, callback) {
+        this["new"]('userHasEmailAddress', {
+          id: this.id,
+          email: command.email
+        });
+        return callback(null);
+      };
+
+      User.prototype.assignDisplayNameToUser = function(command, callback) {
+        this["new"]('userHasDisplayName', {
+          id: this.id,
+          displayName: command.displayName
+        });
+        return callback(null);
+      };
+
+      User.prototype.assignUsernameToUser = function(command, callback) {
+        this["new"]('userHasUsername', {
+          id: this.id,
+          username: command.username
         });
         return callback(null);
       };

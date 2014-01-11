@@ -14,9 +14,34 @@
           userHasLocalSignin: function(event) {
             console.log('LocalAuthentication userHasLocalSignin');
             return db.hset("" + config.odo.domain + ":localusers", event.payload.profile.username, event.payload.id);
+          },
+          userHasUsername: function(event) {
+            console.log('LocalAuthentication userHasUsername');
+            return _this.get(event.payload.username, function(err, userid) {
+              if (err != null) {
+                console.log(err);
+                return;
+              }
+              if (userid == null) {
+                return;
+              }
+              return db.hset("" + config.odo.domain + ":localusers", event.payload.username, event.payload.id);
+            });
           }
         };
       }
+
+      LocalAuthentication.prototype.get = function(username, callback) {
+        var _this = this;
+        console.log;
+        return db.hget("" + config.odo.domain + ":localusers", username, function(err, data) {
+          if (err != null) {
+            callback(err);
+            return;
+          }
+          return callback(null, data);
+        });
+      };
 
       LocalAuthentication.prototype.configure = function(app) {
         var _this = this;
@@ -183,6 +208,22 @@
               profile: profile
             }
           });
+          console.log('assigning a username for user');
+          hub.send({
+            command: 'assignUsernameToUser',
+            payload: {
+              id: userid,
+              username: profile.username
+            }
+          });
+          console.log('assigning a displayName for user');
+          hub.send({
+            command: 'assignDisplayNameToUser',
+            payload: {
+              id: userid,
+              displayName: profile.displayName
+            }
+          });
           return new UserProfile().get(userid, function(err, user) {
             if (err != null) {
               res.send(500, 'Couldn\'t find user');
@@ -196,18 +237,6 @@
               return res.redirect('/');
             });
           });
-        });
-      };
-
-      LocalAuthentication.prototype.get = function(username, callback) {
-        var _this = this;
-        console.log;
-        return db.hget("" + config.odo.domain + ":localusers", username, function(err, data) {
-          if (err != null) {
-            callback(err);
-            return;
-          }
-          return callback(null, data);
         });
       };
 

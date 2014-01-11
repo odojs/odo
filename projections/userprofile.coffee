@@ -7,10 +7,28 @@ define ['redis', 'odo/config'], (redis, config) ->
 				userTrackingStarted: (event) =>
 					user = {
 						id: event.payload.id
+						# just in case we don't get another opportunity to grab the displayName
 						displayName: event.payload.profile.displayName
 					}
 					
 					db.hset "#{config.odo.domain}:users", event.payload.id, JSON.stringify user
+				
+				
+				userHasEmailAddress: (event) =>
+					@addOrRemoveValues event, (user) =>
+						user.email = event.payload.email
+						user
+				
+				userHasDisplayName: (event) =>
+					@addOrRemoveValues event, (user) =>
+						user.displayName = event.payload.displayName
+						user
+				
+				userHasUsername: (event) =>
+					@addOrRemoveValues event, (user) =>
+						user.username = event.payload.username
+						user
+						
 
 				userTwitterAttached: (event) =>
 					@addOrRemoveValues event, (user) =>

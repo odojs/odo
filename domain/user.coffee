@@ -8,6 +8,26 @@ define [], () ->
 				id: @id,
 				profile: command.profile
 			callback null
+			
+			
+		assignEmailAddressToUser: (command, callback) =>
+			@new 'userHasEmailAddress',
+				id: @id,
+				email: command.email
+			callback null
+		
+		assignDisplayNameToUser: (command, callback) =>
+			@new 'userHasDisplayName',
+				id: @id,
+				displayName: command.displayName
+			callback null
+		
+		assignUsernameToUser: (command, callback) =>
+			@new 'userHasUsername',
+				id: @id,
+				username: command.username
+			callback null
+			
 		
 		attachTwitterToUser: (command, callback) =>
 			@new 'userTwitterAttached',

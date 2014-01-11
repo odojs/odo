@@ -6,6 +6,26 @@ define ['passport', 'passport-facebook', 'odo/config', 'odo/hub', 'node-uuid', '
 			@receive =
 				userFacebookAttached: (event) =>
 					db.hset "#{config.odo.domain}:userfacebook", event.payload.profile.id, event.payload.id
+					
+		
+		get: (id, callback) ->
+			db.hget "#{config.odo.domain}:userfacebook", id, (err, data) =>
+				if err?
+					callback err
+					return
+					
+				if data?
+					callback null, data
+					return
+				
+				# retry once for possible slowness
+				db.hget "#{config.odo.domain}:userfacebook", id, (err, data) =>
+					if err?
+						callback err
+						return
+					
+					callback null, data
+					
 		
 		configure: (app) =>
 			passport.use new passportfacebook.Strategy(
@@ -45,6 +65,13 @@ define ['passport', 'passport-facebook', 'odo/config', 'odo/hub', 'node-uuid', '
 							payload:
 								id: userid
 								profile: profile
+						
+						console.log 'assigning a displayName for user'
+						hub.send
+							command: 'assignDisplayNameToUser'
+							payload:
+								id: userid
+								displayName: profile.displayName
 					
 					user = {
 						id: userid
@@ -60,21 +87,3 @@ define ['passport', 'passport-facebook', 'odo/config', 'odo/hub', 'node-uuid', '
 				successRedirect: '/'
 				failureRedirect: '/'
 			})
-		
-		get: (id, callback) ->
-			db.hget "#{config.odo.domain}:userfacebook", id, (err, data) =>
-				if err?
-					callback err
-					return
-					
-				if data?
-					callback null, data
-					return
-				
-				# retry once for possible slowness
-				db.hget "#{config.odo.domain}:userfacebook", id, (err, data) =>
-					if err?
-						callback err
-						return
-					
-					callback null, data

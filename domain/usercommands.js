@@ -10,6 +10,9 @@
     };
     return {
       startTrackingUser: defaultHandler,
+      assignEmailAddressToUser: defaultHandler,
+      assignDisplayNameToUser: defaultHandler,
+      assignUsernameToUser: defaultHandler,
       attachTwitterToUser: defaultHandler,
       attachFacebookToUser: defaultHandler,
       attachGoogleToUser: defaultHandler,

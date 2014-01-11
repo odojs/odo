@@ -18,6 +18,24 @@
             };
             return db.hset("" + config.odo.domain + ":users", event.payload.id, JSON.stringify(user));
           },
+          userHasEmailAddress: function(event) {
+            return _this.addOrRemoveValues(event, function(user) {
+              user.email = event.payload.email;
+              return user;
+            });
+          },
+          userHasDisplayName: function(event) {
+            return _this.addOrRemoveValues(event, function(user) {
+              user.displayName = event.payload.displayName;
+              return user;
+            });
+          },
+          userHasUsername: function(event) {
+            return _this.addOrRemoveValues(event, function(user) {
+              user.username = event.payload.username;
+              return user;
+            });
+          },
           userTwitterAttached: function(event) {
             return _this.addOrRemoveValues(event, function(user) {
               user.twitter = {

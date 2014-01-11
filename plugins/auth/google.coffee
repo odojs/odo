@@ -7,6 +7,26 @@ define ['passport', 'passport-google', 'odo/config', 'odo/hub', 'node-uuid', 're
 				userGoogleAttached: (event) =>
 					db.hset "#{config.odo.domain}:usergoogle", event.payload.profile.id, event.payload.id
 		
+		
+		get: (id, callback) ->
+			db.hget "#{config.odo.domain}:usergoogle", id, (err, data) =>
+				if err?
+					callback err
+					return
+					
+				if data?
+					callback null, data
+					return
+				
+				# retry once for possible slowness
+				db.hget "#{config.odo.domain}:usergoogle", id, (err, data) =>
+					if err?
+						callback err
+						return
+					
+					callback null, data
+		
+		
 		configure: (app) =>
 			passport.use new passportgoogle.Strategy(
 				realm: config.passport.google['realm']
@@ -61,21 +81,3 @@ define ['passport', 'passport-google', 'odo/config', 'odo/hub', 'node-uuid', 're
 				successRedirect: '/'
 				failureRedirect: '/'
 			})
-		
-		get: (id, callback) ->
-			db.hget "#{config.odo.domain}:usergoogle", id, (err, data) =>
-				if err?
-					callback err
-					return
-					
-				if data?
-					callback null, data
-					return
-				
-				# retry once for possible slowness
-				db.hget "#{config.odo.domain}:usergoogle", id, (err, data) =>
-					if err?
-						callback err
-						return
-					
-					callback null, data

@@ -8,6 +8,26 @@ define ['passport', 'passport-twitter', 'odo/config', 'odo/hub', 'node-uuid', 'r
 					console.log 'TwitterAuthentication userTwitterAttached'
 					
 					db.hset "#{config.odo.domain}:usertwitter", event.payload.profile.id, event.payload.id
+					
+		
+		get: (id, callback) ->
+			db.hget "#{config.odo.domain}:usertwitter", id, (err, data) =>
+				if err?
+					callback err
+					return
+					
+				if data?
+					callback null, data
+					return
+				
+				# retry once for possible slowness
+				db.hget "#{config.odo.domain}:usertwitter", id, (err, data) =>
+					if err?
+						callback err
+						return
+					
+					callback null, data
+					
 		
 		configure: (app) =>
 			passport.use new passporttwitter.Strategy(
@@ -47,6 +67,13 @@ define ['passport', 'passport-twitter', 'odo/config', 'odo/hub', 'node-uuid', 'r
 							payload:
 								id: userid
 								profile: profile
+						
+						console.log 'assigning a displayName for user'
+						hub.send
+							command: 'assignDisplayNameToUser'
+							payload:
+								id: userid
+								displayName: profile.displayName
 					
 					user = {
 						id: userid
@@ -62,21 +89,3 @@ define ['passport', 'passport-twitter', 'odo/config', 'odo/hub', 'node-uuid', 'r
 				successRedirect: '/'
 				failureRedirect: '/'
 			})
-		
-		get: (id, callback) ->
-			db.hget "#{config.odo.domain}:usertwitter", id, (err, data) =>
-				if err?
-					callback err
-					return
-					
-				if data?
-					callback null, data
-					return
-				
-				# retry once for possible slowness
-				db.hget "#{config.odo.domain}:usertwitter", id, (err, data) =>
-					if err?
-						callback err
-						return
-					
-					callback null, data

@@ -17,6 +17,27 @@
         };
       }
 
+      GoogleAuthentication.prototype.get = function(id, callback) {
+        var _this = this;
+        return db.hget("" + config.odo.domain + ":usergoogle", id, function(err, data) {
+          if (err != null) {
+            callback(err);
+            return;
+          }
+          if (data != null) {
+            callback(null, data);
+            return;
+          }
+          return db.hget("" + config.odo.domain + ":usergoogle", id, function(err, data) {
+            if (err != null) {
+              callback(err);
+              return;
+            }
+            return callback(null, data);
+          });
+        });
+      };
+
       GoogleAuthentication.prototype.configure = function(app) {
         var _this = this;
         return passport.use(new passportgoogle.Strategy({
@@ -77,27 +98,6 @@
           successRedirect: '/',
           failureRedirect: '/'
         }));
-      };
-
-      GoogleAuthentication.prototype.get = function(id, callback) {
-        var _this = this;
-        return db.hget("" + config.odo.domain + ":usergoogle", id, function(err, data) {
-          if (err != null) {
-            callback(err);
-            return;
-          }
-          if (data != null) {
-            callback(null, data);
-            return;
-          }
-          return db.hget("" + config.odo.domain + ":usergoogle", id, function(err, data) {
-            if (err != null) {
-              callback(err);
-              return;
-            }
-            return callback(null, data);
-          });
-        });
       };
 
       return GoogleAuthentication;
