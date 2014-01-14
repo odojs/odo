@@ -4,8 +4,9 @@ define ['passport', 'passport-google', 'odo/config', 'odo/hub', 'node-uuid', 're
 	class GoogleAuthentication
 		constructor: ->
 			@receive =
-				userGoogleAttached: (event) =>
-					db.hset "#{config.odo.domain}:usergoogle", event.payload.profile.id, event.payload.id
+				userGoogleAttached: (event, cb) =>
+					db.hset "#{config.odo.domain}:usergoogle", event.payload.profile.id, event.payload.id, ->
+						cb()
 		
 		
 		get: (id, callback) ->

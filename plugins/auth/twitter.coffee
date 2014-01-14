@@ -4,10 +4,11 @@ define ['passport', 'passport-twitter', 'odo/config', 'odo/hub', 'node-uuid', 'r
 	class TwitterAuthentication
 		constructor: ->
 			@receive =
-				userTwitterAttached: (event) =>
+				userTwitterAttached: (event, cb) =>
 					console.log 'TwitterAuthentication userTwitterAttached'
 					
-					db.hset "#{config.odo.domain}:usertwitter", event.payload.profile.id, event.payload.id
+					db.hset "#{config.odo.domain}:usertwitter", event.payload.profile.id, event.payload.id, ->
+						cb()
 					
 		
 		get: (id, callback) ->

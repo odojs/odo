@@ -11,8 +11,10 @@
         this.configure = __bind(this.configure, this);
         var _this = this;
         this.receive = {
-          userGoogleAttached: function(event) {
-            return db.hset("" + config.odo.domain + ":usergoogle", event.payload.profile.id, event.payload.id);
+          userGoogleAttached: function(event, cb) {
+            return db.hset("" + config.odo.domain + ":usergoogle", event.payload.profile.id, event.payload.id, function() {
+              return cb();
+            });
           }
         };
       }

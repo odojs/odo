@@ -11,9 +11,11 @@
         this.configure = __bind(this.configure, this);
         var _this = this;
         this.receive = {
-          userTwitterAttached: function(event) {
+          userTwitterAttached: function(event, cb) {
             console.log('TwitterAuthentication userTwitterAttached');
-            return db.hset("" + config.odo.domain + ":usertwitter", event.payload.profile.id, event.payload.id);
+            return db.hset("" + config.odo.domain + ":usertwitter", event.payload.profile.id, event.payload.id, function() {
+              return cb();
+            });
           }
         };
       }

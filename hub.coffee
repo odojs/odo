@@ -1,4 +1,4 @@
-define ['redis', 'odo/config'], (redis, config) ->
+define ['redis', 'odo/config', 'odo/sequencer'], (redis, config, Sequencer) ->
 
 	commandsender = redis.createClient()
 	eventpublisher = redis.createClient()
@@ -9,6 +9,12 @@ define ['redis', 'odo/config'], (redis, config) ->
 	
 	# The hub encapsulates functionality to send or receive messages from redis.
 	result =
+		print: ->
+			for event, list of listeners
+				for listener in list
+					console.log "#{event} ->"
+					console.log listener.toString()
+			
 		# send commands to redis __commands channel__
 		send: (command) ->
 			console.log "#{command.command} -> redis"
@@ -48,25 +54,25 @@ define ['redis', 'odo/config'], (redis, config) ->
 			handlers[command.command] command
 	
 	commandreceiver.subscribe "#{config.odo.domain}.commands"
-	
-	
 
 	# listen to events from redis and call each callback from subscribers
 	eventlistener = redis.createClient()
+	eventsequencer = new Sequencer()
+	ensequence = (event, listener) ->
+		eventsequencer.push (cb) ->
+			listener event, cb
 	eventlistener.on 'message', (channel, event) ->
 		event = JSON.parse event
 		
 		for subscriber in subscriptions
-			subscriber event
+			ensequence event, subscriber
 		
 		if listeners[event.event]?
-			console.log "#{event.event} ->"
 			for listener in listeners[event.event]
-				listener event
+				console.log "#{event.event} ->"
+				ensequence event, listener
 
 	# subscribe to __events channel__
 	eventlistener.subscribe "#{config.odo.domain}.events"
-	
-	
 	
 	result

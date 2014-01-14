@@ -4,8 +4,9 @@ define ['passport', 'passport-facebook', 'odo/config', 'odo/hub', 'node-uuid', '
 	class FacebookAuthentication
 		constructor: ->
 			@receive =
-				userFacebookAttached: (event) =>
-					db.hset "#{config.odo.domain}:userfacebook", event.payload.profile.id, event.payload.id
+				userFacebookAttached: (event, cb) =>
+					db.hset "#{config.odo.domain}:userfacebook", event.payload.profile.id, event.payload.id, ->
+						cb()
 					
 		
 		get: (id, callback) ->

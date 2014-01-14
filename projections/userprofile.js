@@ -10,81 +10,89 @@
         this.addOrRemoveValues = __bind(this.addOrRemoveValues, this);
         var _this = this;
         this.receive = {
-          userTrackingStarted: function(event) {
+          userTrackingStarted: function(event, cb) {
             var user;
             user = {
               id: event.payload.id,
               displayName: event.payload.profile.displayName
             };
-            return db.hset("" + config.odo.domain + ":users", event.payload.id, JSON.stringify(user));
+            return db.hset("" + config.odo.domain + ":users", event.payload.id, JSON.stringify(user), cb);
           },
-          userHasEmailAddress: function(event) {
+          userHasEmailAddress: function(event, cb) {
             return _this.addOrRemoveValues(event, function(user) {
               user.email = event.payload.email;
               return user;
-            });
+            }, cb);
           },
-          userHasDisplayName: function(event) {
+          userHasDisplayName: function(event, cb) {
             return _this.addOrRemoveValues(event, function(user) {
               user.displayName = event.payload.displayName;
               return user;
-            });
+            }, cb);
           },
-          userHasUsername: function(event) {
+          userHasUsername: function(event, cb) {
             return _this.addOrRemoveValues(event, function(user) {
+              console.log("giving user a username " + event.payload.username);
               user.username = event.payload.username;
               return user;
-            });
+            }, cb);
           },
-          userTwitterAttached: function(event) {
+          userTwitterAttached: function(event, cb) {
             return _this.addOrRemoveValues(event, function(user) {
               user.twitter = {
                 id: event.payload.profile.id,
                 profile: event.payload.profile
               };
               return user;
-            });
+            }, cb);
           },
-          userFacebookAttached: function(event) {
+          userFacebookAttached: function(event, cb) {
             return _this.addOrRemoveValues(event, function(user) {
               user.facebook = {
                 id: event.payload.profile.id,
                 profile: event.payload.profile
               };
               return user;
-            });
+            }, cb);
           },
-          userGoogleAttached: function(event) {
+          userGoogleAttached: function(event, cb) {
             return _this.addOrRemoveValues(event, function(user) {
               user.google = {
                 id: event.payload.profile.id,
                 profile: event.payload.profile
               };
               return user;
-            });
+            }, cb);
           },
-          userHasLocalSignin: function(event) {
+          userHasLocalSignin: function(event, cb) {
             return _this.addOrRemoveValues(event, function(user) {
               user.local = {
                 id: event.payload.id,
                 profile: event.payload.profile
               };
               return user;
-            });
+            }, cb);
           }
         };
       }
 
-      UserProfile.prototype.addOrRemoveValues = function(event, callback) {
+      UserProfile.prototype.addOrRemoveValues = function(event, callback, cb) {
         var _this = this;
         return db.hget("" + config.odo.domain + ":users", event.payload.id, function(err, user) {
           if (err != null) {
+            cb();
             return;
           }
           user = JSON.parse(user);
+          console.log('Loaded user');
+          console.log(user);
           user = callback(user);
-          user = JSON.stringify(user);
-          return db.hset("" + config.odo.domain + ":users", event.payload.id, user);
+          user = JSON.stringify(user, null, 4);
+          console.log('Saving user');
+          console.log(user);
+          return db.hset("" + config.odo.domain + ":users", event.payload.id, user, function() {
+            return cb();
+          });
         });
       };
 

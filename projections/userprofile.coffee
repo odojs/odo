@@ -4,70 +4,85 @@ define ['redis', 'odo/config'], (redis, config) ->
 	class UserProfile
 		constructor: ->
 			@receive =
-				userTrackingStarted: (event) =>
+				userTrackingStarted: (event, cb) =>
 					user = {
 						id: event.payload.id
 						# just in case we don't get another opportunity to grab the displayName
 						displayName: event.payload.profile.displayName
 					}
 					
-					db.hset "#{config.odo.domain}:users", event.payload.id, JSON.stringify user
+					db.hset "#{config.odo.domain}:users", event.payload.id, JSON.stringify(user), cb
 				
 				
-				userHasEmailAddress: (event) =>
+				userHasEmailAddress: (event, cb) =>
 					@addOrRemoveValues event, (user) =>
 						user.email = event.payload.email
 						user
+					, cb
 				
-				userHasDisplayName: (event) =>
+				userHasDisplayName: (event, cb) =>
 					@addOrRemoveValues event, (user) =>
 						user.displayName = event.payload.displayName
 						user
+					, cb
 				
-				userHasUsername: (event) =>
+				userHasUsername: (event, cb) =>
 					@addOrRemoveValues event, (user) =>
+						console.log "giving user a username #{event.payload.username}"
 						user.username = event.payload.username
 						user
+					, cb
 						
 
-				userTwitterAttached: (event) =>
+				userTwitterAttached: (event, cb) =>
 					@addOrRemoveValues event, (user) =>
 						user.twitter =
 							id: event.payload.profile.id
 							profile: event.payload.profile
 						user
+					, cb
 				
-				userFacebookAttached: (event) =>
+				userFacebookAttached: (event, cb) =>
 					@addOrRemoveValues event, (user) =>
 						user.facebook =
 							id: event.payload.profile.id
 							profile: event.payload.profile
 						user
+					, cb
 				
-				userGoogleAttached: (event) =>
+				userGoogleAttached: (event, cb) =>
 					@addOrRemoveValues event, (user) =>
 						user.google =
 							id: event.payload.profile.id
 							profile: event.payload.profile
 						user
+					, cb
 					
-				userHasLocalSignin: (event) =>
+				userHasLocalSignin: (event, cb) =>
 					@addOrRemoveValues event, (user) =>
 						user.local =
 							id: event.payload.id
 							profile: event.payload.profile
 						user
+					, cb
 		
-		addOrRemoveValues: (event, callback) =>
+		addOrRemoveValues: (event, callback, cb) =>
 			db.hget "#{config.odo.domain}:users", event.payload.id, (err, user) =>
 				if err?
+					cb()
 					return
+					
 				
 				user = JSON.parse user
+				console.log 'Loaded user'
+				console.log user
 				user = callback user
-				user = JSON.stringify user
+				user = JSON.stringify user, null, 4
 				
-				db.hset "#{config.odo.domain}:users", event.payload.id, user
+				console.log 'Saving user'
+				console.log user
+				db.hset "#{config.odo.domain}:users", event.payload.id, user, ->
+					cb()
 		
 		get: (id, callback) ->
 			db.hget "#{config.odo.domain}:users", id, (err, data) =>

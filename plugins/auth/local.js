@@ -11,21 +11,27 @@
         this.configure = __bind(this.configure, this);
         var _this = this;
         this.receive = {
-          userHasLocalSignin: function(event) {
+          userHasLocalSignin: function(event, cb) {
             console.log('LocalAuthentication userHasLocalSignin');
-            return db.hset("" + config.odo.domain + ":localusers", event.payload.profile.username, event.payload.id);
+            return db.hset("" + config.odo.domain + ":localusers", event.payload.profile.username, event.payload.id, function() {
+              return cb();
+            });
           },
-          userHasUsername: function(event) {
+          userHasUsername: function(event, cb) {
             console.log('LocalAuthentication userHasUsername');
             return _this.get(event.payload.username, function(err, userid) {
               if (err != null) {
                 console.log(err);
+                cb();
                 return;
               }
               if (userid == null) {
+                cb();
                 return;
               }
-              return db.hset("" + config.odo.domain + ":localusers", event.payload.username, event.payload.id);
+              return db.hset("" + config.odo.domain + ":localusers", event.payload.username, event.payload.id, function() {
+                return cb();
+              });
             });
           }
         };

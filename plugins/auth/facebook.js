@@ -11,8 +11,10 @@
         this.configure = __bind(this.configure, this);
         var _this = this;
         this.receive = {
-          userFacebookAttached: function(event) {
-            return db.hset("" + config.odo.domain + ":userfacebook", event.payload.profile.id, event.payload.id);
+          userFacebookAttached: function(event, cb) {
+            return db.hset("" + config.odo.domain + ":userfacebook", event.payload.profile.id, event.payload.id, function() {
+              return cb();
+            });
           }
         };
       }
