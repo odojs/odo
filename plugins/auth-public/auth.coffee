@@ -15,3 +15,18 @@
 				dfd.reject())
 			
 		dfd.promise
+		
+	assignUsernameToUser: (id, username) =>
+		$.post '/sendcommand/assignUsernameToUser',
+			id: id
+			username: username
+	
+	assignDisplayNameToUser: (id, displayName) =>
+		$.post '/sendcommand/assignDisplayNameToUser',
+			id: id
+			displayName: displayName
+	
+	assignEmailAddressToUser: (id, email) =>
+		$.post '/sendcommand/assignEmailAddressToUser',
+			id: id
+			email: email

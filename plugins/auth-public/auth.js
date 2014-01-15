@@ -18,6 +18,24 @@
           return dfd.reject();
         });
         return dfd.promise;
+      },
+      assignUsernameToUser: function(id, username) {
+        return $.post('/sendcommand/assignUsernameToUser', {
+          id: id,
+          username: username
+        });
+      },
+      assignDisplayNameToUser: function(id, displayName) {
+        return $.post('/sendcommand/assignDisplayNameToUser', {
+          id: id,
+          displayName: displayName
+        });
+      },
+      assignEmailAddressToUser: function(id, email) {
+        return $.post('/sendcommand/assignEmailAddressToUser', {
+          id: id,
+          email: email
+        });
       }
     };
   });
