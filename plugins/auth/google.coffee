@@ -68,6 +68,14 @@ define ['passport', 'passport-google', 'odo/config', 'odo/hub', 'node-uuid', 're
 								id: userid
 								profile: profile
 					
+					else
+						console.log 'attaching google to user'
+						hub.send
+							command: 'attachGoogleToUser'
+							payload:
+								id: userid
+								profile: profile
+					
 					user = {
 						id: userid
 						profile: profile

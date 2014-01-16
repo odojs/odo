@@ -76,6 +76,14 @@ define ['passport', 'passport-twitter', 'odo/config', 'odo/hub', 'node-uuid', 'r
 								id: userid
 								displayName: profile.displayName
 					
+					else
+						console.log 'attaching twitter to user'
+						hub.send
+							command: 'attachTwitterToUser'
+							payload:
+								id: userid
+								profile: profile
+					
 					user = {
 						id: userid
 						profile: profile

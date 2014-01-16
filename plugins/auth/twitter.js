@@ -93,6 +93,15 @@
                   displayName: profile.displayName
                 }
               });
+            } else {
+              console.log('attaching twitter to user');
+              hub.send({
+                command: 'attachTwitterToUser',
+                payload: {
+                  id: userid,
+                  profile: profile
+                }
+              });
             }
             user = {
               id: userid,

@@ -84,6 +84,15 @@
                   profile: profile
                 }
               });
+            } else {
+              console.log('attaching google to user');
+              hub.send({
+                command: 'attachGoogleToUser',
+                payload: {
+                  id: userid,
+                  profile: profile
+                }
+              });
             }
             user = {
               id: userid,

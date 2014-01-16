@@ -92,6 +92,15 @@
                   displayName: profile.displayName
                 }
               });
+            } else {
+              console.log('attaching facebook to user');
+              hub.send({
+                command: 'attachFacebookToUser',
+                payload: {
+                  id: userid,
+                  profile: profile
+                }
+              });
             }
             user = {
               id: userid,
