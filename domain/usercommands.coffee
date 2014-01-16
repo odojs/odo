@@ -14,5 +14,5 @@ define ['odo/eventstore', 'odo/domain/user'], (es, User) ->
 	attachFacebookToUser: defaultHandler
 	attachGoogleToUser: defaultHandler
 	createLocalSigninForUser: defaultHandler
-	
+	assignPasswordToUser: defaultHandler
 	

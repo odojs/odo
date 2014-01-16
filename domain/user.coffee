@@ -52,3 +52,9 @@ define [], () ->
 				id: @id,
 				profile: command.profile
 			callback null
+		
+		assignPasswordToUser: (command, callback) =>
+			@new 'userHasPassword',
+				id: @id,
+				password: command.password
+			callback null

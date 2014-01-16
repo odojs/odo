@@ -230,6 +230,14 @@
               displayName: profile.displayName
             }
           });
+          console.log('assigning a username for user');
+          hub.send({
+            command: 'assignPasswordToUser',
+            payload: {
+              id: userid,
+              password: profile.password
+            }
+          });
           return new UserProfile().get(userid, function(err, user) {
             if (err != null) {
               res.send(500, 'Couldn\'t find user');

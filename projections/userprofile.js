@@ -72,6 +72,12 @@
               };
               return user;
             }, cb);
+          },
+          userHasPassword: function(event, cb) {
+            return _this.addOrRemoveValues(event, function(user) {
+              user.local.profile.password = event.payload.password;
+              return user;
+            }, cb);
           }
         };
       }
@@ -84,12 +90,8 @@
             return;
           }
           user = JSON.parse(user);
-          console.log('Loaded user');
-          console.log(user);
           user = callback(user);
           user = JSON.stringify(user, null, 4);
-          console.log('Saving user');
-          console.log(user);
           return db.hset("" + config.odo.domain + ":users", event.payload.id, user, function() {
             return cb();
           });

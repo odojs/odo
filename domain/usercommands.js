@@ -16,7 +16,8 @@
       attachTwitterToUser: defaultHandler,
       attachFacebookToUser: defaultHandler,
       attachGoogleToUser: defaultHandler,
-      createLocalSigninForUser: defaultHandler
+      createLocalSigninForUser: defaultHandler,
+      assignPasswordToUser: defaultHandler
     };
   });
 

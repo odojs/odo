@@ -200,6 +200,13 @@ define ['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'red
 						id: userid
 						displayName: profile.displayName
 				
+				console.log 'assigning a username for user'
+				hub.send
+					command: 'assignPasswordToUser'
+					payload:
+						id: userid
+						password: profile.password
+				
 				new UserProfile().get userid, (err, user) =>
 					if err?
 						res.send 500, 'Couldn\'t find user'

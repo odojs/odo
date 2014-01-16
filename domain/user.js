@@ -6,6 +6,7 @@
     var User;
     return User = (function() {
       function User(id) {
+        this.assignPasswordToUser = __bind(this.assignPasswordToUser, this);
         this.createLocalSigninForUser = __bind(this.createLocalSigninForUser, this);
         this.attachGoogleToUser = __bind(this.attachGoogleToUser, this);
         this.attachFacebookToUser = __bind(this.attachFacebookToUser, this);
@@ -77,6 +78,14 @@
         this["new"]('userHasLocalSignin', {
           id: this.id,
           profile: command.profile
+        });
+        return callback(null);
+      };
+
+      User.prototype.assignPasswordToUser = function(command, callback) {
+        this["new"]('userHasPassword', {
+          id: this.id,
+          password: command.password
         });
         return callback(null);
       };

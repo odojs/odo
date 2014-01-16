@@ -13,6 +13,12 @@
           username: username,
           password: password
         });
+      },
+      assignPasswordToUser: function(id, password) {
+        return $.post('/sendcommand/assignPasswordToUser', {
+          id: id,
+          password: password
+        });
       }
     };
   });

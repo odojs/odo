@@ -7,3 +7,8 @@ define ['jquery'], ($) ->
 		$.get '/odo/auth/local/test', 
 			username: username
 			password: password
+	
+	assignPasswordToUser: (id, password) =>
+		$.post '/sendcommand/assignPasswordToUser',
+			id: id
+			password: password

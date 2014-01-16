@@ -65,6 +65,12 @@ define ['redis', 'odo/config'], (redis, config) ->
 							profile: event.payload.profile
 						user
 					, cb
+				
+				userHasPassword: (event, cb) =>
+					@addOrRemoveValues event, (user) =>
+						user.local.profile.password = event.payload.password
+						user
+					, cb
 		
 		addOrRemoveValues: (event, callback, cb) =>
 			db.hget "#{config.odo.domain}:users", event.payload.id, (err, user) =>
@@ -74,13 +80,9 @@ define ['redis', 'odo/config'], (redis, config) ->
 					
 				
 				user = JSON.parse user
-				console.log 'Loaded user'
-				console.log user
 				user = callback user
 				user = JSON.stringify user, null, 4
 				
-				console.log 'Saving user'
-				console.log user
 				db.hset "#{config.odo.domain}:users", event.payload.id, user, ->
 					cb()
 		
