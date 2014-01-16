@@ -44,3 +44,23 @@
 		$.post '/sendcommand/assignPasswordToUser',
 			id: id
 			password: password
+	
+	disconnectTwitterFromUser: (id, profile) =>
+		$.post '/sendcommand/disconnectTwitterFromUser',
+			id: id
+			profile: profile
+	
+	disconnectFacebookFromUser: (id, profile) =>
+		$.post '/sendcommand/disconnectFacebookFromUser',
+			id: id
+			profile: profile
+	
+	disconnectGoogleFromUser: (id, profile) =>
+		$.post '/sendcommand/disconnectGoogleFromUser',
+			id: id
+			profile: profile
+	
+	removeLocalSigninForUser: (id, profile) =>
+		$.post '/sendcommand/removeLocalSigninForUser',
+			id: id
+			profile: profile

@@ -15,6 +15,11 @@
             return db.hset("" + config.odo.domain + ":usergoogle", event.payload.profile.id, event.payload.id, function() {
               return cb();
             });
+          },
+          userGoogleDisconnected: function(event, cb) {
+            return db.hdel("" + config.odo.domain + ":usergoogle", event.payload.profile.id, function() {
+              return cb();
+            });
           }
         };
       }

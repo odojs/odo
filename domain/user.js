@@ -6,10 +6,14 @@
     var User;
     return User = (function() {
       function User(id) {
+        this.removeLocalSigninForUser = __bind(this.removeLocalSigninForUser, this);
         this.assignPasswordToUser = __bind(this.assignPasswordToUser, this);
         this.createLocalSigninForUser = __bind(this.createLocalSigninForUser, this);
+        this.disconnectGoogleFromUser = __bind(this.disconnectGoogleFromUser, this);
         this.connectGoogleToUser = __bind(this.connectGoogleToUser, this);
+        this.disconnectFacebookFromUser = __bind(this.disconnectFacebookFromUser, this);
         this.connectFacebookToUser = __bind(this.connectFacebookToUser, this);
+        this.disconnectTwitterFromUser = __bind(this.disconnectTwitterFromUser, this);
         this.connectTwitterToUser = __bind(this.connectTwitterToUser, this);
         this.assignUsernameToUser = __bind(this.assignUsernameToUser, this);
         this.assignDisplayNameToUser = __bind(this.assignDisplayNameToUser, this);
@@ -58,6 +62,14 @@
         return callback(null);
       };
 
+      User.prototype.disconnectTwitterFromUser = function(command, callback) {
+        this["new"]('userTwitterDisconnected', {
+          id: this.id,
+          profile: command.profile
+        });
+        return callback(null);
+      };
+
       User.prototype.connectFacebookToUser = function(command, callback) {
         this["new"]('userFacebookConnected', {
           id: this.id,
@@ -66,8 +78,24 @@
         return callback(null);
       };
 
+      User.prototype.disconnectFacebookFromUser = function(command, callback) {
+        this["new"]('userFacebookDisconnected', {
+          id: this.id,
+          profile: command.profile
+        });
+        return callback(null);
+      };
+
       User.prototype.connectGoogleToUser = function(command, callback) {
         this["new"]('userGoogleConnected', {
+          id: this.id,
+          profile: command.profile
+        });
+        return callback(null);
+      };
+
+      User.prototype.disconnectGoogleFromUser = function(command, callback) {
+        this["new"]('userGoogleDisconnected', {
           id: this.id,
           profile: command.profile
         });
@@ -86,6 +114,14 @@
         this["new"]('userHasPassword', {
           id: this.id,
           password: command.password
+        });
+        return callback(null);
+      };
+
+      User.prototype.removeLocalSigninForUser = function(command, callback) {
+        this["new"]('userLocalSigninRemoved', {
+          id: this.id,
+          profile: command.profile
         });
         return callback(null);
       };

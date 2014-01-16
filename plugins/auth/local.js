@@ -12,13 +12,11 @@
         var _this = this;
         this.receive = {
           userHasLocalSignin: function(event, cb) {
-            console.log('LocalAuthentication userHasLocalSignin');
             return db.hset("" + config.odo.domain + ":localusers", event.payload.profile.username, event.payload.id, function() {
               return cb();
             });
           },
           userHasUsername: function(event, cb) {
-            console.log('LocalAuthentication userHasUsername');
             return _this.get(event.payload.username, function(err, userid) {
               if (err != null) {
                 console.log(err);
@@ -32,6 +30,11 @@
               return db.hset("" + config.odo.domain + ":localusers", event.payload.username, event.payload.id, function() {
                 return cb();
               });
+            });
+          },
+          userLocalSigninRemoved: function(event, cb) {
+            return db.hdel("" + config.odo.domain + ":localusers", event.payload.profile.username, function() {
+              return cb();
             });
           }
         };

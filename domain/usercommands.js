@@ -14,10 +14,14 @@
       assignDisplayNameToUser: defaultHandler,
       assignUsernameToUser: defaultHandler,
       connectTwitterToUser: defaultHandler,
+      disconnectTwitterFromUser: defaultHandler,
       connectFacebookToUser: defaultHandler,
+      disconnectFacebookFromUser: defaultHandler,
       connectGoogleToUser: defaultHandler,
+      disconnectGoogleFromUser: defaultHandler,
       createLocalSigninForUser: defaultHandler,
-      assignPasswordToUser: defaultHandler
+      assignPasswordToUser: defaultHandler,
+      removeLocalSigninForUser: defaultHandler
     };
   });
 

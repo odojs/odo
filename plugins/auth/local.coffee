@@ -5,15 +5,11 @@ define ['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'red
 		constructor: ->
 			@receive =
 				userHasLocalSignin: (event, cb) =>
-					console.log 'LocalAuthentication userHasLocalSignin'
-					
 					db.hset "#{config.odo.domain}:localusers", event.payload.profile.username, event.payload.id, ->
 						cb()
 				
 				# if they have a local sign in we should update the sign in check
 				userHasUsername: (event, cb) =>
-					console.log 'LocalAuthentication userHasUsername'
-					
 					@get event.payload.username, (err, userid) =>
 						if err?
 							console.log err
@@ -26,6 +22,10 @@ define ['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'red
 					
 						db.hset "#{config.odo.domain}:localusers", event.payload.username, event.payload.id, ->
 							cb()
+				
+				userLocalSigninRemoved: (event, cb) =>
+					db.hdel "#{config.odo.domain}:localusers", event.payload.profile.username, ->
+						cb()
 				
 		
 		get: (username, callback) ->

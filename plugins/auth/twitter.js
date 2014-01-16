@@ -12,8 +12,12 @@
         var _this = this;
         this.receive = {
           userTwitterConnected: function(event, cb) {
-            console.log('TwitterAuthentication userTwitterConnected');
             return db.hset("" + config.odo.domain + ":usertwitter", event.payload.profile.id, event.payload.id, function() {
+              return cb();
+            });
+          },
+          userTwitterDisconnected: function(event, cb) {
+            return db.hdel("" + config.odo.domain + ":usertwitter", event.payload.profile.id, function() {
               return cb();
             });
           }

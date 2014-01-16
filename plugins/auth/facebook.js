@@ -15,6 +15,11 @@
             return db.hset("" + config.odo.domain + ":userfacebook", event.payload.profile.id, event.payload.id, function() {
               return cb();
             });
+          },
+          userFacebookDisconnected: function(event, cb) {
+            return db.hdel("" + config.odo.domain + ":userfacebook", event.payload.profile.id, function() {
+              return cb();
+            });
           }
         };
       }

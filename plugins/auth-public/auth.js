@@ -53,6 +53,30 @@
           id: id,
           password: password
         });
+      },
+      disconnectTwitterFromUser: function(id, profile) {
+        return $.post('/sendcommand/disconnectTwitterFromUser', {
+          id: id,
+          profile: profile
+        });
+      },
+      disconnectFacebookFromUser: function(id, profile) {
+        return $.post('/sendcommand/disconnectFacebookFromUser', {
+          id: id,
+          profile: profile
+        });
+      },
+      disconnectGoogleFromUser: function(id, profile) {
+        return $.post('/sendcommand/disconnectGoogleFromUser', {
+          id: id,
+          profile: profile
+        });
+      },
+      removeLocalSigninForUser: function(id, profile) {
+        return $.post('/sendcommand/removeLocalSigninForUser', {
+          id: id,
+          profile: profile
+        });
       }
     };
   });

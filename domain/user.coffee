@@ -34,6 +34,13 @@ define [], () ->
 				id: @id,
 				profile: command.profile
 			callback null
+			
+		disconnectTwitterFromUser: (command, callback) =>
+			@new 'userTwitterDisconnected',
+				id: @id
+				profile: command.profile
+			callback null
+		
 		
 		connectFacebookToUser: (command, callback) =>
 			@new 'userFacebookConnected',
@@ -41,11 +48,25 @@ define [], () ->
 				profile: command.profile
 			callback null
 			
+		disconnectFacebookFromUser: (command, callback) =>
+			@new 'userFacebookDisconnected',
+				id: @id
+				profile: command.profile
+			callback null
+			
+			
 		connectGoogleToUser: (command, callback) =>
 			@new 'userGoogleConnected',
 				id: @id,
 				profile: command.profile
 			callback null
+			
+		disconnectGoogleFromUser: (command, callback) =>
+			@new 'userGoogleDisconnected',
+				id: @id
+				profile: command.profile
+			callback null
+			
 		
 		createLocalSigninForUser: (command, callback) =>
 			@new 'userHasLocalSignin',
@@ -57,4 +78,10 @@ define [], () ->
 			@new 'userHasPassword',
 				id: @id,
 				password: command.password
+			callback null
+			
+		removeLocalSigninForUser: (command, callback) =>
+			@new 'userLocalSigninRemoved',
+				id: @id
+				profile: command.profile
 			callback null

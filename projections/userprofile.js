@@ -46,6 +46,12 @@
               return user;
             }, cb);
           },
+          userTwitterDisconnected: function(event, cb) {
+            return _this.addOrRemoveValues(event, function(user) {
+              user.twitter = null;
+              return user;
+            }, cb);
+          },
           userFacebookConnected: function(event, cb) {
             return _this.addOrRemoveValues(event, function(user) {
               user.facebook = {
@@ -55,12 +61,24 @@
               return user;
             }, cb);
           },
+          userFacebookDisconnected: function(event, cb) {
+            return _this.addOrRemoveValues(event, function(user) {
+              user.facebook = null;
+              return user;
+            }, cb);
+          },
           userGoogleConnected: function(event, cb) {
             return _this.addOrRemoveValues(event, function(user) {
               user.google = {
                 id: event.payload.profile.id,
                 profile: event.payload.profile
               };
+              return user;
+            }, cb);
+          },
+          userGoogleDisconnected: function(event, cb) {
+            return _this.addOrRemoveValues(event, function(user) {
+              user.google = null;
               return user;
             }, cb);
           },
@@ -76,6 +94,12 @@
           userHasPassword: function(event, cb) {
             return _this.addOrRemoveValues(event, function(user) {
               user.local.profile.password = event.payload.password;
+              return user;
+            }, cb);
+          },
+          userLocalSigninRemoved: function(event, cb) {
+            return _this.addOrRemoveValues(event, function(user) {
+              user.local = null;
               return user;
             }, cb);
           }

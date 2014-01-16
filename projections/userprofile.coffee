@@ -41,6 +41,13 @@ define ['redis', 'odo/config'], (redis, config) ->
 							profile: event.payload.profile
 						user
 					, cb
+					
+				userTwitterDisconnected: (event, cb) =>
+					@addOrRemoveValues event, (user) =>
+						user.twitter = null
+						user
+					, cb
+				
 				
 				userFacebookConnected: (event, cb) =>
 					@addOrRemoveValues event, (user) =>
@@ -49,6 +56,13 @@ define ['redis', 'odo/config'], (redis, config) ->
 							profile: event.payload.profile
 						user
 					, cb
+					
+				userFacebookDisconnected: (event, cb) =>
+					@addOrRemoveValues event, (user) =>
+						user.facebook = null
+						user
+					, cb
+					
 				
 				userGoogleConnected: (event, cb) =>
 					@addOrRemoveValues event, (user) =>
@@ -57,6 +71,13 @@ define ['redis', 'odo/config'], (redis, config) ->
 							profile: event.payload.profile
 						user
 					, cb
+					
+				userGoogleDisconnected: (event, cb) =>
+					@addOrRemoveValues event, (user) =>
+						user.google = null
+						user
+					, cb
+					
 					
 				userHasLocalSignin: (event, cb) =>
 					@addOrRemoveValues event, (user) =>
@@ -69,6 +90,12 @@ define ['redis', 'odo/config'], (redis, config) ->
 				userHasPassword: (event, cb) =>
 					@addOrRemoveValues event, (user) =>
 						user.local.profile.password = event.payload.password
+						user
+					, cb
+				
+				userLocalSigninRemoved: (event, cb) =>
+					@addOrRemoveValues event, (user) =>
+						user.local = null
 						user
 					, cb
 		

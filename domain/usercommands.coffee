@@ -11,8 +11,14 @@ define ['odo/eventstore', 'odo/domain/user'], (es, User) ->
 	assignUsernameToUser: defaultHandler
 	
 	connectTwitterToUser: defaultHandler
+	disconnectTwitterFromUser: defaultHandler
+	
 	connectFacebookToUser: defaultHandler
+	disconnectFacebookFromUser: defaultHandler
+	
 	connectGoogleToUser: defaultHandler
+	disconnectGoogleFromUser: defaultHandler
+	
 	createLocalSigninForUser: defaultHandler
 	assignPasswordToUser: defaultHandler
-	
+	removeLocalSigninForUser: defaultHandler

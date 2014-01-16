@@ -5,9 +5,11 @@ define ['passport', 'passport-twitter', 'odo/config', 'odo/hub', 'node-uuid', 'r
 		constructor: ->
 			@receive =
 				userTwitterConnected: (event, cb) =>
-					console.log 'TwitterAuthentication userTwitterConnected'
-					
 					db.hset "#{config.odo.domain}:usertwitter", event.payload.profile.id, event.payload.id, ->
+						cb()
+						
+				userTwitterDisconnected: (event, cb) =>
+					db.hdel "#{config.odo.domain}:usertwitter", event.payload.profile.id, ->
 						cb()
 					
 		
