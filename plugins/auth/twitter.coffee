@@ -46,6 +46,10 @@ define ['passport', 'passport-twitter', 'odo/config', 'odo/hub', 'node-uuid', 'r
 						done err
 						return
 					
+					if req.user? and userid? and req.user.id isnt userid
+						done null, false, { message: 'This Twitter account is connected to another Blackbeard account' }
+						return
+					
 					if req.user?
 						console.log 'user already exists, connecting twitter to user'
 						userid = req.user.id
@@ -95,5 +99,5 @@ define ['passport', 'passport-twitter', 'odo/config', 'odo/hub', 'node-uuid', 'r
 			app.get '/odo/auth/twitter', passport.authenticate 'twitter'
 			app.get '/odo/auth/twitter/callback', passport.authenticate('twitter', {
 				successRedirect: '/'
-				failureRedirect: '/'
+				failureRedirect: '/#auth/twitter/failure'
 			})

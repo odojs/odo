@@ -61,6 +61,12 @@
               done(err);
               return;
             }
+            if ((req.user != null) && (userid != null) && req.user.id !== userid) {
+              done(null, false, {
+                message: 'This Twitter account is connected to another Blackbeard account'
+              });
+              return;
+            }
             if (req.user != null) {
               console.log('user already exists, connecting twitter to user');
               userid = req.user.id;
@@ -117,7 +123,7 @@
         app.get('/odo/auth/twitter', passport.authenticate('twitter'));
         return app.get('/odo/auth/twitter/callback', passport.authenticate('twitter', {
           successRedirect: '/',
-          failureRedirect: '/'
+          failureRedirect: '/#auth/twitter/failure'
         }));
       };
 

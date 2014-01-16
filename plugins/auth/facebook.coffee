@@ -45,6 +45,10 @@ define ['passport', 'passport-facebook', 'odo/config', 'odo/hub', 'node-uuid', '
 					if err?
 						done err
 						return
+					
+					if req.user? and userid? and req.user.id isnt userid
+						done null, false, { message: 'This Facebook account is connected to another Blackbeard account' }
+						return
 						
 					if req.user?
 						console.log 'user already exists, connecting facebook to user'
@@ -96,5 +100,6 @@ define ['passport', 'passport-facebook', 'odo/config', 'odo/hub', 'node-uuid', '
 			app.get '/odo/auth/facebook', passport.authenticate 'facebook'
 			app.get '/odo/auth/facebook/callback', passport.authenticate('facebook', {
 				successRedirect: '/'
-				failureRedirect: '/'
+				failureRedirect: '/#auth/facebook/failure'
 			})
+			app.get '/odo/auth/facebook'

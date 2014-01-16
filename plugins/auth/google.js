@@ -61,6 +61,12 @@
               done(err);
               return;
             }
+            if ((req.user != null) && (userid != null) && req.user.id !== userid) {
+              done(null, false, {
+                message: 'This Google account is connected to another Blackbeard account'
+              });
+              return;
+            }
             if (req.user != null) {
               console.log('user already exists, connecting google to user');
               userid = req.user.id;
@@ -119,7 +125,7 @@
         app.get('/odo/auth/google', passport.authenticate('google'));
         return app.get('/odo/auth/google/callback', passport.authenticate('google', {
           successRedirect: '/',
-          failureRedirect: '/'
+          failureRedirect: '/#auth/google/failure'
         }));
       };
 

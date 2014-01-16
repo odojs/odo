@@ -63,7 +63,6 @@
               return;
             }
             if (userid == null) {
-              console.log('User not found');
               done(null, false, {
                 message: 'Incorrect username or password.'
               });
@@ -75,13 +74,11 @@
                 return;
               }
               if (user.local.profile.password !== password) {
-                console.log('Password not correct');
                 done(null, false, {
                   message: 'Incorrect username or password.'
                 });
                 return;
               }
-              console.log('Returning successfully');
               return done(null, user);
             });
           });

@@ -49,7 +49,6 @@ define ['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'red
 						return
 					
 					if !userid?
-						console.log 'User not found'
 						done null, false, { message: 'Incorrect username or password.' }
 						return
 					
@@ -59,11 +58,9 @@ define ['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'red
 							return
 					
 						if user.local.profile.password isnt password
-							console.log 'Password not correct'
 							done null, false, { message: 'Incorrect username or password.' }
 							return
 						
-						console.log 'Returning successfully'
 						done null, user
 			
 		init: (app) =>

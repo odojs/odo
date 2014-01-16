@@ -47,6 +47,10 @@ define ['passport', 'passport-google', 'odo/config', 'odo/hub', 'node-uuid', 're
 						done err
 						return
 					
+					if req.user? and userid? and req.user.id isnt userid
+						done null, false, { message: 'This Google account is connected to another Blackbeard account' }
+						return
+					
 					if req.user?
 						console.log 'user already exists, connecting google to user'
 						userid = req.user.id
@@ -97,5 +101,5 @@ define ['passport', 'passport-google', 'odo/config', 'odo/hub', 'node-uuid', 're
 			app.get '/odo/auth/google', passport.authenticate 'google'
 			app.get '/odo/auth/google/callback', passport.authenticate('google', {
 				successRedirect: '/'
-				failureRedirect: '/'
+				failureRedirect: '/#auth/google/failure'
 			})

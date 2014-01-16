@@ -61,6 +61,12 @@
               done(err);
               return;
             }
+            if ((req.user != null) && (userid != null) && req.user.id !== userid) {
+              done(null, false, {
+                message: 'This Facebook account is connected to another Blackbeard account'
+              });
+              return;
+            }
             if (req.user != null) {
               console.log('user already exists, connecting facebook to user');
               userid = req.user.id;
@@ -115,10 +121,11 @@
 
       FacebookAuthentication.prototype.init = function(app) {
         app.get('/odo/auth/facebook', passport.authenticate('facebook'));
-        return app.get('/odo/auth/facebook/callback', passport.authenticate('facebook', {
+        app.get('/odo/auth/facebook/callback', passport.authenticate('facebook', {
           successRedirect: '/',
-          failureRedirect: '/'
+          failureRedirect: '/#auth/facebook/failure'
         }));
+        return app.get('/odo/auth/facebook');
       };
 
       return FacebookAuthentication;
