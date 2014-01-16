@@ -84,6 +84,16 @@
                   profile: profile
                 }
               });
+              if (profile.emails.length > 0) {
+                console.log('assigning an email address to user');
+                hub.send({
+                  command: 'assignEmailAddressToUser',
+                  payload: {
+                    id: userid,
+                    email: profile.emails[0].value
+                  }
+                });
+              }
             } else {
               console.log('attaching google to user');
               hub.send({
