@@ -34,7 +34,7 @@ define ['redis', 'odo/config'], (redis, config) ->
 					, cb
 						
 
-				userTwitterAttached: (event, cb) =>
+				userTwitterConnected: (event, cb) =>
 					@addOrRemoveValues event, (user) =>
 						user.twitter =
 							id: event.payload.profile.id
@@ -42,7 +42,7 @@ define ['redis', 'odo/config'], (redis, config) ->
 						user
 					, cb
 				
-				userFacebookAttached: (event, cb) =>
+				userFacebookConnected: (event, cb) =>
 					@addOrRemoveValues event, (user) =>
 						user.facebook =
 							id: event.payload.profile.id
@@ -50,7 +50,7 @@ define ['redis', 'odo/config'], (redis, config) ->
 						user
 					, cb
 				
-				userGoogleAttached: (event, cb) =>
+				userGoogleConnected: (event, cb) =>
 					@addOrRemoveValues event, (user) =>
 						user.google =
 							id: event.payload.profile.id

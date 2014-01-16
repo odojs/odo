@@ -11,8 +11,8 @@
         this.configure = __bind(this.configure, this);
         var _this = this;
         this.receive = {
-          userTwitterAttached: function(event, cb) {
-            console.log('TwitterAuthentication userTwitterAttached');
+          userTwitterConnected: function(event, cb) {
+            console.log('TwitterAuthentication userTwitterConnected');
             return db.hset("" + config.odo.domain + ":usertwitter", event.payload.profile.id, event.payload.id, function() {
               return cb();
             });
@@ -58,10 +58,10 @@
               return;
             }
             if (req.user != null) {
-              console.log('user already exists, attaching twitter to user');
+              console.log('user already exists, connecting twitter to user');
               userid = req.user.id;
               hub.send({
-                command: 'attachTwitterToUser',
+                command: 'connectTwitterToUser',
                 payload: {
                   id: userid,
                   profile: profile
@@ -77,15 +77,13 @@
                   profile: profile
                 }
               });
-              console.log('attaching twitter to user');
               hub.send({
-                command: 'attachTwitterToUser',
+                command: 'connectTwitterToUser',
                 payload: {
                   id: userid,
                   profile: profile
                 }
               });
-              console.log('assigning a displayName for user');
               hub.send({
                 command: 'assignDisplayNameToUser',
                 payload: {
@@ -94,9 +92,8 @@
                 }
               });
             } else {
-              console.log('attaching twitter to user');
               hub.send({
-                command: 'attachTwitterToUser',
+                command: 'connectTwitterToUser',
                 payload: {
                   id: userid,
                   profile: profile

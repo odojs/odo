@@ -37,7 +37,7 @@
               return user;
             }, cb);
           },
-          userTwitterAttached: function(event, cb) {
+          userTwitterConnected: function(event, cb) {
             return _this.addOrRemoveValues(event, function(user) {
               user.twitter = {
                 id: event.payload.profile.id,
@@ -46,7 +46,7 @@
               return user;
             }, cb);
           },
-          userFacebookAttached: function(event, cb) {
+          userFacebookConnected: function(event, cb) {
             return _this.addOrRemoveValues(event, function(user) {
               user.facebook = {
                 id: event.payload.profile.id,
@@ -55,7 +55,7 @@
               return user;
             }, cb);
           },
-          userGoogleAttached: function(event, cb) {
+          userGoogleConnected: function(event, cb) {
             return _this.addOrRemoveValues(event, function(user) {
               user.google = {
                 id: event.payload.profile.id,

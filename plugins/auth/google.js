@@ -11,7 +11,7 @@
         this.configure = __bind(this.configure, this);
         var _this = this;
         this.receive = {
-          userGoogleAttached: function(event, cb) {
+          userGoogleConnected: function(event, cb) {
             return db.hset("" + config.odo.domain + ":usergoogle", event.payload.profile.id, event.payload.id, function() {
               return cb();
             });
@@ -57,10 +57,10 @@
               return;
             }
             if (req.user != null) {
-              console.log('user already exists, attaching google to user');
+              console.log('user already exists, connecting google to user');
               userid = req.user.id;
               hub.send({
-                command: 'attachGoogleToUser',
+                command: 'connectGoogleToUser',
                 payload: {
                   id: userid,
                   profile: profile
@@ -76,16 +76,14 @@
                   profile: profile
                 }
               });
-              console.log('attaching google to user');
               hub.send({
-                command: 'attachGoogleToUser',
+                command: 'connectGoogleToUser',
                 payload: {
                   id: userid,
                   profile: profile
                 }
               });
               if (profile.emails.length > 0) {
-                console.log('assigning an email address to user');
                 hub.send({
                   command: 'assignEmailAddressToUser',
                   payload: {
@@ -95,9 +93,8 @@
                 });
               }
             } else {
-              console.log('attaching google to user');
               hub.send({
-                command: 'attachGoogleToUser',
+                command: 'connectGoogleToUser',
                 payload: {
                   id: userid,
                   profile: profile

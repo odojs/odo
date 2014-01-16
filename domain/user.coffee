@@ -29,20 +29,20 @@ define [], () ->
 			callback null
 			
 		
-		attachTwitterToUser: (command, callback) =>
-			@new 'userTwitterAttached',
+		connectTwitterToUser: (command, callback) =>
+			@new 'userTwitterConnected',
 				id: @id,
 				profile: command.profile
 			callback null
 		
-		attachFacebookToUser: (command, callback) =>
-			@new 'userFacebookAttached',
+		connectFacebookToUser: (command, callback) =>
+			@new 'userFacebookConnected',
 				id: @id,
 				profile: command.profile
 			callback null
 			
-		attachGoogleToUser: (command, callback) =>
-			@new 'userGoogleAttached',
+		connectGoogleToUser: (command, callback) =>
+			@new 'userGoogleConnected',
 				id: @id,
 				profile: command.profile
 			callback null

@@ -4,8 +4,8 @@ define ['passport', 'passport-twitter', 'odo/config', 'odo/hub', 'node-uuid', 'r
 	class TwitterAuthentication
 		constructor: ->
 			@receive =
-				userTwitterAttached: (event, cb) =>
-					console.log 'TwitterAuthentication userTwitterAttached'
+				userTwitterConnected: (event, cb) =>
+					console.log 'TwitterAuthentication userTwitterConnected'
 					
 					db.hset "#{config.odo.domain}:usertwitter", event.payload.profile.id, event.payload.id, ->
 						cb()
@@ -45,10 +45,10 @@ define ['passport', 'passport-twitter', 'odo/config', 'odo/hub', 'node-uuid', 'r
 						return
 					
 					if req.user?
-						console.log 'user already exists, attaching twitter to user'
+						console.log 'user already exists, connecting twitter to user'
 						userid = req.user.id
 						hub.send
-							command: 'attachTwitterToUser'
+							command: 'connectTwitterToUser'
 							payload:
 								id: userid
 								profile: profile
@@ -62,14 +62,12 @@ define ['passport', 'passport-twitter', 'odo/config', 'odo/hub', 'node-uuid', 'r
 								id: userid
 								profile: profile
 						
-						console.log 'attaching twitter to user'
 						hub.send
-							command: 'attachTwitterToUser'
+							command: 'connectTwitterToUser'
 							payload:
 								id: userid
 								profile: profile
 						
-						console.log 'assigning a displayName for user'
 						hub.send
 							command: 'assignDisplayNameToUser'
 							payload:
@@ -77,9 +75,8 @@ define ['passport', 'passport-twitter', 'odo/config', 'odo/hub', 'node-uuid', 'r
 								displayName: profile.displayName
 					
 					else
-						console.log 'attaching twitter to user'
 						hub.send
-							command: 'attachTwitterToUser'
+							command: 'connectTwitterToUser'
 							payload:
 								id: userid
 								profile: profile

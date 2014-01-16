@@ -13,9 +13,9 @@
       assignEmailAddressToUser: defaultHandler,
       assignDisplayNameToUser: defaultHandler,
       assignUsernameToUser: defaultHandler,
-      attachTwitterToUser: defaultHandler,
-      attachFacebookToUser: defaultHandler,
-      attachGoogleToUser: defaultHandler,
+      connectTwitterToUser: defaultHandler,
+      connectFacebookToUser: defaultHandler,
+      connectGoogleToUser: defaultHandler,
       createLocalSigninForUser: defaultHandler,
       assignPasswordToUser: defaultHandler
     };

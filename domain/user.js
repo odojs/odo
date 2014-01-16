@@ -8,9 +8,9 @@
       function User(id) {
         this.assignPasswordToUser = __bind(this.assignPasswordToUser, this);
         this.createLocalSigninForUser = __bind(this.createLocalSigninForUser, this);
-        this.attachGoogleToUser = __bind(this.attachGoogleToUser, this);
-        this.attachFacebookToUser = __bind(this.attachFacebookToUser, this);
-        this.attachTwitterToUser = __bind(this.attachTwitterToUser, this);
+        this.connectGoogleToUser = __bind(this.connectGoogleToUser, this);
+        this.connectFacebookToUser = __bind(this.connectFacebookToUser, this);
+        this.connectTwitterToUser = __bind(this.connectTwitterToUser, this);
         this.assignUsernameToUser = __bind(this.assignUsernameToUser, this);
         this.assignDisplayNameToUser = __bind(this.assignDisplayNameToUser, this);
         this.assignEmailAddressToUser = __bind(this.assignEmailAddressToUser, this);
@@ -50,24 +50,24 @@
         return callback(null);
       };
 
-      User.prototype.attachTwitterToUser = function(command, callback) {
-        this["new"]('userTwitterAttached', {
+      User.prototype.connectTwitterToUser = function(command, callback) {
+        this["new"]('userTwitterConnected', {
           id: this.id,
           profile: command.profile
         });
         return callback(null);
       };
 
-      User.prototype.attachFacebookToUser = function(command, callback) {
-        this["new"]('userFacebookAttached', {
+      User.prototype.connectFacebookToUser = function(command, callback) {
+        this["new"]('userFacebookConnected', {
           id: this.id,
           profile: command.profile
         });
         return callback(null);
       };
 
-      User.prototype.attachGoogleToUser = function(command, callback) {
-        this["new"]('userGoogleAttached', {
+      User.prototype.connectGoogleToUser = function(command, callback) {
+        this["new"]('userGoogleConnected', {
           id: this.id,
           profile: command.profile
         });

@@ -11,7 +11,7 @@
         this.configure = __bind(this.configure, this);
         var _this = this;
         this.receive = {
-          userFacebookAttached: function(event, cb) {
+          userFacebookConnected: function(event, cb) {
             return db.hset("" + config.odo.domain + ":userfacebook", event.payload.profile.id, event.payload.id, function() {
               return cb();
             });
@@ -57,10 +57,10 @@
               return;
             }
             if (req.user != null) {
-              console.log('user already exists, attaching facebook to user');
+              console.log('user already exists, connecting facebook to user');
               userid = req.user.id;
               hub.send({
-                command: 'attachFacebookToUser',
+                command: 'connectFacebookToUser',
                 payload: {
                   id: userid,
                   profile: profile
@@ -76,15 +76,13 @@
                   profile: profile
                 }
               });
-              console.log('attaching facebook to user');
               hub.send({
-                command: 'attachFacebookToUser',
+                command: 'connectFacebookToUser',
                 payload: {
                   id: userid,
                   profile: profile
                 }
               });
-              console.log('assigning a displayName for user');
               hub.send({
                 command: 'assignDisplayNameToUser',
                 payload: {
@@ -93,9 +91,8 @@
                 }
               });
             } else {
-              console.log('attaching facebook to user');
               hub.send({
-                command: 'attachFacebookToUser',
+                command: 'connectFacebookToUser',
                 payload: {
                   id: userid,
                   profile: profile

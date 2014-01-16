@@ -4,7 +4,7 @@ define ['passport', 'passport-facebook', 'odo/config', 'odo/hub', 'node-uuid', '
 	class FacebookAuthentication
 		constructor: ->
 			@receive =
-				userFacebookAttached: (event, cb) =>
+				userFacebookConnected: (event, cb) =>
 					db.hset "#{config.odo.domain}:userfacebook", event.payload.profile.id, event.payload.id, ->
 						cb()
 					
@@ -43,10 +43,10 @@ define ['passport', 'passport-facebook', 'odo/config', 'odo/hub', 'node-uuid', '
 						return
 						
 					if req.user?
-						console.log 'user already exists, attaching facebook to user'
+						console.log 'user already exists, connecting facebook to user'
 						userid = req.user.id
 						hub.send
-							command: 'attachFacebookToUser'
+							command: 'connectFacebookToUser'
 							payload:
 								id: userid
 								profile: profile
@@ -60,14 +60,12 @@ define ['passport', 'passport-facebook', 'odo/config', 'odo/hub', 'node-uuid', '
 								id: userid
 								profile: profile
 						
-						console.log 'attaching facebook to user'
 						hub.send
-							command: 'attachFacebookToUser'
+							command: 'connectFacebookToUser'
 							payload:
 								id: userid
 								profile: profile
 						
-						console.log 'assigning a displayName for user'
 						hub.send
 							command: 'assignDisplayNameToUser'
 							payload:
@@ -75,9 +73,8 @@ define ['passport', 'passport-facebook', 'odo/config', 'odo/hub', 'node-uuid', '
 								displayName: profile.displayName
 					
 					else
-						console.log 'attaching facebook to user'
 						hub.send
-							command: 'attachFacebookToUser'
+							command: 'connectFacebookToUser'
 							payload:
 								id: userid
 								profile: profile

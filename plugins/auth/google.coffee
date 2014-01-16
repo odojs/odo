@@ -4,7 +4,7 @@ define ['passport', 'passport-google', 'odo/config', 'odo/hub', 'node-uuid', 're
 	class GoogleAuthentication
 		constructor: ->
 			@receive =
-				userGoogleAttached: (event, cb) =>
+				userGoogleConnected: (event, cb) =>
 					db.hset "#{config.odo.domain}:usergoogle", event.payload.profile.id, event.payload.id, ->
 						cb()
 		
@@ -44,10 +44,10 @@ define ['passport', 'passport-google', 'odo/config', 'odo/hub', 'node-uuid', 're
 						return
 					
 					if req.user?
-						console.log 'user already exists, attaching google to user'
+						console.log 'user already exists, connecting google to user'
 						userid = req.user.id
 						hub.send
-							command: 'attachGoogleToUser'
+							command: 'connectGoogleToUser'
 							payload:
 								id: userid
 								profile: profile
@@ -61,15 +61,13 @@ define ['passport', 'passport-google', 'odo/config', 'odo/hub', 'node-uuid', 're
 								id: userid
 								profile: profile
 						
-						console.log 'attaching google to user'
 						hub.send
-							command: 'attachGoogleToUser'
+							command: 'connectGoogleToUser'
 							payload:
 								id: userid
 								profile: profile
 						
 						if profile.emails.length > 0
-							console.log 'assigning an email address to user'
 							hub.send
 								command: 'assignEmailAddressToUser'
 								payload:
@@ -77,9 +75,8 @@ define ['passport', 'passport-google', 'odo/config', 'odo/hub', 'node-uuid', 're
 									email: profile.emails[0].value
 					
 					else
-						console.log 'attaching google to user'
 						hub.send
-							command: 'attachGoogleToUser'
+							command: 'connectGoogleToUser'
 							payload:
 								id: userid
 								profile: profile
