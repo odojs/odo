@@ -88,7 +88,6 @@
       LocalAuthentication.prototype.init = function(app) {
         var _this = this;
         app.post('/odo/auth/local', passport.authenticate('local', {
-          successRedirect: '/',
           successRedirect: '/#auth/local/success',
           failureRedirect: '/'
         }));

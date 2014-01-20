@@ -73,7 +73,8 @@
                 facebook: user.facebook != null,
                 google: user.google != null,
                 twitter: user.twitter != null,
-                username: user.username != null
+                username: user.username != null,
+                message: 'Account found'
               });
             });
           });

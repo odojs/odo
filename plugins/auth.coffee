@@ -62,4 +62,5 @@ define ['module', 'passport', 'odo/config', 'redis', 'odo/projections/userprofil
 							google: user.google?
 							twitter: user.twitter?
 							username: user.username?
+							message: 'Account found'
 		
