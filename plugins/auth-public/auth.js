@@ -20,63 +20,63 @@
         return dfd.promise;
       },
       assignUsernameToUser: function(id, username) {
-        return $.post('/sendcommand/assignUsernameToUser', {
+        return Q($.post('/sendcommand/assignUsernameToUser', {
           id: id,
           username: username
-        });
+        }));
       },
       assignDisplayNameToUser: function(id, displayName) {
-        return $.post('/sendcommand/assignDisplayNameToUser', {
+        return Q($.post('/sendcommand/assignDisplayNameToUser', {
           id: id,
           displayName: displayName
-        });
+        }));
       },
       assignEmailAddressToUser: function(id, email) {
-        return $.post('/sendcommand/assignEmailAddressToUser', {
+        return Q($.post('/sendcommand/assignEmailAddressToUser', {
           id: id,
           email: email
-        });
+        }));
       },
       getUsernameAvailability: function(username) {
-        return $.get('/odo/auth/local/usernameavailability', {
+        return Q($.get('/odo/auth/local/usernameavailability', {
           username: username
-        });
+        }));
       },
       testAuthentication: function(username, password) {
-        return $.get('/odo/auth/local/test', {
+        return Q($.get('/odo/auth/local/test', {
           username: username,
           password: password
-        });
+        }));
       },
       assignPasswordToUser: function(id, password) {
-        return $.post('/sendcommand/assignPasswordToUser', {
+        return Q($.post('/sendcommand/assignPasswordToUser', {
           id: id,
           password: password
-        });
+        }));
       },
       disconnectTwitterFromUser: function(id, profile) {
-        return $.post('/sendcommand/disconnectTwitterFromUser', {
+        return Q($.post('/sendcommand/disconnectTwitterFromUser', {
           id: id,
           profile: profile
-        });
+        }));
       },
       disconnectFacebookFromUser: function(id, profile) {
-        return $.post('/sendcommand/disconnectFacebookFromUser', {
+        return Q($.post('/sendcommand/disconnectFacebookFromUser', {
           id: id,
           profile: profile
-        });
+        }));
       },
       disconnectGoogleFromUser: function(id, profile) {
-        return $.post('/sendcommand/disconnectGoogleFromUser', {
+        return Q($.post('/sendcommand/disconnectGoogleFromUser', {
           id: id,
           profile: profile
-        });
+        }));
       },
       removeLocalSigninForUser: function(id, profile) {
-        return $.post('/sendcommand/removeLocalSigninForUser', {
+        return Q($.post('/sendcommand/removeLocalSigninForUser', {
           id: id,
           profile: profile
-        });
+        }));
       }
     };
   });

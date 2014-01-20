@@ -100,6 +100,6 @@ define ['passport', 'passport-google', 'odo/config', 'odo/hub', 'node-uuid', 're
 		init: (app) =>
 			app.get '/odo/auth/google', passport.authenticate 'google'
 			app.get '/odo/auth/google/callback', passport.authenticate('google', {
-				successRedirect: '/'
+				successRedirect: '/#auth/google/success'
 				failureRedirect: '/#auth/google/failure'
 			})

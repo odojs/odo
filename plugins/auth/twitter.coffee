@@ -98,6 +98,6 @@ define ['passport', 'passport-twitter', 'odo/config', 'odo/hub', 'node-uuid', 'r
 		init: (app) =>
 			app.get '/odo/auth/twitter', passport.authenticate 'twitter'
 			app.get '/odo/auth/twitter/callback', passport.authenticate('twitter', {
-				successRedirect: '/'
+				successRedirect: '/#auth/twitter/success'
 				failureRedirect: '/#auth/twitter/failure'
 			})

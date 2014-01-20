@@ -122,7 +122,7 @@
       TwitterAuthentication.prototype.init = function(app) {
         app.get('/odo/auth/twitter', passport.authenticate('twitter'));
         return app.get('/odo/auth/twitter/callback', passport.authenticate('twitter', {
-          successRedirect: '/',
+          successRedirect: '/#auth/twitter/success',
           failureRedirect: '/#auth/twitter/failure'
         }));
       };

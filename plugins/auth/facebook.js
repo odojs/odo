@@ -122,7 +122,7 @@
       FacebookAuthentication.prototype.init = function(app) {
         app.get('/odo/auth/facebook', passport.authenticate('facebook'));
         app.get('/odo/auth/facebook/callback', passport.authenticate('facebook', {
-          successRedirect: '/',
+          successRedirect: '/#auth/facebook/success',
           failureRedirect: '/#auth/facebook/failure'
         }));
         return app.get('/odo/auth/facebook');

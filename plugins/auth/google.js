@@ -124,7 +124,7 @@
       GoogleAuthentication.prototype.init = function(app) {
         app.get('/odo/auth/google', passport.authenticate('google'));
         return app.get('/odo/auth/google/callback', passport.authenticate('google', {
-          successRedirect: '/',
+          successRedirect: '/#auth/google/success',
           failureRedirect: '/#auth/google/failure'
         }));
       };
