@@ -89,6 +89,7 @@
         var _this = this;
         app.post('/odo/auth/local', passport.authenticate('local', {
           successRedirect: '/',
+          successRedirect: '/#auth/local/success',
           failureRedirect: '/'
         }));
         app.get('/odo/auth/local/test', function(req, res) {

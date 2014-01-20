@@ -66,6 +66,7 @@ define ['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'red
 		init: (app) =>
 			app.post '/odo/auth/local', passport.authenticate('local', {
 				successRedirect: '/'
+				successRedirect: '/#auth/local/success'
 				failureRedirect: '/'
 			})
 			
