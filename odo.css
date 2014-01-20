@@ -12,9 +12,11 @@
 }
 .actions .forward {
   float: right;
+  margin-left: 10px;
 }
 .actions .back {
   float: left;
+  margin-right: 10px;
 }
 .panel-heading .actions,
 .modal-heading .actions {
