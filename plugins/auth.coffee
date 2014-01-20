@@ -46,6 +46,7 @@ define ['module', 'passport', 'odo/config', 'redis', 'odo/projections/userprofil
 					
 					if !userid?
 						res.send
+							account: no
 							message: 'No account found for this email address'
 						return
 						
@@ -55,6 +56,7 @@ define ['module', 'passport', 'odo/config', 'redis', 'odo/projections/userprofil
 							return
 						
 						res.send
+							account: yes
 							local: user.local?
 							facebook: user.facebook?
 							google: user.google?

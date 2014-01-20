@@ -57,6 +57,7 @@
             }
             if (userid == null) {
               res.send({
+                account: false,
                 message: 'No account found for this email address'
               });
               return;
@@ -67,6 +68,7 @@
                 return;
               }
               return res.send({
+                account: true,
                 local: user.local != null,
                 facebook: user.facebook != null,
                 google: user.google != null,
