@@ -77,6 +77,11 @@
           id: id,
           profile: profile
         }));
+      },
+      forgotCheckEmailAddress: function(email) {
+        return Q($.get('/odo/auth/forgot', {
+          email: email
+        }));
       }
     };
   });

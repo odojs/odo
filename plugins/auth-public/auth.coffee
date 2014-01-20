@@ -63,3 +63,7 @@
 		Q $.post '/sendcommand/removeLocalSigninForUser',
 			id: id
 			profile: profile
+	
+	forgotCheckEmailAddress: (email) =>
+		Q $.get '/odo/auth/forgot',
+			email: email
