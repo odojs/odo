@@ -15,7 +15,7 @@ define ['knockout', 'jquery'], (ko, $) ->
 						
 						# rebuild autofocus functionality - bootstrap messes with it
 						$host.one 'shown.bs.modal', ->
-								$child.find('[autofocus]:first').focus()
+							$child.find('[autofocus],.autofocus').first().focus()
 						
 						# in practice we use a dialog component so this doesn't work -- probably should rethink how this works
 						if $child.hasClass 'autoclose'

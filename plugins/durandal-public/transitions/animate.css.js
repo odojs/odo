@@ -67,7 +67,8 @@
         }
         return setTimeout(function() {
           $newView.removeClass(_this.settings.inAnimation + ' ' + _this.settings.outAnimation + ' animated');
-          return _this.endTransition();
+          _this.endTransition();
+          return $newView.find('[autofocus],.autofocus').first().focus();
         }, 300);
       };
 

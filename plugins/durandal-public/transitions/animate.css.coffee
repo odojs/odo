@@ -47,4 +47,5 @@ define ['durandal/system', 'jquery', 'q'], (system, $, Q) ->
 			setTimeout(() =>
 				$newView.removeClass(@settings.inAnimation + ' ' + @settings.outAnimation + ' animated')
 				@endTransition()
+				$newView.find('[autofocus],.autofocus').first().focus()
 			, 300)
