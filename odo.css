@@ -32,7 +32,7 @@
 .modal-footer .actions {
   margin-top: 0;
 }
-.wizard .animated {
+.wizard > .animated {
   -webkit-animation-duration: 0.3s;
   -moz-animation-duration: 0.3s;
   -o-animation-duration: 0.3s;
