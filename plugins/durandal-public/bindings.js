@@ -4,7 +4,7 @@
     return {
       init: function(requirejs, config) {
         if (config.dialog) {
-          requirejs(['plugins/dialog'], function(dialog) {
+          requirejs(['plugins/dialog', 'plugins/router'], function(dialog, router) {
             return dialog.addContext('OdoDialog', {
               compositionComplete: function(child, parent, context) {
                 var $child, $host, options, theDialog;
@@ -30,11 +30,17 @@
                 var body, host;
                 body = $('body');
                 host = $('<div class="modal fade" id="odo-modal" tabindex="-1" role="dialog" aria-hidden="true">').appendTo(body);
-                return theDialog.host = host.get(0);
+                theDialog.host = host.get(0);
+                if (config.router) {
+                  return router.disable();
+                }
               },
               removeHost: function(theDialog) {
                 return $(theDialog.host).one('hidden.bs.modal', function() {
-                  return ko.removeNode(theDialog.host);
+                  ko.removeNode(theDialog.host);
+                  if (config.router) {
+                    return router.enable();
+                  }
                 }).modal('hide');
               }
             });

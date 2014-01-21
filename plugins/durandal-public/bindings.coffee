@@ -1,7 +1,7 @@
 define ['knockout', 'jquery'], (ko, $) ->
 	init: (requirejs, config) ->
 		if config.dialog
-			requirejs ['plugins/dialog'], (dialog) ->
+			requirejs ['plugins/dialog', 'plugins/router'], (dialog, router) ->
 				dialog.addContext 'OdoDialog',
 					compositionComplete: (child, parent, context) ->
 						$child = $ child
@@ -29,11 +29,15 @@ define ['knockout', 'jquery'], (ko, $) ->
 						host = $('<div class="modal fade" id="odo-modal" tabindex="-1" role="dialog" aria-hidden="true">')
 							.appendTo(body)
 						theDialog.host = host.get 0
+						if config.router
+							router.disable()
 					
 					removeHost: (theDialog) ->
 						$(theDialog.host)
 							.one('hidden.bs.modal', ->
 								ko.removeNode theDialog.host
+								if config.router
+									router.enable()
 							)
 							.modal 'hide'
 		
