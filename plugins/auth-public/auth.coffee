@@ -67,3 +67,16 @@
 	forgotCheckEmailAddress: (email) =>
 		Q $.get '/odo/auth/forgot',
 			email: email
+		
+	createPasswordResetToken: (email) =>
+		Q $.post '/odo/auth/local/resettoken',
+			email: email
+	
+	checkResetToken: (token) =>
+		Q $.get '/odo/auth/local/resettoken',
+			token: token
+	
+	resetPasswordWithToken: (token, password) =>
+		Q $.post '/odo/auth/local/reset',
+			token: token
+			password: password

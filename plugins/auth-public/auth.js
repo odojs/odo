@@ -82,6 +82,22 @@
         return Q($.get('/odo/auth/forgot', {
           email: email
         }));
+      },
+      createPasswordResetToken: function(email) {
+        return Q($.post('/odo/auth/local/resettoken', {
+          email: email
+        }));
+      },
+      checkResetToken: function(token) {
+        return Q($.get('/odo/auth/local/resettoken', {
+          token: token
+        }));
+      },
+      resetPasswordWithToken: function(token, password) {
+        return Q($.post('/odo/auth/local/reset', {
+          token: token,
+          password: password
+        }));
       }
     };
   });

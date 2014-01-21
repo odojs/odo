@@ -21,4 +21,5 @@ define ['odo/eventstore', 'odo/domain/user'], (es, User) ->
 	
 	createLocalSigninForUser: defaultHandler
 	assignPasswordToUser: defaultHandler
+	createPasswordResetToken: defaultHandler
 	removeLocalSigninForUser: defaultHandler

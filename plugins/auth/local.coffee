@@ -27,6 +27,19 @@ define ['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'red
 					db.hdel "#{config.odo.domain}:localusers", event.payload.profile.username, ->
 						cb()
 				
+				userHasPasswordResetToken: (event, cb) =>
+					key = "#{config.odo.domain}:passwordresettoken:#{event.payload.token}"
+					console.log key
+					db
+						.multi()
+						.set(key, event.payload.id)
+						.expire(key, 60 * 60 * 24)
+						.exec (err, replies) =>
+							if err?
+								console.log err
+								return
+							
+							console.log replies
 		
 		get: (username, callback) ->
 			console.log 
@@ -134,6 +147,99 @@ define ['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'red
 						isAvailable: no
 						message: 'Taken'
 					return
+			
+			app.get '/odo/auth/local/resettoken', (req, res) =>
+				if !req.query.token?
+					res.send 400, 'Token required'
+					return
+				
+				db.get "#{config.odo.domain}:passwordresettoken:#{req.query.token}", (err, userid) =>
+					if err?
+						console.log err
+						res.send 500, 'Woops'
+						return
+					
+					if !userid?
+						res.send
+							isValid: no
+							message: 'Token not valid'
+						return
+					
+					new UserProfile().get userid, (err, user) =>
+						if err?
+							console.log err
+							res.send 500, 'Woops'
+							return
+							
+						res.send
+							isValid: yes
+							username: user.username
+							message: 'Token valid'
+			
+			app.post '/odo/auth/local/resettoken', (req, res) =>
+				if !req.body.email?
+					res.send 400, 'Email address required'
+					return
+				
+				db.hget "#{config.odo.domain}:useremail", req.body.email, (err, userid) =>
+					if err?
+						console.log err
+						res.send 500, 'Woops'
+						return
+					
+					if !userid?
+						res.send 400, 'Incorrect email address'
+						return
+					
+					token = uuid.v1()
+					console.log "createPasswordResetToken #{token}"
+					hub.send
+						command: 'createPasswordResetToken'
+						payload:
+							id: userid
+							token: uuid.v1()
+						
+					res.send 'Token generated'
+			
+			app.post '/odo/auth/local/reset', (req, res) =>
+				if !req.body.token?
+					res.send 400, 'Token required'
+					return
+					
+				if !req.body.password?
+					res.send 400, 'Password required'
+					return
+					
+				if req.body.password.length < 8
+					res.send 400, 'Password needs to be at least eight letters long'
+					return
+				
+				key = "#{config.odo.domain}:passwordresettoken:#{req.body.token}"
+				db.get key, (err, userid) =>
+					if err?
+						console.log err
+						res.send 500, 'Woops'
+						return
+						
+					if !userid?
+						res.send 400, 'Token not valid'
+						return
+					
+					console.log 'assigning a username for user'
+					hub.send
+						command: 'assignPasswordToUser'
+						payload:
+							id: userid
+							password: req.body.password
+					
+					db.del key, (err, reply) =>
+						if err?
+							console.log err
+							res.send 500, 'Woops'
+							return
+						
+						res.send 'Done'
+				
 			
 			app.post '/odo/auth/local/signup', (req, res) =>
 				if !req.body.displayName?

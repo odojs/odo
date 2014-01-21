@@ -7,6 +7,7 @@
     return User = (function() {
       function User(id) {
         this.removeLocalSigninForUser = __bind(this.removeLocalSigninForUser, this);
+        this.createPasswordResetToken = __bind(this.createPasswordResetToken, this);
         this.assignPasswordToUser = __bind(this.assignPasswordToUser, this);
         this.createLocalSigninForUser = __bind(this.createLocalSigninForUser, this);
         this.disconnectGoogleFromUser = __bind(this.disconnectGoogleFromUser, this);
@@ -114,6 +115,14 @@
         this["new"]('userHasPassword', {
           id: this.id,
           password: command.password
+        });
+        return callback(null);
+      };
+
+      User.prototype.createPasswordResetToken = function(command, callback) {
+        this["new"]('userHasPasswordResetToken', {
+          id: this.id,
+          token: command.token
         });
         return callback(null);
       };

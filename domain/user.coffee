@@ -79,6 +79,12 @@ define [], () ->
 				id: @id,
 				password: command.password
 			callback null
+		
+		createPasswordResetToken: (command, callback) =>
+			@new 'userHasPasswordResetToken',
+				id: @id,
+				token: command.token
+			callback null
 			
 		removeLocalSigninForUser: (command, callback) =>
 			@new 'userLocalSigninRemoved',

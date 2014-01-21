@@ -21,6 +21,7 @@
       disconnectGoogleFromUser: defaultHandler,
       createLocalSigninForUser: defaultHandler,
       assignPasswordToUser: defaultHandler,
+      createPasswordResetToken: defaultHandler,
       removeLocalSigninForUser: defaultHandler
     };
   });

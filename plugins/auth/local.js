@@ -36,6 +36,18 @@
             return db.hdel("" + config.odo.domain + ":localusers", event.payload.profile.username, function() {
               return cb();
             });
+          },
+          userHasPasswordResetToken: function(event, cb) {
+            var key;
+            key = "" + config.odo.domain + ":passwordresettoken:" + event.payload.token;
+            console.log(key);
+            return db.multi().set(key, event.payload.id).expire(key, 60 * 60 * 24).exec(function(err, replies) {
+              if (err != null) {
+                console.log(err);
+                return;
+              }
+              return console.log(replies);
+            });
           }
         };
       }
@@ -163,6 +175,109 @@
             res.send({
               isAvailable: false,
               message: 'Taken'
+            });
+          });
+        });
+        app.get('/odo/auth/local/resettoken', function(req, res) {
+          if (req.query.token == null) {
+            res.send(400, 'Token required');
+            return;
+          }
+          return db.get("" + config.odo.domain + ":passwordresettoken:" + req.query.token, function(err, userid) {
+            if (err != null) {
+              console.log(err);
+              res.send(500, 'Woops');
+              return;
+            }
+            if (userid == null) {
+              res.send({
+                isValid: false,
+                message: 'Token not valid'
+              });
+              return;
+            }
+            return new UserProfile().get(userid, function(err, user) {
+              if (err != null) {
+                console.log(err);
+                res.send(500, 'Woops');
+                return;
+              }
+              return res.send({
+                isValid: true,
+                username: user.username,
+                message: 'Token valid'
+              });
+            });
+          });
+        });
+        app.post('/odo/auth/local/resettoken', function(req, res) {
+          if (req.body.email == null) {
+            res.send(400, 'Email address required');
+            return;
+          }
+          return db.hget("" + config.odo.domain + ":useremail", req.body.email, function(err, userid) {
+            var token;
+            if (err != null) {
+              console.log(err);
+              res.send(500, 'Woops');
+              return;
+            }
+            if (userid == null) {
+              res.send(400, 'Incorrect email address');
+              return;
+            }
+            token = uuid.v1();
+            console.log("createPasswordResetToken " + token);
+            hub.send({
+              command: 'createPasswordResetToken',
+              payload: {
+                id: userid,
+                token: uuid.v1()
+              }
+            });
+            return res.send('Token generated');
+          });
+        });
+        app.post('/odo/auth/local/reset', function(req, res) {
+          var key;
+          if (req.body.token == null) {
+            res.send(400, 'Token required');
+            return;
+          }
+          if (req.body.password == null) {
+            res.send(400, 'Password required');
+            return;
+          }
+          if (req.body.password.length < 8) {
+            res.send(400, 'Password needs to be at least eight letters long');
+            return;
+          }
+          key = "" + config.odo.domain + ":passwordresettoken:" + req.body.token;
+          return db.get(key, function(err, userid) {
+            if (err != null) {
+              console.log(err);
+              res.send(500, 'Woops');
+              return;
+            }
+            if (userid == null) {
+              res.send(400, 'Token not valid');
+              return;
+            }
+            console.log('assigning a username for user');
+            hub.send({
+              command: 'assignPasswordToUser',
+              payload: {
+                id: userid,
+                password: req.body.password
+              }
+            });
+            return db.del(key, function(err, reply) {
+              if (err != null) {
+                console.log(err);
+                res.send(500, 'Woops');
+                return;
+              }
+              return res.send('Done');
             });
           });
         });
