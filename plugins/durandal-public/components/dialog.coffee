@@ -1,11 +1,12 @@
-﻿define ['knockout', 'jquery', 'durandal/system', 'plugins/dialog'], (ko, $, system, dialog) ->
+﻿define ['knockout', 'jquery', 'plugins/dialog'], (ko, $, dialog) ->
 	
 	class Dialog
 		constructor: (options) ->
 			activationData = {
 				dialog: @
+				activationData: options.activationData
 			}
-			system.extend activationData, options.activationData
+			
 			@composeOptions = ko.observable {
 				model: options.model
 				activationData: activationData

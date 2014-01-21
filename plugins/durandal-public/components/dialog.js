@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['knockout', 'jquery', 'durandal/system', 'plugins/dialog'], function(ko, $, system, dialog) {
+  define(['knockout', 'jquery', 'plugins/dialog'], function(ko, $, dialog) {
     var Dialog;
     return Dialog = (function() {
       function Dialog(options) {
@@ -11,9 +11,9 @@
         this.show = __bind(this.show, this);
         var activationData;
         activationData = {
-          dialog: this
+          dialog: this,
+          activationData: options.activationData
         };
-        system.extend(activationData, options.activationData);
         this.composeOptions = ko.observable({
           model: options.model,
           activationData: activationData
