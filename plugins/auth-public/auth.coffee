@@ -25,10 +25,19 @@
 			id: id
 			displayName: displayName
 	
-	assignEmailAddressToUser: (id, email) =>
-		Q $.post '/sendcommand/assignEmailAddressToUser',
-			id: id
+	createVerifyEmailAddressToken: (email) =>
+		Q $.post '/odo/auth/verifyemail',
 			email: email
+		
+	checkEmailVerificationToken: (email, token) =>
+		Q $.get '/odo/auth/checkemailverificationtoken',
+			email: email
+			token: token
+	
+	assignEmailAddressToUserWithToken: (email, token) =>
+		Q $.post '/odo/auth/emailverified',
+			email: email
+			token: token
 			
 	getUsernameAvailability: (username) =>
 		Q $.get '/odo/auth/local/usernameavailability',

@@ -11,6 +11,7 @@
     return {
       startTrackingUser: defaultHandler,
       assignEmailAddressToUser: defaultHandler,
+      createVerifyEmailAddressToken: defaultHandler,
       assignDisplayNameToUser: defaultHandler,
       assignUsernameToUser: defaultHandler,
       connectTwitterToUser: defaultHandler,

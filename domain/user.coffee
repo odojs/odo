@@ -15,6 +15,13 @@ define [], () ->
 				id: @id,
 				email: command.email
 			callback null
+			
+		createVerifyEmailAddressToken: (command, callback) =>
+			@new 'userHasVerifyEmailAddressToken',
+				id: @id,
+				email: command.email
+				token: command.token
+			callback null
 		
 		assignDisplayNameToUser: (command, callback) =>
 			@new 'userHasDisplayName',

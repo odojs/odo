@@ -18,6 +18,7 @@
         this.connectTwitterToUser = __bind(this.connectTwitterToUser, this);
         this.assignUsernameToUser = __bind(this.assignUsernameToUser, this);
         this.assignDisplayNameToUser = __bind(this.assignDisplayNameToUser, this);
+        this.createVerifyEmailAddressToken = __bind(this.createVerifyEmailAddressToken, this);
         this.assignEmailAddressToUser = __bind(this.assignEmailAddressToUser, this);
         this.startTrackingUser = __bind(this.startTrackingUser, this);
         this.id = id;
@@ -35,6 +36,15 @@
         this["new"]('userHasEmailAddress', {
           id: this.id,
           email: command.email
+        });
+        return callback(null);
+      };
+
+      User.prototype.createVerifyEmailAddressToken = function(command, callback) {
+        this["new"]('userHasVerifyEmailAddressToken', {
+          id: this.id,
+          email: command.email,
+          token: command.token
         });
         return callback(null);
       };

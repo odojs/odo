@@ -7,6 +7,7 @@ define ['odo/eventstore', 'odo/domain/user'], (es, User) ->
 	
 	startTrackingUser: defaultHandler
 	assignEmailAddressToUser: defaultHandler
+	createVerifyEmailAddressToken: defaultHandler
 	assignDisplayNameToUser: defaultHandler
 	assignUsernameToUser: defaultHandler
 	

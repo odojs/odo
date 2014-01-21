@@ -74,13 +74,6 @@ define ['passport', 'passport-google', 'odo/config', 'odo/hub', 'node-uuid', 're
 							payload:
 								id: userid
 								profile: profile
-						
-						if profile.emails.length > 0
-							hub.send
-								command: 'assignEmailAddressToUser'
-								payload:
-									id: userid
-									email: profile.emails[0].value
 					
 					else
 						hub.send

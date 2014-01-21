@@ -31,10 +31,21 @@
           displayName: displayName
         }));
       },
-      assignEmailAddressToUser: function(id, email) {
-        return Q($.post('/sendcommand/assignEmailAddressToUser', {
-          id: id,
+      createVerifyEmailAddressToken: function(email) {
+        return Q($.post('/odo/auth/verifyemail', {
           email: email
+        }));
+      },
+      checkEmailVerificationToken: function(email, token) {
+        return Q($.get('/odo/auth/checkemailverificationtoken', {
+          email: email,
+          token: token
+        }));
+      },
+      assignEmailAddressToUserWithToken: function(email, token) {
+        return Q($.post('/odo/auth/emailverified', {
+          email: email,
+          token: token
         }));
       },
       getUsernameAvailability: function(username) {
