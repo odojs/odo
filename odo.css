@@ -38,3 +38,19 @@
   -o-animation-duration: 0.3s;
   animation-duration: 0.3s;
 }
+.modal-open {
+  overflow: inherit;
+}
+.modal-backdrop {
+  position: fixed;
+}
+.modal {
+  position: absolute;
+  overflow: visible;
+}
+.modal:focus {
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -webkit-appearance: none;
+  outline: none;
+}
