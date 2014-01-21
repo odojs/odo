@@ -141,7 +141,7 @@
           };
         }
         if (config.marked) {
-          return requirejs(['marked'], function(marked) {
+          requirejs(['marked'], function(marked) {
             return ko.bindingHandlers.marked = {
               init: function() {
                 return {
@@ -151,6 +151,57 @@
               update: function(element, valueAccessor) {
                 return ko.utils.setHtml(element, marked(ko.utils.unwrapObservable(valueAccessor())));
               }
+            };
+          });
+        }
+        if (config.router) {
+          return requirejs(['plugins/router', 'durandal/app'], function(router, app) {
+            var isRouterEnabled, previousInstruction, subscription;
+            subscription = null;
+            router.updateDocumentTitle = function(instance, instruction) {
+              var update;
+              if (subscription != null) {
+                subscription.dispose();
+                subscription = null;
+              }
+              update = function() {
+                var parts;
+                parts = [];
+                if (instance.title != null) {
+                  parts.push(ko.unwrap(instance.title));
+                }
+                if (instruction.config.title != null) {
+                  parts.push(instruction.config.title);
+                }
+                if (app.title != null) {
+                  parts.push(app.title);
+                }
+                parts = parts.filter(function(part) {
+                  return part !== '';
+                });
+                return document.title = parts.join(' - ');
+              };
+              update();
+              if ((instance.title != null) && ko.isObservable(instance.title)) {
+                return subscription = instance.title.subscribe(function() {
+                  return update();
+                });
+              }
+            };
+            isRouterEnabled = true;
+            router.disable = function() {
+              return isRouterEnabled = false;
+            };
+            router.enable = function() {
+              return isRouterEnabled = true;
+            };
+            previousInstruction = null;
+            return router.guardRoute = function(instance, instruction) {
+              if ((previousInstruction != null) && !isRouterEnabled) {
+                return previousInstruction.fragment;
+              }
+              previousInstruction = instruction;
+              return true;
             };
           });
         }
