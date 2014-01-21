@@ -15,6 +15,9 @@
                 theDialog = dialog.getDialog(context.model);
                 $host = $(theDialog.host);
                 $host.modal(options);
+                $host.one('shown.bs.modal', function() {
+                  return $child.find('[autofocus]:first').focus();
+                });
                 if ($child.hasClass('autoclose')) {
                   return $host.one('shown.bs.modal', function() {
                     return $host.one('click.dismiss.modal', function() {
