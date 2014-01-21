@@ -203,6 +203,13 @@
                 res.send(500, 'Woops');
                 return;
               }
+              if (userid == null) {
+                res.send({
+                  isValid: false,
+                  message: 'Token not valid'
+                });
+                return;
+              }
               return res.send({
                 isValid: true,
                 username: user.username,

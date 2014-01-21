@@ -171,7 +171,13 @@ define ['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'red
 							console.log err
 							res.send 500, 'Woops'
 							return
-							
+						
+						if !userid?
+							res.send
+								isValid: no
+								message: 'Token not valid'
+							return
+						
 						res.send
 							isValid: yes
 							username: user.username
