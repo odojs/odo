@@ -44,9 +44,10 @@
             return db.multi().set(key, event.payload.id).expire(key, 60 * 60 * 24).exec(function(err, replies) {
               if (err != null) {
                 console.log(err);
+                cb();
                 return;
               }
-              return console.log(replies);
+              return cb();
             });
           }
         };

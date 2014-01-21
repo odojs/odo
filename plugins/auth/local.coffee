@@ -37,9 +37,10 @@ define ['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'red
 						.exec (err, replies) =>
 							if err?
 								console.log err
+								cb()
 								return
 							
-							console.log replies
+							cb()
 		
 		get: (username, callback) ->
 			console.log 
