@@ -6,12 +6,13 @@
 		
 		if @cache?
 			dfd.resolve @cache
-		Q($.get('/odo/auth/user'))
-			.then((data) =>
-				@cache = data
-				dfd.resolve data
-			)
-			.fail(-> dfd.reject())
+		else
+			Q($.get('/odo/auth/user'))
+				.then((data) =>
+					@cache = data
+					dfd.resolve data
+				)
+				.fail(-> dfd.reject())
 			
 		dfd.promise
 		

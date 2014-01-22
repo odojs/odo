@@ -10,13 +10,14 @@
         dfd = Q.defer();
         if (_this.cache != null) {
           dfd.resolve(_this.cache);
+        } else {
+          Q($.get('/odo/auth/user')).then(function(data) {
+            _this.cache = data;
+            return dfd.resolve(data);
+          }).fail(function() {
+            return dfd.reject();
+          });
         }
-        Q($.get('/odo/auth/user')).then(function(data) {
-          _this.cache = data;
-          return dfd.resolve(data);
-        }).fail(function() {
-          return dfd.reject();
-        });
         return dfd.promise;
       },
       assignUsernameToUser: function(id, username) {
