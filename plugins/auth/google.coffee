@@ -2,15 +2,14 @@ define ['passport', 'passport-google', 'odo/config', 'odo/hub', 'node-uuid', 're
 	db = redis.createClient()
 	
 	class GoogleAuthentication
-		constructor: ->
-			@receive =
-				userGoogleConnected: (event, cb) =>
-					db.hset "#{config.odo.domain}:usergoogle", event.payload.profile.id, event.payload.id, ->
-						cb()
-						
-				userGoogleDisconnected: (event, cb) =>
-					db.hdel "#{config.odo.domain}:usergoogle", event.payload.profile.id, ->
-						cb()
+		receive: (hub) =>
+			hub.receive 'userGoogleConnected', (event, cb) =>
+				db.hset "#{config.odo.domain}:usergoogle", event.payload.profile.id, event.payload.id, ->
+					cb()
+					
+			hub.receive 'userGoogleDisconnected', (event, cb) =>
+				db.hdel "#{config.odo.domain}:usergoogle", event.payload.profile.id, ->
+					cb()
 		
 		
 		get: (id, callback) ->

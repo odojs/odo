@@ -9,28 +9,30 @@
       function Auth() {
         this.init = __bind(this.init, this);
         this.configure = __bind(this.configure, this);
-        var _this = this;
-        this.receive = {
-          userHasEmailAddress: function(event, cb) {
-            return db.hset("" + config.odo.domain + ":useremail", event.payload.email, event.payload.id, function() {
-              return cb();
-            });
-          },
-          userHasVerifyEmailAddressToken: function(event, cb) {
-            var key;
-            key = "" + config.odo.domain + ":emailverificationtoken:" + event.payload.email + ":" + event.payload.token;
-            console.log(key);
-            return db.multi().set(key, event.payload.id).expire(key, 60 * 60 * 24).exec(function(err, replies) {
-              if (err != null) {
-                console.log(err);
-                cb();
-                return;
-              }
-              return cb();
-            });
-          }
-        };
+        this.receive = __bind(this.receive, this);
       }
+
+      Auth.prototype.receive = function(hub) {
+        var _this = this;
+        hub.receive('userHasEmailAddress', function(event, cb) {
+          return db.hset("" + config.odo.domain + ":useremail", event.payload.email, event.payload.id, function() {
+            return cb();
+          });
+        });
+        return hub.receive('userHasVerifyEmailAddressToken', function(event, cb) {
+          var key;
+          key = "" + config.odo.domain + ":emailverificationtoken:" + event.payload.email + ":" + event.payload.token;
+          console.log(key);
+          return db.multi().set(key, event.payload.id).expire(key, 60 * 60 * 24).exec(function(err, replies) {
+            if (err != null) {
+              console.log(err);
+              cb();
+              return;
+            }
+            return cb();
+          });
+        });
+      };
 
       Auth.prototype.configure = function(app) {
         app.route('/odo', app.modulepath(module.uri) + '/auth-public');

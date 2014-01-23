@@ -5,22 +5,28 @@ define ['odo/eventstore', 'odo/domain/user'], (es, User) ->
 		es.extend user
 		user.applyHistoryThenCommand command
 	
-	startTrackingUser: defaultHandler
-	assignEmailAddressToUser: defaultHandler
-	createVerifyEmailAddressToken: defaultHandler
-	assignDisplayNameToUser: defaultHandler
-	assignUsernameToUser: defaultHandler
-	
-	connectTwitterToUser: defaultHandler
-	disconnectTwitterFromUser: defaultHandler
-	
-	connectFacebookToUser: defaultHandler
-	disconnectFacebookFromUser: defaultHandler
-	
-	connectGoogleToUser: defaultHandler
-	disconnectGoogleFromUser: defaultHandler
-	
-	createLocalSigninForUser: defaultHandler
-	assignPasswordToUser: defaultHandler
-	createPasswordResetToken: defaultHandler
-	removeLocalSigninForUser: defaultHandler
+	handle: (hub) ->
+		commands = [
+			'startTrackingUser'
+			'assignEmailAddressToUser'
+			'createVerifyEmailAddressToken'
+			'assignDisplayNameToUser'
+			'assignUsernameToUser'
+			
+			'connectTwitterToUser'
+			'disconnectTwitterFromUser'
+			
+			'connectFacebookToUser'
+			'disconnectFacebookFromUser'
+			
+			'connectGoogleToUser'
+			'disconnectGoogleFromUser'
+			
+			'createLocalSigninForUser'
+			'assignPasswordToUser'
+			'createPasswordResetToken'
+			'removeLocalSigninForUser'
+		]
+		
+		for command in commands
+			hub.handle command, defaultHandler

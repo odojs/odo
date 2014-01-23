@@ -2,15 +2,14 @@ define ['passport', 'passport-twitter', 'odo/config', 'odo/hub', 'node-uuid', 'r
 	db = redis.createClient()
 	
 	class TwitterAuthentication
-		constructor: ->
-			@receive =
-				userTwitterConnected: (event, cb) =>
-					db.hset "#{config.odo.domain}:usertwitter", event.payload.profile.id, event.payload.id, ->
-						cb()
-						
-				userTwitterDisconnected: (event, cb) =>
-					db.hdel "#{config.odo.domain}:usertwitter", event.payload.profile.id, ->
-						cb()
+		receive: (hub) =>
+			hub.receive 'userTwitterConnected', (event, cb) =>
+				db.hset "#{config.odo.domain}:usertwitter", event.payload.profile.id, event.payload.id, ->
+					cb()
+					
+			hub.receive 'userTwitterDisconnected', (event, cb) =>
+				db.hdel "#{config.odo.domain}:usertwitter", event.payload.profile.id, ->
+					cb()
 					
 		
 		get: (id, callback) ->

@@ -8,103 +8,105 @@
     return UserProfile = (function() {
       function UserProfile() {
         this.addOrRemoveValues = __bind(this.addOrRemoveValues, this);
-        var _this = this;
-        this.receive = {
-          userTrackingStarted: function(event, cb) {
-            var user;
-            user = {
-              id: event.payload.id,
-              displayName: event.payload.profile.displayName
-            };
-            return db.hset("" + config.odo.domain + ":users", event.payload.id, JSON.stringify(user), cb);
-          },
-          userHasEmailAddress: function(event, cb) {
-            return _this.addOrRemoveValues(event, function(user) {
-              user.email = event.payload.email;
-              return user;
-            }, cb);
-          },
-          userHasDisplayName: function(event, cb) {
-            return _this.addOrRemoveValues(event, function(user) {
-              user.displayName = event.payload.displayName;
-              return user;
-            }, cb);
-          },
-          userHasUsername: function(event, cb) {
-            return _this.addOrRemoveValues(event, function(user) {
-              console.log("giving user a username " + event.payload.username);
-              user.username = event.payload.username;
-              return user;
-            }, cb);
-          },
-          userTwitterConnected: function(event, cb) {
-            return _this.addOrRemoveValues(event, function(user) {
-              user.twitter = {
-                id: event.payload.profile.id,
-                profile: event.payload.profile
-              };
-              return user;
-            }, cb);
-          },
-          userTwitterDisconnected: function(event, cb) {
-            return _this.addOrRemoveValues(event, function(user) {
-              user.twitter = null;
-              return user;
-            }, cb);
-          },
-          userFacebookConnected: function(event, cb) {
-            return _this.addOrRemoveValues(event, function(user) {
-              user.facebook = {
-                id: event.payload.profile.id,
-                profile: event.payload.profile
-              };
-              return user;
-            }, cb);
-          },
-          userFacebookDisconnected: function(event, cb) {
-            return _this.addOrRemoveValues(event, function(user) {
-              user.facebook = null;
-              return user;
-            }, cb);
-          },
-          userGoogleConnected: function(event, cb) {
-            return _this.addOrRemoveValues(event, function(user) {
-              user.google = {
-                id: event.payload.profile.id,
-                profile: event.payload.profile
-              };
-              return user;
-            }, cb);
-          },
-          userGoogleDisconnected: function(event, cb) {
-            return _this.addOrRemoveValues(event, function(user) {
-              user.google = null;
-              return user;
-            }, cb);
-          },
-          userHasLocalSignin: function(event, cb) {
-            return _this.addOrRemoveValues(event, function(user) {
-              user.local = {
-                id: event.payload.id,
-                profile: event.payload.profile
-              };
-              return user;
-            }, cb);
-          },
-          userHasPassword: function(event, cb) {
-            return _this.addOrRemoveValues(event, function(user) {
-              user.local.profile.password = event.payload.password;
-              return user;
-            }, cb);
-          },
-          userLocalSigninRemoved: function(event, cb) {
-            return _this.addOrRemoveValues(event, function(user) {
-              user.local = null;
-              return user;
-            }, cb);
-          }
-        };
+        this.receive = __bind(this.receive, this);
       }
+
+      UserProfile.prototype.receive = function(hub) {
+        var _this = this;
+        hub.receive('userTrackingStarted', function(event, cb) {
+          var user;
+          user = {
+            id: event.payload.id,
+            displayName: event.payload.profile.displayName
+          };
+          return db.hset("" + config.odo.domain + ":users", event.payload.id, JSON.stringify(user), cb);
+        });
+        hub.receive('userHasEmailAddress', function(event, cb) {
+          return _this.addOrRemoveValues(event, function(user) {
+            user.email = event.payload.email;
+            return user;
+          }, cb);
+        });
+        hub.receive('userHasDisplayName', function(event, cb) {
+          return _this.addOrRemoveValues(event, function(user) {
+            user.displayName = event.payload.displayName;
+            return user;
+          }, cb);
+        });
+        hub.receive('userHasUsername', function(event, cb) {
+          return _this.addOrRemoveValues(event, function(user) {
+            console.log("giving user a username " + event.payload.username);
+            user.username = event.payload.username;
+            return user;
+          }, cb);
+        });
+        hub.receive('userTwitterConnected', function(event, cb) {
+          return _this.addOrRemoveValues(event, function(user) {
+            user.twitter = {
+              id: event.payload.profile.id,
+              profile: event.payload.profile
+            };
+            return user;
+          }, cb);
+        });
+        hub.receive('userTwitterDisconnected', function(event, cb) {
+          return _this.addOrRemoveValues(event, function(user) {
+            user.twitter = null;
+            return user;
+          }, cb);
+        });
+        hub.receive('userFacebookConnected', function(event, cb) {
+          return _this.addOrRemoveValues(event, function(user) {
+            user.facebook = {
+              id: event.payload.profile.id,
+              profile: event.payload.profile
+            };
+            return user;
+          }, cb);
+        });
+        hub.receive('userFacebookDisconnected', function(event, cb) {
+          return _this.addOrRemoveValues(event, function(user) {
+            user.facebook = null;
+            return user;
+          }, cb);
+        });
+        hub.receive('userGoogleConnected', function(event, cb) {
+          return _this.addOrRemoveValues(event, function(user) {
+            user.google = {
+              id: event.payload.profile.id,
+              profile: event.payload.profile
+            };
+            return user;
+          }, cb);
+        });
+        hub.receive('userGoogleDisconnected', function(event, cb) {
+          return _this.addOrRemoveValues(event, function(user) {
+            user.google = null;
+            return user;
+          }, cb);
+        });
+        hub.receive('userHasLocalSignin', function(event, cb) {
+          return _this.addOrRemoveValues(event, function(user) {
+            user.local = {
+              id: event.payload.id,
+              profile: event.payload.profile
+            };
+            return user;
+          }, cb);
+        });
+        hub.receive('userHasPassword', function(event, cb) {
+          return _this.addOrRemoveValues(event, function(user) {
+            user.local.profile.password = event.payload.password;
+            return user;
+          }, cb);
+        });
+        return hub.receive('userLocalSigninRemoved', function(event, cb) {
+          return _this.addOrRemoveValues(event, function(user) {
+            user.local = null;
+            return user;
+          }, cb);
+        });
+      };
 
       UserProfile.prototype.addOrRemoveValues = function(event, callback, cb) {
         var _this = this;

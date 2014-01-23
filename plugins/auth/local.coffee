@@ -2,45 +2,44 @@ define ['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'red
 	db = redis.createClient()
 	
 	class LocalAuthentication
-		constructor: ->
-			@receive =
-				userHasLocalSignin: (event, cb) =>
-					db.hset "#{config.odo.domain}:localusers", event.payload.profile.username, event.payload.id, ->
+		receive: (hub) =>
+			hub.receive 'userHasLocalSignin', (event, cb) =>
+				db.hset "#{config.odo.domain}:localusers", event.payload.profile.username, event.payload.id, ->
+					cb()
+			
+			# if they have a local sign in we should update the sign in check
+			hub.receive 'userHasUsername', (event, cb) =>
+				@get event.payload.username, (err, userid) =>
+					if err?
+						console.log err
 						cb()
+						return
+					
+					if !userid?
+						cb()
+						return
 				
-				# if they have a local sign in we should update the sign in check
-				userHasUsername: (event, cb) =>
-					@get event.payload.username, (err, userid) =>
+					db.hset "#{config.odo.domain}:localusers", event.payload.username, event.payload.id, ->
+						cb()
+			
+			hub.receive 'userLocalSigninRemoved', (event, cb) =>
+				db.hdel "#{config.odo.domain}:localusers", event.payload.profile.username, ->
+					cb()
+			
+			hub.receive 'userHasPasswordResetToken', (event, cb) =>
+				key = "#{config.odo.domain}:passwordresettoken:#{event.payload.token}"
+				console.log key
+				db
+					.multi()
+					.set(key, event.payload.id)
+					.expire(key, 60 * 60 * 24)
+					.exec (err, replies) =>
 						if err?
 							console.log err
 							cb()
 							return
 						
-						if !userid?
-							cb()
-							return
-					
-						db.hset "#{config.odo.domain}:localusers", event.payload.username, event.payload.id, ->
-							cb()
-				
-				userLocalSigninRemoved: (event, cb) =>
-					db.hdel "#{config.odo.domain}:localusers", event.payload.profile.username, ->
 						cb()
-				
-				userHasPasswordResetToken: (event, cb) =>
-					key = "#{config.odo.domain}:passwordresettoken:#{event.payload.token}"
-					console.log key
-					db
-						.multi()
-						.set(key, event.payload.id)
-						.expire(key, 60 * 60 * 24)
-						.exec (err, replies) =>
-							if err?
-								console.log err
-								cb()
-								return
-							
-							cb()
 		
 		get: (username, callback) ->
 			console.log 

@@ -9,20 +9,22 @@
       function FacebookAuthentication() {
         this.init = __bind(this.init, this);
         this.configure = __bind(this.configure, this);
-        var _this = this;
-        this.receive = {
-          userFacebookConnected: function(event, cb) {
-            return db.hset("" + config.odo.domain + ":userfacebook", event.payload.profile.id, event.payload.id, function() {
-              return cb();
-            });
-          },
-          userFacebookDisconnected: function(event, cb) {
-            return db.hdel("" + config.odo.domain + ":userfacebook", event.payload.profile.id, function() {
-              return cb();
-            });
-          }
-        };
+        this.receive = __bind(this.receive, this);
       }
+
+      FacebookAuthentication.prototype.receive = function(hub) {
+        var _this = this;
+        hub.receive('userFacebookConnected', function(event, cb) {
+          return db.hset("" + config.odo.domain + ":userfacebook", event.payload.profile.id, event.payload.id, function() {
+            return cb();
+          });
+        });
+        return hub.receive('userFacebookDisconnected', function(event, cb) {
+          return db.hdel("" + config.odo.domain + ":userfacebook", event.payload.profile.id, function() {
+            return cb();
+          });
+        });
+      };
 
       FacebookAuthentication.prototype.get = function(id, callback) {
         var _this = this;

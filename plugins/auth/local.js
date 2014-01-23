@@ -9,49 +9,51 @@
       function LocalAuthentication() {
         this.init = __bind(this.init, this);
         this.configure = __bind(this.configure, this);
-        var _this = this;
-        this.receive = {
-          userHasLocalSignin: function(event, cb) {
-            return db.hset("" + config.odo.domain + ":localusers", event.payload.profile.username, event.payload.id, function() {
-              return cb();
-            });
-          },
-          userHasUsername: function(event, cb) {
-            return _this.get(event.payload.username, function(err, userid) {
-              if (err != null) {
-                console.log(err);
-                cb();
-                return;
-              }
-              if (userid == null) {
-                cb();
-                return;
-              }
-              return db.hset("" + config.odo.domain + ":localusers", event.payload.username, event.payload.id, function() {
-                return cb();
-              });
-            });
-          },
-          userLocalSigninRemoved: function(event, cb) {
-            return db.hdel("" + config.odo.domain + ":localusers", event.payload.profile.username, function() {
-              return cb();
-            });
-          },
-          userHasPasswordResetToken: function(event, cb) {
-            var key;
-            key = "" + config.odo.domain + ":passwordresettoken:" + event.payload.token;
-            console.log(key);
-            return db.multi().set(key, event.payload.id).expire(key, 60 * 60 * 24).exec(function(err, replies) {
-              if (err != null) {
-                console.log(err);
-                cb();
-                return;
-              }
-              return cb();
-            });
-          }
-        };
+        this.receive = __bind(this.receive, this);
       }
+
+      LocalAuthentication.prototype.receive = function(hub) {
+        var _this = this;
+        hub.receive('userHasLocalSignin', function(event, cb) {
+          return db.hset("" + config.odo.domain + ":localusers", event.payload.profile.username, event.payload.id, function() {
+            return cb();
+          });
+        });
+        hub.receive('userHasUsername', function(event, cb) {
+          return _this.get(event.payload.username, function(err, userid) {
+            if (err != null) {
+              console.log(err);
+              cb();
+              return;
+            }
+            if (userid == null) {
+              cb();
+              return;
+            }
+            return db.hset("" + config.odo.domain + ":localusers", event.payload.username, event.payload.id, function() {
+              return cb();
+            });
+          });
+        });
+        hub.receive('userLocalSigninRemoved', function(event, cb) {
+          return db.hdel("" + config.odo.domain + ":localusers", event.payload.profile.username, function() {
+            return cb();
+          });
+        });
+        return hub.receive('userHasPasswordResetToken', function(event, cb) {
+          var key;
+          key = "" + config.odo.domain + ":passwordresettoken:" + event.payload.token;
+          console.log(key);
+          return db.multi().set(key, event.payload.id).expire(key, 60 * 60 * 24).exec(function(err, replies) {
+            if (err != null) {
+              console.log(err);
+              cb();
+              return;
+            }
+            return cb();
+          });
+        });
+      };
 
       LocalAuthentication.prototype.get = function(username, callback) {
         var _this = this;

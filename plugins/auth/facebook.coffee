@@ -2,15 +2,14 @@ define ['passport', 'passport-facebook', 'odo/config', 'odo/hub', 'node-uuid', '
 	db = redis.createClient()
 	
 	class FacebookAuthentication
-		constructor: ->
-			@receive =
-				userFacebookConnected: (event, cb) =>
-					db.hset "#{config.odo.domain}:userfacebook", event.payload.profile.id, event.payload.id, ->
-						cb()
-				
-				userFacebookDisconnected: (event, cb) =>
-					db.hdel "#{config.odo.domain}:userfacebook", event.payload.profile.id, ->
-						cb()
+		receive: (hub) =>
+			hub.receive 'userFacebookConnected', (event, cb) =>
+				db.hset "#{config.odo.domain}:userfacebook", event.payload.profile.id, event.payload.id, ->
+					cb()
+			
+			hub.receive 'userFacebookDisconnected', (event, cb) =>
+				db.hdel "#{config.odo.domain}:userfacebook", event.payload.profile.id, ->
+					cb()
 					
 		
 		get: (id, callback) ->

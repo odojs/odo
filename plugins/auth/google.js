@@ -9,20 +9,22 @@
       function GoogleAuthentication() {
         this.init = __bind(this.init, this);
         this.configure = __bind(this.configure, this);
-        var _this = this;
-        this.receive = {
-          userGoogleConnected: function(event, cb) {
-            return db.hset("" + config.odo.domain + ":usergoogle", event.payload.profile.id, event.payload.id, function() {
-              return cb();
-            });
-          },
-          userGoogleDisconnected: function(event, cb) {
-            return db.hdel("" + config.odo.domain + ":usergoogle", event.payload.profile.id, function() {
-              return cb();
-            });
-          }
-        };
+        this.receive = __bind(this.receive, this);
       }
+
+      GoogleAuthentication.prototype.receive = function(hub) {
+        var _this = this;
+        hub.receive('userGoogleConnected', function(event, cb) {
+          return db.hset("" + config.odo.domain + ":usergoogle", event.payload.profile.id, event.payload.id, function() {
+            return cb();
+          });
+        });
+        return hub.receive('userGoogleDisconnected', function(event, cb) {
+          return db.hdel("" + config.odo.domain + ":usergoogle", event.payload.profile.id, function() {
+            return cb();
+          });
+        });
+      };
 
       GoogleAuthentication.prototype.get = function(id, callback) {
         var _this = this;

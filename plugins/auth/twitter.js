@@ -9,20 +9,22 @@
       function TwitterAuthentication() {
         this.init = __bind(this.init, this);
         this.configure = __bind(this.configure, this);
-        var _this = this;
-        this.receive = {
-          userTwitterConnected: function(event, cb) {
-            return db.hset("" + config.odo.domain + ":usertwitter", event.payload.profile.id, event.payload.id, function() {
-              return cb();
-            });
-          },
-          userTwitterDisconnected: function(event, cb) {
-            return db.hdel("" + config.odo.domain + ":usertwitter", event.payload.profile.id, function() {
-              return cb();
-            });
-          }
-        };
+        this.receive = __bind(this.receive, this);
       }
+
+      TwitterAuthentication.prototype.receive = function(hub) {
+        var _this = this;
+        hub.receive('userTwitterConnected', function(event, cb) {
+          return db.hset("" + config.odo.domain + ":usertwitter", event.payload.profile.id, event.payload.id, function() {
+            return cb();
+          });
+        });
+        return hub.receive('userTwitterDisconnected', function(event, cb) {
+          return db.hdel("" + config.odo.domain + ":usertwitter", event.payload.profile.id, function() {
+            return cb();
+          });
+        });
+      };
 
       TwitterAuthentication.prototype.get = function(id, callback) {
         var _this = this;

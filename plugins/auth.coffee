@@ -2,27 +2,26 @@ define ['module', 'passport', 'odo/config', 'redis', 'odo/projections/userprofil
 	db = redis.createClient()
 	
 	class Auth
-		constructor: ->
-			@receive =
-				userHasEmailAddress: (event, cb) =>
-					db.hset "#{config.odo.domain}:useremail", event.payload.email, event.payload.id, ->
-						cb()
-				
-				userHasVerifyEmailAddressToken: (event, cb) =>
-					key = "#{config.odo.domain}:emailverificationtoken:#{event.payload.email}:#{event.payload.token}"
-					console.log key
-					db
-						.multi()
-						.set(key, event.payload.id)
-						.expire(key, 60 * 60 * 24)
-						.exec (err, replies) =>
-							if err?
-								console.log err
-								cb()
-								return
-							
+		receive: (hub) =>
+			hub.receive 'userHasEmailAddress', (event, cb) =>
+				db.hset "#{config.odo.domain}:useremail", event.payload.email, event.payload.id, ->
+					cb()
+			
+			hub.receive 'userHasVerifyEmailAddressToken', (event, cb) =>
+				key = "#{config.odo.domain}:emailverificationtoken:#{event.payload.email}:#{event.payload.token}"
+				console.log key
+				db
+					.multi()
+					.set(key, event.payload.id)
+					.expire(key, 60 * 60 * 24)
+					.exec (err, replies) =>
+						if err?
+							console.log err
 							cb()
-		
+							return
+						
+						cb()
+						
 		configure: (app) =>
 			app.route '/odo', app.modulepath(module.uri) + '/auth-public'
 			
