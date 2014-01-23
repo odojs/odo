@@ -3,42 +3,43 @@
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   define(['module'], function(module) {
-    var Plugin;
-    return Plugin = (function() {
-      function Plugin() {
+    var ExamplePlugin;
+    return ExamplePlugin = (function() {
+      function ExamplePlugin() {
         this.handle = __bind(this.handle, this);
         this.receive = __bind(this.receive, this);
         this.init = __bind(this.init, this);
         this.configure = __bind(this.configure, this);
       }
 
-      Plugin.prototype.configure = function(app) {
-        return app.route('/', app.modulepath(module.uri) + '/plugin-public');
+      ExamplePlugin.prototype.configure = function(app) {
+        app.route('/', app.modulepath(module.uri) + '/example-public');
+        return app.durandal('views/example');
       };
 
-      Plugin.prototype.init = function(app) {
+      ExamplePlugin.prototype.init = function(app) {
         var _this = this;
-        return app.get('/test', function(req, res) {
+        return app.get('/example', function(req, res) {
           return res.send('Passed');
         });
       };
 
-      Plugin.prototype.receive = function(hub) {
+      ExamplePlugin.prototype.receive = function(hub) {
         var _this = this;
-        return hub.receive('testEvent', function(event, cb) {
-          console.log('Test Event Received');
+        return hub.receive('exampleEvent', function(event, cb) {
+          console.log('example Event Received');
           return cb();
         });
       };
 
-      Plugin.prototype.handle = function(hub) {
+      ExamplePlugin.prototype.handle = function(hub) {
         var _this = this;
-        return hub.handle('testCommand', function(command) {
-          return console.log('Test Command Received');
+        return hub.handle('exampleCommand', function(command) {
+          return console.log('example Command Received');
         });
       };
 
-      return Plugin;
+      return ExamplePlugin;
 
     })();
   });
