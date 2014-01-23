@@ -1,4 +1,4 @@
-define ['passport', 'passport-local', 'odo/infra/config', 'odo/infra/hub', 'node-uuid', 'redis', 'odo/projections/userprofile'], (passport, passportlocal, config, hub, uuid, redis, UserProfile) ->
+define ['passport', 'passport-local', 'odo/infra/config', 'odo/infra/hub', 'node-uuid', 'redis', 'odo/user/userprofile'], (passport, passportlocal, config, hub, uuid, redis, UserProfile) ->
 	db = redis.createClient()
 	
 	class LocalAuthentication

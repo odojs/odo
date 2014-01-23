@@ -1,4 +1,4 @@
-define ['module', 'passport', 'odo/infra/config', 'redis', 'odo/projections/userprofile', 'odo/infra/hub', 'node-uuid'], (module, passport, config, redis, UserProfile, hub, uuid) ->
+define ['module', 'passport', 'odo/infra/config', 'redis', 'odo/user/userprofile', 'odo/infra/hub', 'node-uuid'], (module, passport, config, redis, UserProfile, hub, uuid) ->
 	db = redis.createClient()
 	
 	class Auth
