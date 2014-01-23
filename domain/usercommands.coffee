@@ -1,4 +1,4 @@
-define ['odo/eventstore', 'odo/domain/user'], (es, User) ->
+define ['odo/infra/eventstore', 'odo/domain/user'], (es, User) ->
 	
 	defaultHandler = (command) ->
 		user = new User command.payload.id

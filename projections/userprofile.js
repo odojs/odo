@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['redis', 'odo/config'], function(redis, config) {
+  define(['redis', 'odo/infra/config'], function(redis, config) {
     var UserProfile, db;
     db = redis.createClient();
     return UserProfile = (function() {

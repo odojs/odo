@@ -1,4 +1,4 @@
-define ['redis', 'odo/config'], (redis, config) ->
+define ['redis', 'odo/infra/config'], (redis, config) ->
 	db = redis.createClient()
 	
 	class UserProfile
