@@ -7,16 +7,6 @@
     return Recorder = (function() {
       Recorder.prototype._calls = [];
 
-      Recorder.prototype._record = function(method) {
-        var _this = this;
-        return function() {
-          return _this._calls.push({
-            method: method,
-            params: Array.prototype.slice.call(arguments, 0)
-          });
-        };
-      };
-
       function Recorder(methods) {
         this.play = __bind(this.play, this);
         this._record = __bind(this._record, this);
@@ -26,6 +16,16 @@
           this[method] = this._record(method);
         }
       }
+
+      Recorder.prototype._record = function(method) {
+        var _this = this;
+        return function() {
+          return _this._calls.push({
+            method: method,
+            params: arguments
+          });
+        };
+      };
 
       Recorder.prototype.play = function(target) {
         var call, _i, _len, _ref, _results;
