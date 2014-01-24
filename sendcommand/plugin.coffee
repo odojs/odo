@@ -1,7 +1,9 @@
-define ['odo/infra/hub'], (hub) ->
-	
-	init: (app) ->
-		app.post '/sendcommand/:command', (req, res) ->
+define ['odo/infra/hub', 'odo/express/app'], (hub, app) ->
+	class SendCommand
+		web: =>
+			app.post '/sendcommand/:command', @sendcommand
+		
+		sendcommand: (req, res) =>
 			if !req.user?
 				res.send 403, 'authentication required'
 				return

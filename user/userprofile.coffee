@@ -1,8 +1,8 @@
-define ['redis', 'odo/infra/config'], (redis, config) ->
+define ['redis', 'odo/infra/config', 'odo/infra/hub'], (redis, config, hub) ->
 	db = redis.createClient()
 	
 	class UserProfile
-		receive: (hub) =>
+		projection: =>
 			hub.receive 'userTrackingStarted', (event, cb) =>
 				user = {
 					id: event.payload.id

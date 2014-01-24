@@ -2,17 +2,30 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['passport', 'passport-google', 'odo/infra/config', 'odo/infra/hub', 'node-uuid', 'redis'], function(passport, passportgoogle, config, hub, uuid, redis) {
+  define(['passport', 'passport-google', 'odo/infra/config', 'odo/infra/hub', 'node-uuid', 'redis', 'odo/express/app'], function(passport, passportgoogle, config, hub, uuid, redis, app) {
     var GoogleAuthentication, db;
     db = redis.createClient();
     return GoogleAuthentication = (function() {
       function GoogleAuthentication() {
-        this.init = __bind(this.init, this);
-        this.configure = __bind(this.configure, this);
-        this.receive = __bind(this.receive, this);
+        this.signin = __bind(this.signin, this);
+        this.projection = __bind(this.projection, this);
+        this.web = __bind(this.web, this);
       }
 
-      GoogleAuthentication.prototype.receive = function(hub) {
+      GoogleAuthentication.prototype.web = function() {
+        passport.use(new passportgoogle.Strategy({
+          realm: config.passport.google['realm'],
+          returnURL: config.passport.google['host'] + '/odo/auth/google/callback',
+          passReqToCallback: true
+        }, this.signin));
+        app.get('/odo/auth/google', passport.authenticate('google'));
+        return app.get('/odo/auth/google/callback', passport.authenticate('google', {
+          successRedirect: '/#auth/google/success',
+          failureRedirect: '/#auth/google/failure'
+        }));
+      };
+
+      GoogleAuthentication.prototype.projection = function() {
         var _this = this;
         hub.receive('userGoogleConnected', function(event, cb) {
           return db.hset("" + config.odo.domain + ":usergoogle", event.payload.profile.id, event.payload.id, function() {
@@ -23,6 +36,67 @@
           return db.hdel("" + config.odo.domain + ":usergoogle", event.payload.profile.id, function() {
             return cb();
           });
+        });
+      };
+
+      GoogleAuthentication.prototype.signin = function(req, identifier, profile, done) {
+        var userid,
+          _this = this;
+        userid = null;
+        profile.id = identifier;
+        return this.get(profile.id, function(err, userid) {
+          var user;
+          if (err != null) {
+            done(err);
+            return;
+          }
+          if ((req.user != null) && (userid != null) && req.user.id !== userid) {
+            done(null, false, {
+              message: 'This Google account is connected to another Blackbeard account'
+            });
+            return;
+          }
+          if (req.user != null) {
+            console.log('user already exists, connecting google to user');
+            userid = req.user.id;
+            hub.send({
+              command: 'connectGoogleToUser',
+              payload: {
+                id: userid,
+                profile: profile
+              }
+            });
+          } else if (userid == null) {
+            console.log('no user exists yet, creating a new id');
+            userid = uuid.v1();
+            hub.send({
+              command: 'startTrackingUser',
+              payload: {
+                id: userid,
+                profile: profile
+              }
+            });
+            hub.send({
+              command: 'connectGoogleToUser',
+              payload: {
+                id: userid,
+                profile: profile
+              }
+            });
+          } else {
+            hub.send({
+              command: 'connectGoogleToUser',
+              payload: {
+                id: userid,
+                profile: profile
+              }
+            });
+          }
+          user = {
+            id: userid,
+            profile: profile
+          };
+          return done(null, user);
         });
       };
 
@@ -45,81 +119,6 @@
             return callback(null, data);
           });
         });
-      };
-
-      GoogleAuthentication.prototype.configure = function(app) {
-        var _this = this;
-        return passport.use(new passportgoogle.Strategy({
-          realm: config.passport.google['realm'],
-          returnURL: config.passport.google['host'] + '/odo/auth/google/callback',
-          passReqToCallback: true
-        }, function(req, identifier, profile, done) {
-          var userid;
-          userid = null;
-          profile.id = identifier;
-          return _this.get(profile.id, function(err, userid) {
-            var user;
-            if (err != null) {
-              done(err);
-              return;
-            }
-            if ((req.user != null) && (userid != null) && req.user.id !== userid) {
-              done(null, false, {
-                message: 'This Google account is connected to another Blackbeard account'
-              });
-              return;
-            }
-            if (req.user != null) {
-              console.log('user already exists, connecting google to user');
-              userid = req.user.id;
-              hub.send({
-                command: 'connectGoogleToUser',
-                payload: {
-                  id: userid,
-                  profile: profile
-                }
-              });
-            } else if (userid == null) {
-              console.log('no user exists yet, creating a new id');
-              userid = uuid.v1();
-              hub.send({
-                command: 'startTrackingUser',
-                payload: {
-                  id: userid,
-                  profile: profile
-                }
-              });
-              hub.send({
-                command: 'connectGoogleToUser',
-                payload: {
-                  id: userid,
-                  profile: profile
-                }
-              });
-            } else {
-              hub.send({
-                command: 'connectGoogleToUser',
-                payload: {
-                  id: userid,
-                  profile: profile
-                }
-              });
-            }
-            user = {
-              id: userid,
-              profile: profile
-            };
-            return done(null, user);
-          });
-        }));
-      };
-
-      GoogleAuthentication.prototype.init = function(app) {
-        app.get('/odo/auth/google', passport.authenticate('google'));
-        return app.get('/odo/auth/google/callback', passport.authenticate('google', {
-          successRedirect: '/#auth/google/success',
-          failureRedirect: '/#auth/google/failure'
-        }));
       };
 
       return GoogleAuthentication;

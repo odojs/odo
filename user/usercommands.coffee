@@ -1,12 +1,6 @@
-define ['odo/infra/eventstore', 'odo/user/user'], (es, User) ->
-	
-	defaultHandler = (command) ->
-		user = new User command.payload.id
-		es.extend user
-		user.applyHistoryThenCommand command
-	
-	handle: (hub) ->
-		commands = [
+define ['odo/infra/hub', 'odo/infra/eventstore', 'odo/user/user'], (hub, es, User) ->
+	class UserCommands
+		commands: [
 			'startTrackingUser'
 			'assignEmailAddressToUser'
 			'createVerifyEmailAddressToken'
@@ -28,5 +22,11 @@ define ['odo/infra/eventstore', 'odo/user/user'], (es, User) ->
 			'removeLocalSigninForUser'
 		]
 		
-		for command in commands
-			hub.handle command, defaultHandler
+		defaultHandler: (command) =>
+			user = new User command.payload.id
+			es.extend user
+			user.applyHistoryThenCommand command
+		
+		domain: =>
+			for command in @commands
+				hub.handle command, @defaultHandler

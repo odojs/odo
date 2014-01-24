@@ -2,17 +2,37 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['passport', 'passport-local', 'odo/infra/config', 'odo/infra/hub', 'node-uuid', 'redis', 'odo/user/userprofile'], function(passport, passportlocal, config, hub, uuid, redis, UserProfile) {
+  define(['passport', 'passport-local', 'odo/infra/config', 'odo/infra/hub', 'node-uuid', 'redis', 'odo/user/userprofile', 'odo/express/app'], function(passport, passportlocal, config, hub, uuid, redis, UserProfile, app) {
     var LocalAuthentication, db;
     db = redis.createClient();
     return LocalAuthentication = (function() {
       function LocalAuthentication() {
-        this.init = __bind(this.init, this);
-        this.configure = __bind(this.configure, this);
-        this.receive = __bind(this.receive, this);
+        this.signup = __bind(this.signup, this);
+        this.reset = __bind(this.reset, this);
+        this.generateresettoken = __bind(this.generateresettoken, this);
+        this.getresettoken = __bind(this.getresettoken, this);
+        this.usernameavailability = __bind(this.usernameavailability, this);
+        this.test = __bind(this.test, this);
+        this.signin = __bind(this.signin, this);
+        this.projection = __bind(this.projection, this);
+        this.web = __bind(this.web, this);
       }
 
-      LocalAuthentication.prototype.receive = function(hub) {
+      LocalAuthentication.prototype.web = function() {
+        passport.use(new passportlocal.Strategy(this.signin));
+        app.post('/odo/auth/local', passport.authenticate('local', {
+          successRedirect: '/#auth/local/success',
+          failureRedirect: '/'
+        }));
+        app.get('/odo/auth/local/test', this.test);
+        app.get('/odo/auth/local/usernameavailability', this.usernameavailability);
+        app.get('/odo/auth/local/resettoken', this.getresettoken);
+        app.post('/odo/auth/local/resettoken', this.generateresettoken);
+        app.post('/odo/auth/local/reset', this.reset);
+        return app.post('/odo/auth/local/signup', this.signup);
+      };
+
+      LocalAuthentication.prototype.projection = function() {
         var _this = this;
         hub.receive('userHasLocalSignin', function(event, cb) {
           return db.hset("" + config.odo.domain + ":localusers", event.payload.profile.username, event.payload.id, function() {
@@ -55,138 +75,136 @@
         });
       };
 
-      LocalAuthentication.prototype.get = function(username, callback) {
-        var _this = this;
-        console.log;
-        return db.hget("" + config.odo.domain + ":localusers", username, function(err, data) {
+      LocalAuthentication.prototype.signin = function(username, password, done) {
+        var userid,
+          _this = this;
+        userid = null;
+        return this.get(username, function(err, userid) {
           if (err != null) {
-            callback(err);
+            done(err);
             return;
           }
-          return callback(null, data);
-        });
-      };
-
-      LocalAuthentication.prototype.configure = function(app) {
-        var _this = this;
-        return passport.use(new passportlocal.Strategy(function(username, password, done) {
-          var userid;
-          userid = null;
-          return _this.get(username, function(err, userid) {
+          if (userid == null) {
+            done(null, false, {
+              message: 'Incorrect username or password.'
+            });
+            return;
+          }
+          return new UserProfile().get(userid, function(err, user) {
             if (err != null) {
               done(err);
               return;
             }
-            if (userid == null) {
+            if (user.local.profile.password !== password) {
               done(null, false, {
                 message: 'Incorrect username or password.'
               });
               return;
             }
-            return new UserProfile().get(userid, function(err, user) {
-              if (err != null) {
-                done(err);
-                return;
-              }
-              if (user.local.profile.password !== password) {
-                done(null, false, {
-                  message: 'Incorrect username or password.'
-                });
-                return;
-              }
-              return done(null, user);
-            });
+            return done(null, user);
           });
-        }));
+        });
       };
 
-      LocalAuthentication.prototype.init = function(app) {
+      LocalAuthentication.prototype.test = function(req, res) {
         var _this = this;
-        app.post('/odo/auth/local', passport.authenticate('local', {
-          successRedirect: '/#auth/local/success',
-          failureRedirect: '/'
-        }));
-        app.get('/odo/auth/local/test', function(req, res) {
-          if (req.query.username == null) {
+        if (req.query.username == null) {
+          res.send({
+            isValid: false,
+            message: 'Username required'
+          });
+          return;
+        }
+        if (req.query.password == null) {
+          res.send({
+            isValid: false,
+            message: 'Password required'
+          });
+          return;
+        }
+        return this.get(req.query.username, function(err, userid) {
+          if (err != null) {
+            console.log(err);
+            res.send(500, 'Woops');
+            return;
+          }
+          if (userid == null) {
             res.send({
               isValid: false,
-              message: 'Username required'
+              message: 'Incorrect username or password'
             });
             return;
           }
-          if (req.query.password == null) {
-            res.send({
-              isValid: false,
-              message: 'Password required'
-            });
-            return;
-          }
-          return _this.get(req.query.username, function(err, userid) {
+          return new UserProfile().get(userid, function(err, user) {
             if (err != null) {
               console.log(err);
               res.send(500, 'Woops');
               return;
             }
-            if (userid == null) {
+            if (user.local.profile.password !== req.query.password) {
               res.send({
                 isValid: false,
                 message: 'Incorrect username or password'
               });
               return;
             }
-            return new UserProfile().get(userid, function(err, user) {
-              if (err != null) {
-                console.log(err);
-                res.send(500, 'Woops');
-                return;
-              }
-              if (user.local.profile.password !== req.query.password) {
-                res.send({
-                  isValid: false,
-                  message: 'Incorrect username or password'
-                });
-                return;
-              }
-              res.send({
-                isValid: true,
-                message: 'Correct username and password'
-              });
+            res.send({
+              isValid: true,
+              message: 'Correct username and password'
             });
           });
         });
-        app.get('/odo/auth/local/usernameavailability', function(req, res) {
-          if (req.query.username == null) {
+      };
+
+      LocalAuthentication.prototype.usernameavailability = function(req, res) {
+        var _this = this;
+        if (req.query.username == null) {
+          res.send({
+            isAvailable: false,
+            message: 'Required'
+          });
+          return;
+        }
+        return this.get(req.query.username, function(err, userid) {
+          if (err != null) {
+            console.log(err);
+            res.send(500, 'Woops');
+            return;
+          }
+          if (userid == null) {
             res.send({
-              isAvailable: false,
-              message: 'Required'
+              isAvailable: true,
+              message: 'Available'
             });
             return;
           }
-          return _this.get(req.query.username, function(err, userid) {
-            if (err != null) {
-              console.log(err);
-              res.send(500, 'Woops');
-              return;
-            }
-            if (userid == null) {
-              res.send({
-                isAvailable: true,
-                message: 'Available'
-              });
-              return;
-            }
-            res.send({
-              isAvailable: false,
-              message: 'Taken'
-            });
+          res.send({
+            isAvailable: false,
+            message: 'Taken'
           });
         });
-        app.get('/odo/auth/local/resettoken', function(req, res) {
-          if (req.query.token == null) {
-            res.send(400, 'Token required');
+      };
+
+      LocalAuthentication.prototype.getresettoken = function(req, res) {
+        var _this = this;
+        if (req.query.token == null) {
+          res.send(400, 'Token required');
+          return;
+        }
+        return db.get("" + config.odo.domain + ":passwordresettoken:" + req.query.token, function(err, userid) {
+          if (err != null) {
+            console.log(err);
+            res.send(500, 'Woops');
             return;
           }
-          return db.get("" + config.odo.domain + ":passwordresettoken:" + req.query.token, function(err, userid) {
+          if (userid == null) {
+            res.send({
+              isValid: false,
+              message: 'Token not valid'
+            });
+            return;
+          }
+          return new UserProfile().get(userid, function(err, user) {
             if (err != null) {
               console.log(err);
               res.send(500, 'Woops');
@@ -199,183 +217,187 @@
               });
               return;
             }
-            return new UserProfile().get(userid, function(err, user) {
-              if (err != null) {
-                console.log(err);
-                res.send(500, 'Woops');
-                return;
-              }
-              if (userid == null) {
-                res.send({
-                  isValid: false,
-                  message: 'Token not valid'
-                });
-                return;
-              }
-              return res.send({
-                isValid: true,
-                username: user.username,
-                message: 'Token valid'
-              });
+            return res.send({
+              isValid: true,
+              username: user.username,
+              message: 'Token valid'
             });
           });
         });
-        app.post('/odo/auth/local/resettoken', function(req, res) {
-          if (req.body.email == null) {
-            res.send(400, 'Email address required');
+      };
+
+      LocalAuthentication.prototype.generateresettoken = function(req, res) {
+        var _this = this;
+        if (req.body.email == null) {
+          res.send(400, 'Email address required');
+          return;
+        }
+        return db.hget("" + config.odo.domain + ":useremail", req.body.email, function(err, userid) {
+          var token;
+          if (err != null) {
+            console.log(err);
+            res.send(500, 'Woops');
             return;
           }
-          return db.hget("" + config.odo.domain + ":useremail", req.body.email, function(err, userid) {
-            var token;
-            if (err != null) {
-              console.log(err);
-              res.send(500, 'Woops');
-              return;
+          if (userid == null) {
+            res.send(400, 'Incorrect email address');
+            return;
+          }
+          token = uuid.v1();
+          console.log("createPasswordResetToken " + token);
+          hub.send({
+            command: 'createPasswordResetToken',
+            payload: {
+              id: userid,
+              token: uuid.v1()
             }
-            if (userid == null) {
-              res.send(400, 'Incorrect email address');
-              return;
-            }
-            token = uuid.v1();
-            console.log("createPasswordResetToken " + token);
-            hub.send({
-              command: 'createPasswordResetToken',
-              payload: {
-                id: userid,
-                token: uuid.v1()
-              }
-            });
-            return res.send('Token generated');
           });
+          return res.send('Token generated');
         });
-        app.post('/odo/auth/local/reset', function(req, res) {
-          var key;
-          if (req.body.token == null) {
-            res.send(400, 'Token required');
+      };
+
+      LocalAuthentication.prototype.reset = function(req, res) {
+        var key,
+          _this = this;
+        if (req.body.token == null) {
+          res.send(400, 'Token required');
+          return;
+        }
+        if (req.body.password == null) {
+          res.send(400, 'Password required');
+          return;
+        }
+        if (req.body.password.length < 8) {
+          res.send(400, 'Password needs to be at least eight letters long');
+          return;
+        }
+        key = "" + config.odo.domain + ":passwordresettoken:" + req.body.token;
+        return db.get(key, function(err, userid) {
+          if (err != null) {
+            console.log(err);
+            res.send(500, 'Woops');
             return;
           }
-          if (req.body.password == null) {
-            res.send(400, 'Password required');
+          if (userid == null) {
+            res.send(400, 'Token not valid');
             return;
           }
-          if (req.body.password.length < 8) {
-            res.send(400, 'Password needs to be at least eight letters long');
-            return;
-          }
-          key = "" + config.odo.domain + ":passwordresettoken:" + req.body.token;
-          return db.get(key, function(err, userid) {
-            if (err != null) {
-              console.log(err);
-              res.send(500, 'Woops');
-              return;
-            }
-            if (userid == null) {
-              res.send(400, 'Token not valid');
-              return;
-            }
-            console.log('assigning a username for user');
-            hub.send({
-              command: 'assignPasswordToUser',
-              payload: {
-                id: userid,
-                password: req.body.password
-              }
-            });
-            return db.del(key, function(err, reply) {
-              if (err != null) {
-                console.log(err);
-                res.send(500, 'Woops');
-                return;
-              }
-              return res.send('Done');
-            });
-          });
-        });
-        return app.post('/odo/auth/local/signup', function(req, res) {
-          var profile, userid;
-          if (req.body.displayName == null) {
-            res.send(400, 'Full name required');
-            return;
-          }
-          if (req.body.username == null) {
-            res.send(400, 'Username required');
-            return;
-          }
-          if (req.body.password == null) {
-            res.send(400, 'Password required');
-            return;
-          }
-          if (req.body.password.length < 8) {
-            res.send(400, 'Password needs to be at least eight letters long');
-            return;
-          }
-          if (req.body.password !== req.body.passwordconfirm) {
-            res.send(400, 'Passwords must match');
-            return;
-          }
-          userid = null;
-          profile = req.body;
-          if (req.user != null) {
-            console.log('user already exists, creating local signin');
-            userid = req.user.id;
-            profile.id = req.user.id;
-          } else {
-            console.log('no user exists yet, creating a new id');
-            userid = uuid.v1();
-            profile.id = userid;
-            hub.send({
-              command: 'startTrackingUser',
-              payload: {
-                id: userid,
-                profile: profile
-              }
-            });
-          }
-          console.log('creating a local signin for user');
-          hub.send({
-            command: 'createLocalSigninForUser',
-            payload: {
-              id: userid,
-              profile: profile
-            }
-          });
-          console.log('assigning a username for user');
-          hub.send({
-            command: 'assignUsernameToUser',
-            payload: {
-              id: userid,
-              username: profile.username
-            }
-          });
-          console.log('assigning a displayName for user');
-          hub.send({
-            command: 'assignDisplayNameToUser',
-            payload: {
-              id: userid,
-              displayName: profile.displayName
-            }
-          });
           console.log('assigning a username for user');
           hub.send({
             command: 'assignPasswordToUser',
             payload: {
               id: userid,
-              password: profile.password
+              password: req.body.password
             }
           });
-          return new UserProfile().get(userid, function(err, user) {
+          return db.del(key, function(err, reply) {
             if (err != null) {
-              res.send(500, 'Couldn\'t find user');
+              console.log(err);
+              res.send(500, 'Woops');
               return;
             }
-            return req.login(user, function(err) {
-              if (err != null) {
-                res.send(500, 'Couldn\'t login user');
-                return;
-              }
-              return res.redirect('/');
-            });
+            return res.send('Done');
           });
+        });
+      };
+
+      LocalAuthentication.prototype.signup = function(req, res) {
+        var profile, userid,
+          _this = this;
+        if (req.body.displayName == null) {
+          res.send(400, 'Full name required');
+          return;
+        }
+        if (req.body.username == null) {
+          res.send(400, 'Username required');
+          return;
+        }
+        if (req.body.password == null) {
+          res.send(400, 'Password required');
+          return;
+        }
+        if (req.body.password.length < 8) {
+          res.send(400, 'Password needs to be at least eight letters long');
+          return;
+        }
+        if (req.body.password !== req.body.passwordconfirm) {
+          res.send(400, 'Passwords must match');
+          return;
+        }
+        userid = null;
+        profile = req.body;
+        if (req.user != null) {
+          console.log('user already exists, creating local signin');
+          userid = req.user.id;
+          profile.id = req.user.id;
+        } else {
+          console.log('no user exists yet, creating a new id');
+          userid = uuid.v1();
+          profile.id = userid;
+          hub.send({
+            command: 'startTrackingUser',
+            payload: {
+              id: userid,
+              profile: profile
+            }
+          });
+        }
+        console.log('creating a local signin for user');
+        hub.send({
+          command: 'createLocalSigninForUser',
+          payload: {
+            id: userid,
+            profile: profile
+          }
+        });
+        console.log('assigning a username for user');
+        hub.send({
+          command: 'assignUsernameToUser',
+          payload: {
+            id: userid,
+            username: profile.username
+          }
+        });
+        console.log('assigning a displayName for user');
+        hub.send({
+          command: 'assignDisplayNameToUser',
+          payload: {
+            id: userid,
+            displayName: profile.displayName
+          }
+        });
+        console.log('assigning a username for user');
+        hub.send({
+          command: 'assignPasswordToUser',
+          payload: {
+            id: userid,
+            password: profile.password
+          }
+        });
+        return new UserProfile().get(userid, function(err, user) {
+          if (err != null) {
+            res.send(500, 'Couldn\'t find user');
+            return;
+          }
+          return req.login(user, function(err) {
+            if (err != null) {
+              res.send(500, 'Couldn\'t login user');
+              return;
+            }
+            return res.redirect('/');
+          });
+        });
+      };
+
+      LocalAuthentication.prototype.get = function(username, callback) {
+        var _this = this;
+        console.log;
+        return db.hget("" + config.odo.domain + ":localusers", username, function(err, data) {
+          if (err != null) {
+            callback(err);
+            return;
+          }
+          return callback(null, data);
         });
       };
 

@@ -2,16 +2,16 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['redis', 'odo/infra/config'], function(redis, config) {
+  define(['redis', 'odo/infra/config', 'odo/infra/hub'], function(redis, config, hub) {
     var UserProfile, db;
     db = redis.createClient();
     return UserProfile = (function() {
       function UserProfile() {
         this.addOrRemoveValues = __bind(this.addOrRemoveValues, this);
-        this.receive = __bind(this.receive, this);
+        this.projection = __bind(this.projection, this);
       }
 
-      UserProfile.prototype.receive = function(hub) {
+      UserProfile.prototype.projection = function() {
         var _this = this;
         hub.receive('userTrackingStarted', function(event, cb) {
           var user;

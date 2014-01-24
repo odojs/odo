@@ -2,17 +2,38 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['module', 'passport', 'odo/infra/config', 'redis', 'odo/user/userprofile', 'odo/infra/hub', 'node-uuid'], function(module, passport, config, redis, UserProfile, hub, uuid) {
+  define(['module', 'passport', 'odo/infra/config', 'redis', 'odo/user/userprofile', 'odo/infra/hub', 'node-uuid', 'odo/express/configure', 'odo/express/express', 'odo/express/app'], function(module, passport, config, redis, UserProfile, hub, uuid, configure, express, app) {
     var Auth, db;
     db = redis.createClient();
     return Auth = (function() {
       function Auth() {
-        this.init = __bind(this.init, this);
-        this.configure = __bind(this.configure, this);
-        this.receive = __bind(this.receive, this);
+        this.emailverified = __bind(this.emailverified, this);
+        this.checkemailverificationtoken = __bind(this.checkemailverificationtoken, this);
+        this.verifyemail = __bind(this.verifyemail, this);
+        this.forgot = __bind(this.forgot, this);
+        this.projection = __bind(this.projection, this);
+        this.web = __bind(this.web, this);
       }
 
-      Auth.prototype.receive = function(hub) {
+      Auth.prototype.web = function() {
+        configure.route('/odo', configure.modulepath(module.uri) + '/public');
+        express.use(passport.initialize());
+        express.use(passport.session());
+        passport.serializeUser(function(user, done) {
+          return done(null, user.id);
+        });
+        passport.deserializeUser(function(id, done) {
+          return new UserProfile().get(id, done);
+        });
+        app.get('/odo/auth/signout', this.signout);
+        app.get('/odo/auth/user', this.user);
+        app.get('/odo/auth/forgot', this.forgot);
+        app.post('/odo/auth/verifyemail', this.verifyemail);
+        app.get('/odo/auth/checkemailverificationtoken', this.checkemailverificationtoken);
+        return app.post('/odo/auth/emailverified', this.emailverified);
+      };
+
+      Auth.prototype.projection = function() {
         var _this = this;
         hub.receive('userHasEmailAddress', function(event, cb) {
           return db.hset("" + config.odo.domain + ":useremail", event.payload.email, event.payload.id, function() {
@@ -34,171 +55,164 @@
         });
       };
 
-      Auth.prototype.configure = function(app) {
-        app.route('/odo', app.modulepath(module.uri) + '/public');
-        app.use(passport.initialize());
-        app.use(passport.session());
-        passport.serializeUser(function(user, done) {
-          return done(null, user.id);
-        });
-        return passport.deserializeUser(function(id, done) {
-          return new UserProfile().get(id, done);
-        });
+      Auth.prototype.signout = function(req, res) {
+        req.logout();
+        return res.redirect('/');
       };
 
-      Auth.prototype.init = function(app) {
+      Auth.prototype.user = function(req, res) {
+        if (req.user == null) {
+          res.send(403, 'authentication required');
+          return;
+        }
+        return res.send(req.user);
+      };
+
+      Auth.prototype.forgot = function(req, res) {
         var _this = this;
-        app.get('/odo/auth/signout', function(req, res) {
-          req.logout();
-          return res.redirect('/');
-        });
-        app.get('/odo/auth/user', function(req, res) {
-          if (req.user == null) {
-            res.send(403, 'authentication required');
+        if (req.query.email == null) {
+          res.send(400, 'Email address required');
+          return;
+        }
+        return db.hget("" + config.odo.domain + ":useremail", req.query.email, function(err, userid) {
+          if (err != null) {
+            console.log(err);
+            res.send(500, 'Woops');
             return;
           }
-          return res.send(req.user);
-        });
-        app.get('/odo/auth/forgot', function(req, res) {
-          if (req.query.email == null) {
-            res.send(400, 'Email address required');
-            return;
-          }
-          return db.hget("" + config.odo.domain + ":useremail", req.query.email, function(err, userid) {
-            if (err != null) {
-              console.log(err);
-              res.send(500, 'Woops');
-              return;
-            }
-            if (userid == null) {
-              res.send({
-                account: false,
-                message: 'No account found for this email address'
-              });
-              return;
-            }
-            return new UserProfile().get(userid, function(err, user) {
-              if (err != null) {
-                res.send(500, 'Couldn\'t find user');
-                return;
-              }
-              return res.send({
-                account: true,
-                local: user.local != null,
-                facebook: user.facebook != null,
-                google: user.google != null,
-                twitter: user.twitter != null,
-                username: user.username != null,
-                message: 'Account found'
-              });
+          if (userid == null) {
+            res.send({
+              account: false,
+              message: 'No account found for this email address'
             });
-          });
-        });
-        app.post('/odo/auth/verifyemail', function(req, res) {
-          var token;
-          if (req.user == null) {
-            res.send(403, 'authentication required');
             return;
           }
-          if (req.body.email == null) {
-            res.send(400, 'Email address required');
-            return;
-          }
-          token = uuid.v1();
-          console.log("createVerifyEmailAddressToken " + token);
-          hub.send({
-            command: 'createVerifyEmailAddressToken',
-            payload: {
-              id: req.user.id,
-              email: req.body.email,
-              token: uuid.v1()
-            }
-          });
-          return res.send('Done');
-        });
-        app.get('/odo/auth/checkemailverificationtoken', function(req, res) {
-          var key;
-          if (req.user == null) {
-            res.send(403, 'Authentication required');
-            return;
-          }
-          if (req.query.email == null) {
-            res.send(400, 'Email address required');
-            return;
-          }
-          if (req.query.token == null) {
-            res.send(400, 'Token required');
-            return;
-          }
-          key = "" + config.odo.domain + ":emailverificationtoken:" + req.query.email + ":" + req.query.token;
-          return db.get(key, function(err, userid) {
+          return new UserProfile().get(userid, function(err, user) {
             if (err != null) {
-              console.log(err);
-              res.send(500, 'Woops');
-              return;
-            }
-            if (userid == null) {
-              res.send({
-                isValid: false,
-                message: 'Token not valid'
-              });
-              return;
-            }
-            if (req.user.id !== userid) {
-              res.send(403, 'authentication required');
+              res.send(500, 'Couldn\'t find user');
               return;
             }
             return res.send({
-              isValid: true,
-              message: 'Token valid'
+              account: true,
+              local: user.local != null,
+              facebook: user.facebook != null,
+              google: user.google != null,
+              twitter: user.twitter != null,
+              username: user.username != null,
+              message: 'Account found'
             });
           });
         });
-        return app.post('/odo/auth/emailverified', function(req, res) {
-          var key;
-          if (req.user == null) {
+      };
+
+      Auth.prototype.verifyemail = function(req, res) {
+        var token;
+        if (req.user == null) {
+          res.send(403, 'authentication required');
+          return;
+        }
+        if (req.body.email == null) {
+          res.send(400, 'Email address required');
+          return;
+        }
+        token = uuid.v1();
+        console.log("createVerifyEmailAddressToken " + token);
+        hub.send({
+          command: 'createVerifyEmailAddressToken',
+          payload: {
+            id: req.user.id,
+            email: req.body.email,
+            token: uuid.v1()
+          }
+        });
+        return res.send('Done');
+      };
+
+      Auth.prototype.checkemailverificationtoken = function(req, res) {
+        var key,
+          _this = this;
+        if (req.user == null) {
+          res.send(403, 'Authentication required');
+          return;
+        }
+        if (req.query.email == null) {
+          res.send(400, 'Email address required');
+          return;
+        }
+        if (req.query.token == null) {
+          res.send(400, 'Token required');
+          return;
+        }
+        key = "" + config.odo.domain + ":emailverificationtoken:" + req.query.email + ":" + req.query.token;
+        return db.get(key, function(err, userid) {
+          if (err != null) {
+            console.log(err);
+            res.send(500, 'Woops');
+            return;
+          }
+          if (userid == null) {
+            res.send({
+              isValid: false,
+              message: 'Token not valid'
+            });
+            return;
+          }
+          if (req.user.id !== userid) {
             res.send(403, 'authentication required');
             return;
           }
-          if (req.body.email == null) {
-            res.send(400, 'Email address required');
+          return res.send({
+            isValid: true,
+            message: 'Token valid'
+          });
+        });
+      };
+
+      Auth.prototype.emailverified = function(req, res) {
+        var key,
+          _this = this;
+        if (req.user == null) {
+          res.send(403, 'authentication required');
+          return;
+        }
+        if (req.body.email == null) {
+          res.send(400, 'Email address required');
+          return;
+        }
+        if (req.body.token == null) {
+          res.send(400, 'Token required');
+          return;
+        }
+        key = "" + config.odo.domain + ":emailverificationtoken:" + req.body.email + ":" + req.body.token;
+        return db.get(key, function(err, userid) {
+          if (err != null) {
+            console.log(err);
+            res.send(500, 'Woops');
             return;
           }
-          if (req.body.token == null) {
-            res.send(400, 'Token required');
+          if (userid == null) {
+            res.send(400, 'Token not valid');
             return;
           }
-          key = "" + config.odo.domain + ":emailverificationtoken:" + req.body.email + ":" + req.body.token;
-          return db.get(key, function(err, userid) {
+          if (req.user.id !== userid) {
+            res.send(403, 'authentication required');
+            return;
+          }
+          hub.send({
+            command: 'assignEmailAddressToUser',
+            payload: {
+              id: userid,
+              email: req.body.email,
+              token: req.body.token
+            }
+          });
+          return db.del(key, function(err, reply) {
             if (err != null) {
               console.log(err);
               res.send(500, 'Woops');
               return;
             }
-            if (userid == null) {
-              res.send(400, 'Token not valid');
-              return;
-            }
-            if (req.user.id !== userid) {
-              res.send(403, 'authentication required');
-              return;
-            }
-            hub.send({
-              command: 'assignEmailAddressToUser',
-              payload: {
-                id: userid,
-                email: req.body.email,
-                token: req.body.token
-              }
-            });
-            return db.del(key, function(err, reply) {
-              if (err != null) {
-                console.log(err);
-                res.send(500, 'Woops');
-                return;
-              }
-              return res.send('Done');
-            });
+            return res.send('Done');
           });
         });
       };

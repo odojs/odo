@@ -2,17 +2,32 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['passport', 'passport-facebook', 'odo/infra/config', 'odo/infra/hub', 'node-uuid', 'redis'], function(passport, passportfacebook, config, hub, uuid, redis) {
+  define(['passport', 'passport-facebook', 'odo/infra/config', 'odo/infra/hub', 'node-uuid', 'redis', 'odo/express/app'], function(passport, passportfacebook, config, hub, uuid, redis, app) {
     var FacebookAuthentication, db;
     db = redis.createClient();
     return FacebookAuthentication = (function() {
       function FacebookAuthentication() {
-        this.init = __bind(this.init, this);
-        this.configure = __bind(this.configure, this);
-        this.receive = __bind(this.receive, this);
+        this.signin = __bind(this.signin, this);
+        this.projection = __bind(this.projection, this);
+        this.web = __bind(this.web, this);
       }
 
-      FacebookAuthentication.prototype.receive = function(hub) {
+      FacebookAuthentication.prototype.web = function() {
+        passport.use(new passportfacebook.Strategy({
+          clientID: config.passport.facebook['app id'],
+          clientSecret: config.passport.facebook['app secret'],
+          callbackURL: config.passport.facebook['host'] + '/odo/auth/facebook/callback',
+          passReqToCallback: true
+        }, this.signin));
+        app.get('/odo/auth/facebook', passport.authenticate('facebook'));
+        app.get('/odo/auth/facebook/callback', passport.authenticate('facebook', {
+          successRedirect: '/#auth/facebook/success',
+          failureRedirect: '/#auth/facebook/failure'
+        }));
+        return app.get('/odo/auth/facebook');
+      };
+
+      FacebookAuthentication.prototype.projection = function() {
         var _this = this;
         hub.receive('userFacebookConnected', function(event, cb) {
           return db.hset("" + config.odo.domain + ":userfacebook", event.payload.profile.id, event.payload.id, function() {
@@ -23,6 +38,73 @@
           return db.hdel("" + config.odo.domain + ":userfacebook", event.payload.profile.id, function() {
             return cb();
           });
+        });
+      };
+
+      FacebookAuthentication.prototype.signin = function(req, accessToken, refreshToken, profile, done) {
+        var userid,
+          _this = this;
+        userid = null;
+        return this.get(profile.id, function(err, userid) {
+          var user;
+          if (err != null) {
+            done(err);
+            return;
+          }
+          if ((req.user != null) && (userid != null) && req.user.id !== userid) {
+            done(null, false, {
+              message: 'This Facebook account is connected to another Blackbeard account'
+            });
+            return;
+          }
+          if (req.user != null) {
+            console.log('user already exists, connecting facebook to user');
+            userid = req.user.id;
+            hub.send({
+              command: 'connectFacebookToUser',
+              payload: {
+                id: userid,
+                profile: profile
+              }
+            });
+          } else if (userid == null) {
+            console.log('no user exists yet, creating a new id');
+            userid = uuid.v1();
+            hub.send({
+              command: 'startTrackingUser',
+              payload: {
+                id: userid,
+                profile: profile
+              }
+            });
+            hub.send({
+              command: 'connectFacebookToUser',
+              payload: {
+                id: userid,
+                profile: profile
+              }
+            });
+            hub.send({
+              command: 'assignDisplayNameToUser',
+              payload: {
+                id: userid,
+                displayName: profile.displayName
+              }
+            });
+          } else {
+            hub.send({
+              command: 'connectFacebookToUser',
+              payload: {
+                id: userid,
+                profile: profile
+              }
+            });
+          }
+          user = {
+            id: userid,
+            profile: profile
+          };
+          return done(null, user);
         });
       };
 
@@ -45,89 +127,6 @@
             return callback(null, data);
           });
         });
-      };
-
-      FacebookAuthentication.prototype.configure = function(app) {
-        var _this = this;
-        return passport.use(new passportfacebook.Strategy({
-          clientID: config.passport.facebook['app id'],
-          clientSecret: config.passport.facebook['app secret'],
-          callbackURL: config.passport.facebook['host'] + '/odo/auth/facebook/callback',
-          passReqToCallback: true
-        }, function(req, accessToken, refreshToken, profile, done) {
-          var userid;
-          userid = null;
-          return _this.get(profile.id, function(err, userid) {
-            var user;
-            if (err != null) {
-              done(err);
-              return;
-            }
-            if ((req.user != null) && (userid != null) && req.user.id !== userid) {
-              done(null, false, {
-                message: 'This Facebook account is connected to another Blackbeard account'
-              });
-              return;
-            }
-            if (req.user != null) {
-              console.log('user already exists, connecting facebook to user');
-              userid = req.user.id;
-              hub.send({
-                command: 'connectFacebookToUser',
-                payload: {
-                  id: userid,
-                  profile: profile
-                }
-              });
-            } else if (userid == null) {
-              console.log('no user exists yet, creating a new id');
-              userid = uuid.v1();
-              hub.send({
-                command: 'startTrackingUser',
-                payload: {
-                  id: userid,
-                  profile: profile
-                }
-              });
-              hub.send({
-                command: 'connectFacebookToUser',
-                payload: {
-                  id: userid,
-                  profile: profile
-                }
-              });
-              hub.send({
-                command: 'assignDisplayNameToUser',
-                payload: {
-                  id: userid,
-                  displayName: profile.displayName
-                }
-              });
-            } else {
-              hub.send({
-                command: 'connectFacebookToUser',
-                payload: {
-                  id: userid,
-                  profile: profile
-                }
-              });
-            }
-            user = {
-              id: userid,
-              profile: profile
-            };
-            return done(null, user);
-          });
-        }));
-      };
-
-      FacebookAuthentication.prototype.init = function(app) {
-        app.get('/odo/auth/facebook', passport.authenticate('facebook'));
-        app.get('/odo/auth/facebook/callback', passport.authenticate('facebook', {
-          successRedirect: '/#auth/facebook/success',
-          failureRedirect: '/#auth/facebook/failure'
-        }));
-        return app.get('/odo/auth/facebook');
       };
 
       return FacebookAuthentication;
