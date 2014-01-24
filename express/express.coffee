@@ -1,8 +1,11 @@
-define ['odo/infra/recorder'], (Recorder) ->	
-	class Express extends Recorder
-		constructor: ->
-			super
+define [], () ->	
+	# not sure why I can't use the Recorder here, but... I can't
 	
-	new Express [
-		'use'
-	]
+	_uses = []
+	
+	use: (use) ->
+		_uses.push use
+	
+	play: (app) ->
+		for use in _uses
+			app.use use
