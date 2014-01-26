@@ -2,7 +2,7 @@
 (function() {
   define(['module', 'fs', 'path'], function(module, fs, path) {
     var configpath;
-    configpath = path.join(path.dirname(module.uri), '../../../config.json');
+    configpath = path.join(path.dirname(module.uri), '../../config.json');
     return JSON.parse(fs.readFileSync(configpath), 'utf-8');
   });
 

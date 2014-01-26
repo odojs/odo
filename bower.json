@@ -1,7 +1,7 @@
 {
 	"name": "odo",
 	"description": "Odo, whatever you want it to be",
-	"version": "8.0.0",
+	"version": "8.0.1",
 	"dependencies": {
 	},
 	"ignore": [

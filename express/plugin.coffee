@@ -1,7 +1,7 @@
 define [
 	'http'
 	'express'
-	'odo/infra/config'
+	'odo/config'
 	'odo/express/configure'
 	'odo/express/express'
 	'odo/express/app'

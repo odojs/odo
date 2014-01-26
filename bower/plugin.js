@@ -6,7 +6,8 @@
       function Bower() {}
 
       Bower.prototype.web = function() {
-        return configure.route('/', configure.modulepath(module.uri) + '/../../../bower_components');
+        configure.route('/', configure.modulepath(module.uri) + '/../../../bower_components');
+        return configure.route('/odo', configure.modulepath(module.uri) + '/public');
       };
 
       return Bower;

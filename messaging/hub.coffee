@@ -1,4 +1,4 @@
-define ['redis', 'odo/infra/config', 'odo/infra/sequencer'], (redis, config, Sequencer) ->
+define ['redis', 'odo/config', 'odo/messaging/sequencer'], (redis, config, Sequencer) ->
 
 	commandsender = redis.createClient()
 	eventpublisher = redis.createClient()

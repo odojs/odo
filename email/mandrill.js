@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['q', 'mandrill-api/mandrill', 'odo/infra/config'], function(Q, mandrill, config) {
+  define(['q', 'mandrill-api/mandrill', 'odo/config'], function(Q, mandrill, config) {
     var Mandrill;
     return Mandrill = (function() {
       var client;

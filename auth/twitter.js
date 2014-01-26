@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['passport', 'passport-twitter', 'odo/infra/config', 'odo/messaging/hub', 'node-uuid', 'redis', 'odo/express/app'], function(passport, passporttwitter, config, hub, uuid, redis, app) {
+  define(['passport', 'passport-twitter', 'odo/config', 'odo/messaging/hub', 'node-uuid', 'redis', 'odo/express/app'], function(passport, passporttwitter, config, hub, uuid, redis, app) {
     var TwitterAuthentication, db;
     db = redis.createClient();
     return TwitterAuthentication = (function() {

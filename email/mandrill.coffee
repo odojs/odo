@@ -1,4 +1,4 @@
-define ['q', 'mandrill-api/mandrill', 'odo/infra/config'], (Q, mandrill, config) ->
+define ['q', 'mandrill-api/mandrill', 'odo/config'], (Q, mandrill, config) ->
 	class Mandrill
 		client = new mandrill.Mandrill config.mandrill['api key']
 		

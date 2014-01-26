@@ -1,4 +1,4 @@
-define ['odo/infra/recorder'], (Recorder) ->	
+define ['odo/express/recorder'], (Recorder) ->	
 	class Init extends Recorder
 		constructor: ->
 			super

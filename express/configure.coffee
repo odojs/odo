@@ -1,4 +1,4 @@
-define ['odo/infra/recorder'], (Recorder) ->	
+define ['odo/express/recorder'], (Recorder) ->	
 	class Configure extends Recorder
 		constructor: ->
 			super

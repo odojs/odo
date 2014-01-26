@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['http', 'express', 'odo/infra/config', 'odo/express/configure', 'odo/express/express', 'odo/express/app'], function(http, express, config, _configure, _express, _app) {
+  define(['http', 'express', 'odo/config', 'odo/express/configure', 'odo/express/express', 'odo/express/app'], function(http, express, config, _configure, _express, _app) {
     var Express;
     return Express = (function() {
       function Express() {

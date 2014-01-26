@@ -1,7 +1,7 @@
 define [
 	'passport'
 	'passport-local'
-	'odo/infra/config'
+	'odo/config'
 	'odo/messaging/hub'
 	'node-uuid'
 	'redis'

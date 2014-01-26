@@ -1,7 +1,7 @@
 define [
 	'module'
 	'passport'
-	'odo/infra/config'
+	'odo/config'
 	'redis'
 	'odo/user/userprofile'
 	'odo/messaging/hub'

@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['passport', 'passport-google', 'odo/infra/config', 'odo/messaging/hub', 'node-uuid', 'redis', 'odo/express/app'], function(passport, passportgoogle, config, hub, uuid, redis, app) {
+  define(['passport', 'passport-google', 'odo/config', 'odo/messaging/hub', 'node-uuid', 'redis', 'odo/express/app'], function(passport, passportgoogle, config, hub, uuid, redis, app) {
     var GoogleAuthentication, db;
     db = redis.createClient();
     return GoogleAuthentication = (function() {
