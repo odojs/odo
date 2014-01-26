@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['passport', 'passport-local', 'odo/infra/config', 'odo/infra/hub', 'node-uuid', 'redis', 'odo/user/userprofile', 'odo/express/app'], function(passport, passportlocal, config, hub, uuid, redis, UserProfile, app) {
+  define(['passport', 'passport-local', 'odo/infra/config', 'odo/messaging/hub', 'node-uuid', 'redis', 'odo/user/userprofile', 'odo/express/app'], function(passport, passportlocal, config, hub, uuid, redis, UserProfile, app) {
     var LocalAuthentication, db;
     db = redis.createClient();
     return LocalAuthentication = (function() {

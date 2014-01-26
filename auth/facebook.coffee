@@ -2,7 +2,7 @@ define [
 	'passport'
 	'passport-facebook'
 	'odo/infra/config'
-	'odo/infra/hub'
+	'odo/messaging/hub'
 	'node-uuid'
 	'redis'
 	'odo/express/app'

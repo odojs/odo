@@ -2,7 +2,7 @@ define [
 	'passport'
 	'passport-twitter'
 	'odo/infra/config'
-	'odo/infra/hub'
+	'odo/messaging/hub'
 	'node-uuid'
 	'redis'
 	'odo/express/app'

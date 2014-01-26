@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['module', 'passport', 'odo/infra/config', 'redis', 'odo/user/userprofile', 'odo/infra/hub', 'node-uuid', 'odo/express/configure', 'odo/express/express', 'odo/express/app'], function(module, passport, config, redis, UserProfile, hub, uuid, configure, express, app) {
+  define(['module', 'passport', 'odo/infra/config', 'redis', 'odo/user/userprofile', 'odo/messaging/hub', 'node-uuid', 'odo/express/configure', 'odo/express/express', 'odo/express/app'], function(module, passport, config, redis, UserProfile, hub, uuid, configure, express, app) {
     var Auth, db;
     db = redis.createClient();
     return Auth = (function() {

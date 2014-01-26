@@ -1,4 +1,4 @@
-define ['odo/infra/hub', 'odo/infra/eventstore', 'odo/user/user'], (hub, es, User) ->
+define ['odo/messaging/hub', 'odo/messaging/eventstore', 'odo/user/user'], (hub, es, User) ->
 	class UserCommands
 		commands: [
 			'startTrackingUser'

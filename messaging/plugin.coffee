@@ -1,5 +1,5 @@
-define ['odo/infra/hub', 'odo/express/app'], (hub, app) ->
-	class SendCommand
+define ['odo/messaging/hub', 'odo/express/app'], (hub, app) ->
+	class Messaging
 		web: =>
 			app.post '/sendcommand/:command', @sendcommand
 		

@@ -2,19 +2,19 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['odo/infra/hub', 'odo/express/app'], function(hub, app) {
-    var SendCommand;
-    return SendCommand = (function() {
-      function SendCommand() {
+  define(['odo/messaging/hub', 'odo/express/app'], function(hub, app) {
+    var Messaging;
+    return Messaging = (function() {
+      function Messaging() {
         this.sendcommand = __bind(this.sendcommand, this);
         this.web = __bind(this.web, this);
       }
 
-      SendCommand.prototype.web = function() {
+      Messaging.prototype.web = function() {
         return app.post('/sendcommand/:command', this.sendcommand);
       };
 
-      SendCommand.prototype.sendcommand = function(req, res) {
+      Messaging.prototype.sendcommand = function(req, res) {
         if (req.user == null) {
           res.send(403, 'authentication required');
           return;
@@ -27,7 +27,7 @@
         return res.send('Ok');
       };
 
-      return SendCommand;
+      return Messaging;
 
     })();
   });
