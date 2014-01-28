@@ -1,17 +1,18 @@
 ﻿define ['knockout', 'jquery', 'plugins/dialog'], (ko, $, dialog) ->
 	
 	class Dialog
+		composeOptions: ko.observable null
+		shouldShake: ko.observable no
+		
 		constructor: (options) ->
 			activationData = {
 				dialog: @
 				activationData: options.activationData
 			}
 			
-			@composeOptions = ko.observable {
+			@composeOptions
 				model: options.model
 				activationData: activationData
-			}
-			@shouldShake = ko.observable false
 		
 		show: =>
 			dialog.showOdoDialog @

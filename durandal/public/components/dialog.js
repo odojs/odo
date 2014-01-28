@@ -5,6 +5,10 @@
   define(['knockout', 'jquery', 'plugins/dialog'], function(ko, $, dialog) {
     var Dialog;
     return Dialog = (function() {
+      Dialog.prototype.composeOptions = ko.observable(null);
+
+      Dialog.prototype.shouldShake = ko.observable(false);
+
       function Dialog(options) {
         this.shake = __bind(this.shake, this);
         this.close = __bind(this.close, this);
@@ -14,11 +18,10 @@
           dialog: this,
           activationData: options.activationData
         };
-        this.composeOptions = ko.observable({
+        this.composeOptions({
           model: options.model,
           activationData: activationData
         });
-        this.shouldShake = ko.observable(false);
       }
 
       Dialog.prototype.show = function() {
