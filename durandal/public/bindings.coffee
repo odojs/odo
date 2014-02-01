@@ -112,6 +112,8 @@ define ['knockout', 'jquery'], (ko, $) ->
 		
 		if config.q
 			requirejs ['durandal/system', 'q'], (system, Q) ->
+				
+				# use Q promises internally in durandal
 				system.defer = (action) ->
 					deferred = Q.defer()
 					action.call deferred, deferred
@@ -120,6 +122,63 @@ define ['knockout', 'jquery'], (ko, $) ->
 						promise
 
 					deferred
+				
+				# a version of require that returns a promise immediately
+				window.requireQ = (modules) ->
+					dfd = Q.defer()
+					requirejs modules, ->
+						dfd.resolve arguments
+					dfd.promise
+				
+				# a version of define that waits until all modules have been required, and if they are promises waits for those as well
+				window.defineQ = (modules, method) ->
+					define modules, ->
+						that = @
+						dfd = Q.defer()
+						args = Array::slice.call arguments, 0
+						
+						Q
+							.all(args)
+							.then (resolved) ->
+								dfd.resolve method.apply that, resolved
+						
+						dfd.promise
+				
+				# when durandal is looking for modules, make sure we are okay if they return promises instead of the actual module
+				system.acquire = ->
+					modules = undefined
+					first = arguments[0]
+					arrayRequest = false
+					if system.isArray(first)
+						modules = first
+						arrayRequest = true
+					else
+						modules = Array::slice.call arguments, 0
+					@defer((dfd) ->
+						requireQ(modules)
+							.spread(->
+								args = arguments
+								setTimeout (->
+									if args.length > 1 or arrayRequest
+										dfd.resolve Array::slice.call args, 0
+									else
+										dfd.resolve args[0]
+								), 1
+							)
+							.fail (err) ->
+								dfd.reject err
+
+					).promise()
+				
+				# can set module id on a promised object - it simply waits
+				originalSetModuleId = system.setModuleId
+				system.setModuleId = (obj, id) ->
+					if system.isPromise obj
+						obj.then (newObj) ->
+							originalSetModuleId newObj, id
+						return
+					
+					originalSetModuleId obj, id
 		
 		if config.bootstrap
 			ko.bindingHandlers.popover = init: (element, valueAccessor) ->

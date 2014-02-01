@@ -125,7 +125,8 @@
         }
         if (config.q) {
           requirejs(['durandal/system', 'q'], function(system, Q) {
-            return system.defer = function(action) {
+            var originalSetModuleId;
+            system.defer = function(action) {
               var deferred, promise;
               deferred = Q.defer();
               action.call(deferred, deferred);
@@ -134,6 +135,63 @@
                 return promise;
               };
               return deferred;
+            };
+            window.requireQ = function(modules) {
+              var dfd;
+              dfd = Q.defer();
+              requirejs(modules, function() {
+                return dfd.resolve(arguments);
+              });
+              return dfd.promise;
+            };
+            window.defineQ = function(modules, method) {
+              return define(modules, function() {
+                var args, dfd, that;
+                that = this;
+                dfd = Q.defer();
+                args = Array.prototype.slice.call(arguments, 0);
+                Q.all(args).then(function(resolved) {
+                  return dfd.resolve(method.apply(that, resolved));
+                });
+                return dfd.promise;
+              });
+            };
+            system.acquire = function() {
+              var arrayRequest, first, modules;
+              modules = void 0;
+              first = arguments[0];
+              arrayRequest = false;
+              if (system.isArray(first)) {
+                modules = first;
+                arrayRequest = true;
+              } else {
+                modules = Array.prototype.slice.call(arguments, 0);
+              }
+              return this.defer(function(dfd) {
+                return requireQ(modules).spread(function() {
+                  var args;
+                  args = arguments;
+                  return setTimeout((function() {
+                    if (args.length > 1 || arrayRequest) {
+                      return dfd.resolve(Array.prototype.slice.call(args, 0));
+                    } else {
+                      return dfd.resolve(args[0]);
+                    }
+                  }), 1);
+                }).fail(function(err) {
+                  return dfd.reject(err);
+                });
+              }).promise();
+            };
+            originalSetModuleId = system.setModuleId;
+            return system.setModuleId = function(obj, id) {
+              if (system.isPromise(obj)) {
+                obj.then(function(newObj) {
+                  return originalSetModuleId(newObj, id);
+                });
+                return;
+              }
+              return originalSetModuleId(obj, id);
             };
           });
         }
