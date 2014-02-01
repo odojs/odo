@@ -43,7 +43,6 @@
         return hub.receive('userHasVerifyEmailAddressToken', function(event, cb) {
           var key;
           key = "" + config.odo.domain + ":emailverificationtoken:" + event.payload.email + ":" + event.payload.token;
-          console.log(key);
           return db.multi().set(key, event.payload.id).expire(key, 60 * 60 * 24).exec(function(err, replies) {
             if (err != null) {
               console.log(err);

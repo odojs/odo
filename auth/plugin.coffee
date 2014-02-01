@@ -39,7 +39,6 @@ define [
 			
 			hub.receive 'userHasVerifyEmailAddressToken', (event, cb) =>
 				key = "#{config.odo.domain}:emailverificationtoken:#{event.payload.email}:#{event.payload.token}"
-				console.log key
 				db
 					.multi()
 					.set(key, event.payload.id)
