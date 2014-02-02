@@ -1,15 +1,9 @@
-﻿define ['q'], (Q) ->
-	
-	
-	
-	
-	
-	
-	
+﻿defineQ ['q', 'odo/auth'], (Q, auth) ->
 	dfd = Q.defer()
-	
-	setTimeout (->
-		dfd.resolve 'Win!'
-	), 2000
-	
+	auth
+		.getUser()
+		.then((user) ->
+			dfd.resolve user)
+		.fail((err) ->
+			dfd.resolve null)
 	dfd.promise
