@@ -42,7 +42,7 @@ define ['knockout', 'jquery'], (ko, $) ->
 							.modal 'hide'
 		
 		if config.validation
-			requirejs ['ko.validation'], () ->
+			requirejs ['knockout', 'ko.validation'], () ->
 				ko.validation.configure
 					registerExtenders: true
 					parseInputAttributes: true
@@ -124,38 +124,61 @@ define ['knockout', 'jquery'], (ko, $) ->
 					deferred
 				
 				# a version of require that returns a promise immediately
-				window.requireQ = (modules) ->
+				window.requireQ = (deps) ->
 					dfd = Q.defer()
-					requirejs modules, ->
+					requirejs deps, ->
 						dfd.resolve arguments
 					dfd.promise
 				
-				# a version of define that waits until all modules have been required, and if they are promises waits for those as well
-				window.defineQ = (modules, method) ->
-					define modules, ->
-						that = @
-						dfd = Q.defer()
-						args = Array::slice.call arguments, 0
-						
-						Q
-							.all(args)
-							.then (resolved) ->
-								dfd.resolve method.apply that, resolved
-						
-						dfd.promise
+				originalDefine = window.define
+				# a version of define that waits until all deps have been required, and if they are promises waits for those as well
+				window.defineQ = (name, deps, callback) ->
+					
+					method = (cb) ->
+						->
+							that = @
+							dfd = Q.defer()
+							args = Array::slice.call arguments, 0
+							
+							Q
+								.all(args)
+								.then (resolved) ->
+									dfd.resolve cb.apply that, resolved
+							
+							dfd.promise
+					
+					# magical argument detection, needed so we know which argument is the callback, otherwise we would just .apply arguments
+					
+					if typeof name isnt 'string'
+						if system.isArray name
+							# defineQ(deps, callback)
+							args = [name, method(deps)]
+						else
+							# defineQ(callback)
+							args = [method(name)]
+					
+					else if !system.isArray deps
+						# defineQ(name, callback)
+						args = [name, method(deps)]
+					
+					else
+						# defineQ(name, deps, callback)
+						args = [name, deps, method(callback)]
+					
+					originalDefine.apply @, args
 				
-				# when durandal is looking for modules, make sure we are okay if they return promises instead of the actual module
+				# when durandal is looking for deps, make sure we are okay if they return promises instead of the actual module
 				system.acquire = ->
-					modules = undefined
+					deps = undefined
 					first = arguments[0]
 					arrayRequest = false
 					if system.isArray(first)
-						modules = first
+						deps = first
 						arrayRequest = true
 					else
-						modules = Array::slice.call arguments, 0
+						deps = Array::slice.call arguments, 0
 					@defer((dfd) ->
-						requireQ(modules)
+						requireQ(deps)
 							.spread(->
 								args = arguments
 								setTimeout (->

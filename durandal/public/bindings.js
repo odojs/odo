@@ -47,7 +47,7 @@
           });
         }
         if (config.validation) {
-          requirejs(['ko.validation'], function() {
+          requirejs(['knockout', 'ko.validation'], function() {
             return ko.validation.configure({
               registerExtenders: true,
               parseInputAttributes: true,
@@ -125,7 +125,7 @@
         }
         if (config.q) {
           requirejs(['durandal/system', 'q'], function(system, Q) {
-            var originalSetModuleId;
+            var originalDefine, originalSetModuleId;
             system.defer = function(action) {
               var deferred, promise;
               deferred = Q.defer();
@@ -136,39 +136,55 @@
               };
               return deferred;
             };
-            window.requireQ = function(modules) {
+            window.requireQ = function(deps) {
               var dfd;
               dfd = Q.defer();
-              requirejs(modules, function() {
+              requirejs(deps, function() {
                 return dfd.resolve(arguments);
               });
               return dfd.promise;
             };
-            window.defineQ = function(modules, method) {
-              return define(modules, function() {
-                var args, dfd, that;
-                that = this;
-                dfd = Q.defer();
-                args = Array.prototype.slice.call(arguments, 0);
-                Q.all(args).then(function(resolved) {
-                  return dfd.resolve(method.apply(that, resolved));
-                });
-                return dfd.promise;
-              });
+            originalDefine = window.define;
+            window.defineQ = function(name, deps, callback) {
+              var args, method;
+              method = function(cb) {
+                return function() {
+                  var args, dfd, that;
+                  that = this;
+                  dfd = Q.defer();
+                  args = Array.prototype.slice.call(arguments, 0);
+                  Q.all(args).then(function(resolved) {
+                    return dfd.resolve(cb.apply(that, resolved));
+                  });
+                  return dfd.promise;
+                };
+              };
+              if (typeof name !== 'string') {
+                if (system.isArray(name)) {
+                  args = [name, method(deps)];
+                } else {
+                  args = [method(name)];
+                }
+              } else if (!system.isArray(deps)) {
+                args = [name, method(deps)];
+              } else {
+                args = [name, deps, method(callback)];
+              }
+              return originalDefine.apply(this, args);
             };
             system.acquire = function() {
-              var arrayRequest, first, modules;
-              modules = void 0;
+              var arrayRequest, deps, first;
+              deps = void 0;
               first = arguments[0];
               arrayRequest = false;
               if (system.isArray(first)) {
-                modules = first;
+                deps = first;
                 arrayRequest = true;
               } else {
-                modules = Array.prototype.slice.call(arguments, 0);
+                deps = Array.prototype.slice.call(arguments, 0);
               }
               return this.defer(function(dfd) {
-                return requireQ(modules).spread(function() {
+                return requireQ(deps).spread(function() {
                   var args;
                   args = arguments;
                   return setTimeout((function() {
