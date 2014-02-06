@@ -1,7 +1,9 @@
 define [], ->
 	class Sequencer
-		_queue: []
-		_inprogress: no
+		constructor: ->
+			@_queue = []
+			@_inprogress = no
+			
 		_next: =>
 			@_inprogress = yes
 			

@@ -1,8 +1,7 @@
 define [], ->
 	class Recorder
-		_calls: []
-		
 		constructor: (methods) ->
+			@_calls = []
 			for method in methods
 				@[method] = @_record method
 		
