@@ -1,4 +1,4 @@
-define ['redis', 'odo/config', 'odo/messaging/hub'], (redis, config, hub) ->
+define ['redis', 'odo/config', 'odo/messaging/hub', 'js-md5'], (redis, config, hub, md5) ->
 	db = redis.createClient()
 	
 	class UserProfile
@@ -16,6 +16,7 @@ define ['redis', 'odo/config', 'odo/messaging/hub'], (redis, config, hub) ->
 			hub.receive 'userHasEmailAddress', (event, cb) =>
 				@addOrRemoveValues event, (user) =>
 					user.email = event.payload.email
+					user.emailHash = md5 event.payload.email.trim().toLowerCase()
 					user
 				, cb
 			
