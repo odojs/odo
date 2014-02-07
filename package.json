@@ -3,5 +3,11 @@
 	"description": "Odo, whatever you want it to be",
 	"version": "8.0.1",
 	"dependencies": {
-	}
+	},
+	"repository":
+	{
+		"type": "git",
+		"url": "http://github.com/tcoats/odo.git"
+	},
+	"readmeFilename": "README.md"
 }
