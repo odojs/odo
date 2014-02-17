@@ -8,7 +8,7 @@ A Nodejs framework for creating awesome things.
 1. Easy to install, use, modify, adapt and refactor
 2. Modular and lightweight components that are useful independently
 3. Strong cohesion where things change at the same rate, loose coupling where things change at a different rate
-4. Few mental concepts needed in any one area of the code to keep mental effort of development low
+4. Few concepts needed in any one area of the code to keep mental effort of development low
 
 ## Techniques
 - [Domain-driven design](http://martinfowler.com/tags/domain%20driven%20design.html)
