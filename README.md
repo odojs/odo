@@ -25,7 +25,9 @@ A Nodejs framework for creating awesome things.
 
 ## Initalise a project
 ```
-./configure.sh
+bower install
+npm install
+cp config.sample.json config.json
 ```
 
 This will install all bower packages and npm packages and create a `config.json` file from the sample.
