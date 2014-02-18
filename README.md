@@ -91,14 +91,16 @@ An express plugin to host the contents of /odo/durandal/public to the web so the
 ## Passport authentication - local, google, facebook and twitter
 An express plugin that provides urls and methods to authenticate a user with passport and passport plugins. Custom local, twitter, facebook and google passport plugins have been provided.
 
-# Technologies developed alongside Odo
+# Technologies
+
+## Technologies developed alongside Odo
 
 - [Tapinto](https://github.com/tcoats/tapinto) (tap into classes and methods)
 - [Injectinto](https://github.com/tcoats/injectinto) (dependency injection)
 - [Peekinto](https://github.com/tcoats/peekinto) (ui composition)
 - [Fetching](https://github.com/tcoats/fetching) (fetching strategies)
 
-# Technologies used and available in nodejs
+## Technologies used and available in nodejs
 
 - [Requirejs](http://requirejs.org/) (dependency injection)
 - [Express](http://expressjs.com/) (http server)
