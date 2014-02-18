@@ -10,7 +10,7 @@
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <title>Odojs</title>
+    <title>Odo by tcoats</title>
   </head>
 
   <body>
@@ -36,109 +36,66 @@
 
 <p>A Nodejs framework for creating awesome things.</p>
 
+<p><a href="https://trello.com/board/odo/4f7b3e995aa70d786202e667">Status and current work on Trello</a></p>
+
 <h2>
 <a name="goals" class="anchor" href="#goals"><span class="octicon octicon-link"></span></a>Goals</h2>
 
-<ul>
-<li>Modular and lightweight</li>
-<li>Components useful independently</li>
-<li>Easy to install and modify</li>
-<li>Behaviour Driven Design and Test Driven Design</li>
-<li>Domain Driven Design</li>
-<li>Event Driven Architecture and messaging with events</li>
-<li>Single Page Applications</li>
-<li>Schema-less database</li>
-<li>Simple formats and micro formats</li>
-<li>Javascript frameworks and environment</li>
-<li>Style guidelines and structure</li>
-<li>Simple templating</li>
-<li>Service Oriented Architecture and Software as a Service</li>
-</ul><p><a href="https://trello.com/board/odo/4f7b3e995aa70d786202e667">Status and current work on Trello</a></p>
-
-<h2>
-<a name="setup" class="anchor" href="#setup"><span class="octicon octicon-link"></span></a>Setup</h2>
-
-<pre><code>./configure.sh
-</code></pre>
-
-<h2>
-<a name="run" class="anchor" href="#run"><span class="octicon octicon-link"></span></a>Run</h2>
-
-<pre><code>redis-server
-./run.website.sh
-./run.domain.sh
-./run.projections.sh
-</code></pre>
-
-<h2>
-<a name="unique-technologies-developed-alongside-odo" class="anchor" href="#unique-technologies-developed-alongside-odo"><span class="octicon octicon-link"></span></a>Unique technologies developed alongside Odo</h2>
+<ol>
+<li>Easy to install, use, modify, adapt and refactor</li>
+<li>Modular and lightweight components that are useful independently</li>
+<li>Strong cohesion where things change at the same rate, loose coupling where things change at a different rate</li>
+<li>Few concepts needed in any one area of the code to keep mental effort of development low</li>
+</ol><h2>
+<a name="techniques" class="anchor" href="#techniques"><span class="octicon octicon-link"></span></a>Techniques</h2>
 
 <ul>
-<li>
-<a href="https://github.com/tcoats/tapinto">Tapinto</a> (tap into classes and methods)</li>
-<li>
-<a href="https://github.com/tcoats/injectinto">Injectinto</a> (dependency injection)</li>
-<li>
-<a href="https://github.com/tcoats/peekinto">Peekinto</a> (ui composition)</li>
-<li>
-<a href="https://github.com/tcoats/fetching">Fetching</a> (fetching strategies)</li>
-</ul><h2>
-<a name="technologies-used-and-available-in-nodejs" class="anchor" href="#technologies-used-and-available-in-nodejs"><span class="octicon octicon-link"></span></a>Technologies used and available in nodejs</h2>
-
-<ul>
-<li>
-<a href="http://expressjs.com/">Express</a> (http server)</li>
-<li>
-<a href="http://momentjs.com/">Moment.js</a> (date &amp; time)</li>
-<li>
-<a href="http://redis.io/">Redis</a> (storage)</li>
-<li>
-<a href="http://jsdoc.info/visionmedia/consolidate.js/">Consolidate</a> (templating)</li>
-<li>
-<a href="http://handlebarsjs.com/">Handlebars</a> (templating)</li>
-<li>
-<a href="http://passportjs.org/">Passport</a> (authentication)</li>
-<li>
-<a href="https://github.com/jaredhanson/passport-twitter">Passport Twitter</a> (authentication)</li>
-<li>
-<a href="http://maxantoni.de/projects/hub.js/">hub.js</a> (messaging)</li>
-<li>
-<a href="http://underscorejs.org/">Underscore</a> (collection utilities)</li>
-<li>
-<a href="http://requirejs.org/">Requirejs</a> (dependency injection)</li>
-<li>
-<a href="https://github.com/kriskowal/q">Q</a> (promises)</li>
-</ul><h2>
-<a name="technologies-used-and-available-in-browser" class="anchor" href="#technologies-used-and-available-in-browser"><span class="octicon octicon-link"></span></a>Technologies used and available in browser</h2>
-
-<ul>
-<li>
-<a href="http://durandaljs.com/">Durandaljs</a> (single page app)</li>
-<li>
-<a href="http://knockoutjs.com/">Knockoutjs</a> (mvvm in browser)</li>
-<li>
-<a href="http://jquery.com/">jQuery</a> (dom manipulation)</li>
-<li>
-<a href="http://getbootstrap.com/">Bootstrap</a> (scaffolding)</li>
-<li>
-<a href="http://underscorejs.org/">Underscore</a> (collection utilities)</li>
-<li>
-<a href="http://requirejs.org/">Requirejs</a> (dependency injection)</li>
-<li>
-<a href="https://daneden.me/animate/">Animate.css</a> (css animations)</li>
-<li>
-<a href="http://craig.is/killing/mice">Mousetrap</a> (keyboard shortcuts)</li>
-<li>
-<a href="https://github.com/kriskowal/q">Q</a> (promises)</li>
+<li><a href="http://martinfowler.com/tags/domain%20driven%20design.html">Domain-driven design</a></li>
+<li><a href="http://martinfowler.com/eaaDev/EventSourcing.html">Event sourcing</a></li>
+<li><a href="http://martinfowler.com/bliki/CQRS.html">Command and Query Responsibility Segregation</a></li>
+<li><a href="http://msdn.microsoft.com/en-nz/architecture/aa699424.aspx">Event-driven architecture</a></li>
+<li><a href="http://www.udidahan.com/2012/06/23/ui-composition-techniques-for-correct-service-boundaries/">UI composition</a></li>
+<li><a href="http://www.johnpapa.net/spa/">Single-page applications</a></li>
+<li><a href="http://martinfowler.com/nosql.html">Schema-less database</a></li>
+<li><a href="http://martinfowler.com/articles/injection.html">Dependency injection</a></li>
 </ul><h1>
-<a name="core-libraries" class="anchor" href="#core-libraries"><span class="octicon octicon-link"></span></a>Core libraries</h1>
+<a name="get-started" class="anchor" href="#get-started"><span class="octicon octicon-link"></span></a>Get started</h1>
 
-<p>Files in this directory are either components to requirejs into your application or plugins to load into the odo express  system to add functionality to the express environment.</p>
+<p>Fork <a href="https://github.com/tcoats/odo-example">odo example</a></p>
+
+<h1>
+<a name="overview" class="anchor" href="#overview"><span class="octicon octicon-link"></span></a>Overview</h1>
+
+<p>There are two types of code in Odo: infrastructure and plugins.</p>
 
 <h2>
-<a name="bower" class="anchor" href="#bower"><span class="octicon octicon-link"></span></a>Bower</h2>
+<a name="infrastructure" class="anchor" href="#infrastructure"><span class="octicon octicon-link"></span></a>Infrastructure</h2>
 
-<p>An express plugin to host the /bower_components directory so anything you've installed with bower is available on the web.</p>
+<p>Tools, frameworks and techniques make up the odo infrastructure. Using existing 3rd party frameworks and libraries is prioritised over custom development. Where existing frameworks are not available small independent utilities have been written.</p>
+
+<p>The goal of any infrastructure code is to accomplish one goal, do it well and have few touch points with any other code.</p>
+
+<h2>
+<a name="plugins" class="anchor" href="#plugins"><span class="octicon octicon-link"></span></a>Plugins</h2>
+
+<p>Plugins are independent features of the application loosely coupled to other plugins to make up the whole application. Usually plugins communicate through a combination of dependency injection and events.</p>
+
+<p>Backend plugins can run in three contexts: web, domain and projection. This technique allows the web code, database logic, and validation rules for a particular piece of information to exist in the same codebase but run in three different contexts. Having all aspects in the same codebase increases speed of development and still provides good decoupling between concepts.</p>
+
+<p>Frontend plugins are registered by backend code. They have the ability to register themselves against several hooks - most importantly single page application routes through durandal.</p>
+
+<h1>
+<a name="backend-infrastructure" class="anchor" href="#backend-infrastructure"><span class="octicon octicon-link"></span></a>Backend infrastructure</h1>
+
+<h2>
+<a name="requirejs" class="anchor" href="#requirejs"><span class="octicon octicon-link"></span></a>Require.js</h2>
+
+<p>All of odo uses require.js to pull together plugins and components. In the backend node.js's require function is passed into require to include npm modules.</p>
+
+<h2>
+<a name="express" class="anchor" href="#express"><span class="octicon octicon-link"></span></a>Express</h2>
+
+<p>The root component to requirejs into your web application to setup an express website. Web plugins are given an opportunity to register against different parts of express to define routes and extend the express system.</p>
 
 <h2>
 <a name="config" class="anchor" href="#config"><span class="octicon octicon-link"></span></a>Config</h2>
@@ -146,24 +103,9 @@
 <p>A component to requirejs into your code to access the top level configuration json file. Use that file to store environment specific settings and other pieces of information you don't want in source control.</p>
 
 <h2>
-<a name="durandal" class="anchor" href="#durandal"><span class="octicon octicon-link"></span></a>Durandal</h2>
-
-<p>An express plugin to host the contents of /odo/durandal-public to the web so the custom durandal components can be used by your odo durandal application.</p>
-
-<h2>
 <a name="eventstore" class="anchor" href="#eventstore"><span class="octicon octicon-link"></span></a>Eventstore</h2>
 
 <p>A component to requirejs into your application to setup and connect to an eventstore. Exposes an extend method to add methods and properties to an aggregate object to support event sourcing and the CQRS pattern. Uses the eventstore library.</p>
-
-<h2>
-<a name="express" class="anchor" href="#express"><span class="octicon octicon-link"></span></a>Express</h2>
-
-<p>The root component to requirejs into your application to setup an express server. Call it as a method and provide a list of odo express plugins to load into the runtime.</p>
-
-<h2>
-<a name="handlebars" class="anchor" href="#handlebars"><span class="octicon octicon-link"></span></a>Handlebars</h2>
-
-<p>An express plugin to extend the default handlebars implementation with additional features to support layouts, hooks and more.</p>
 
 <h2>
 <a name="hub" class="anchor" href="#hub"><span class="octicon octicon-link"></span></a>Hub</h2>
@@ -171,20 +113,95 @@
 <p>A component to requirejs into your application to create a CQRS hub that is connected to redis. Bind event listers through the exported receive method and bind command handlers through the exported handle method. Use send and publish to send commands and publish events.</p>
 
 <h2>
-<a name="injectinto" class="anchor" href="#injectinto"><span class="octicon octicon-link"></span></a>Injectinto</h2>
+<a name="plugin" class="anchor" href="#plugin"><span class="octicon octicon-link"></span></a>Plugin</h2>
 
-<p>A component to requirejs into your application to provide the service locator pattern. Bind items to key string values and request items through the one, oneornull, and many methods.
-Uses the injectinto library behind the scenes.</p>
+<p>A component to help load other plugins. Provides web, domain and projection methods that call the same named method on an array of plugins passed to it's constructor.</p>
 
-<h2>
-<a name="peek" class="anchor" href="#peek"><span class="octicon octicon-link"></span></a>Peek</h2>
-
-<p>Add the ability to 'peek' a request in express without fulfilling the request. This supports incremental loading of resources for templating, shared url authentication and other composition patterns. Uses the peekinto library behind the scenes.</p>
+<h1>
+<a name="backend-plugins" class="anchor" href="#backend-plugins"><span class="octicon octicon-link"></span></a>Backend plugins</h1>
 
 <h2>
-<a name="twitter-auth" class="anchor" href="#twitter-auth"><span class="octicon octicon-link"></span></a>Twitter Auth</h2>
+<a name="messaging" class="anchor" href="#messaging"><span class="octicon octicon-link"></span></a>Messaging</h2>
 
-<p>An express plugin that provides urls and methods to authenticate a user with twitter. Also hosts the twitterauth-public so durandal applications can communicate with the api.</p>
+<p>Provides a sendcommand endpoint to make it easy to create commands from the web.</p>
+
+<h2>
+<a name="bower" class="anchor" href="#bower"><span class="octicon octicon-link"></span></a>Bower</h2>
+
+<p>An express plugin to host the /bower_components directory so anything you've installed with bower is available to the web. Also provides the inject library to the front end for UI composition.</p>
+
+<h2>
+<a name="durandal" class="anchor" href="#durandal"><span class="octicon octicon-link"></span></a>Durandal</h2>
+
+<p>An express plugin to host the contents of /odo/durandal/public to the web so the custom durandal components can be used by your odo durandal application. This includes dialogs, wizards and many extensions to the durandal system.</p>
+
+<h2>
+<a name="passport-authentication---local-google-facebook-and-twitter" class="anchor" href="#passport-authentication---local-google-facebook-and-twitter"><span class="octicon octicon-link"></span></a>Passport authentication - local, google, facebook and twitter</h2>
+
+<p>An express plugin that provides urls and methods to authenticate a user with passport and passport plugins. Custom local, twitter, facebook and google passport plugins have been provided.</p>
+
+<h1>
+<a name="technologies" class="anchor" href="#technologies"><span class="octicon octicon-link"></span></a>Technologies</h1>
+
+<h2>
+<a name="developed-alongside-odo" class="anchor" href="#developed-alongside-odo"><span class="octicon octicon-link"></span></a>Developed alongside Odo</h2>
+
+<ul>
+<li>
+<a href="https://github.com/tcoats/tapinto">Tapinto</a> (tap into classes and methods)</li>
+<li>
+<a href="https://github.com/tcoats/injectinto">Injectinto</a> (dependency injection)</li>
+<li>
+<a href="https://github.com/tcoats/peekinto">Peekinto</a> (ui composition for express)</li>
+<li>
+<a href="https://github.com/tcoats/fetching">Fetching</a> (fetching strategies)</li>
+</ul><h2>
+<a name="back-end" class="anchor" href="#back-end"><span class="octicon octicon-link"></span></a>Back end</h2>
+
+<ul>
+<li>
+<a href="http://requirejs.org/">Requirejs</a> (dependency injection)</li>
+<li>
+<a href="http://expressjs.com/">Express</a> (http server)</li>
+<li>
+<a href="http://redis.io/">Redis</a> (storage)</li>
+<li>
+<a href="http://passportjs.org/">Passport</a> (authentication)</li>
+<li>
+<a href="http://maxantoni.de/projects/hub.js/">hub.js</a> (messaging)</li>
+<li>
+<a href="https://github.com/kriskowal/q">Q</a> (promises)</li>
+<li>
+<a href="https://github.com/broofa/node-uuid">node-uuid</a> (guids)</li>
+<li>
+<a href="https://github.com/emn178/js-md5">js-md5</a> (md5 hash)</li>
+<li>
+<a href="https://github.com/jamuhl/nodeEventStore">eventstore</a> (event sourcing)</li>
+</ul><h2>
+<a name="front-end" class="anchor" href="#front-end"><span class="octicon octicon-link"></span></a>Front end</h2>
+
+<ul>
+<li>
+<a href="http://requirejs.org/">Requirejs</a> (dependency injection)</li>
+<li>
+<a href="http://durandaljs.com/">Durandaljs</a> (single page app)</li>
+<li>
+<a href="http://knockoutjs.com/">Knockoutjs</a> (mvvm in browser)</li>
+<li>
+<a href="https://github.com/Knockout-Contrib/Knockout-Validation">Knockoutjs Validation</a> (validation)</li>
+<li>
+<a href="http://jquery.com/">jQuery</a> (dom manipulation)</li>
+<li>
+<a href="https://github.com/kriskowal/q">Q</a> (promises)</li>
+<li>
+<a href="http://getbootstrap.com/">Bootstrap</a> (scaffolding)</li>
+<li>
+<a href="https://daneden.me/animate/">Animate.css</a> (css animations)</li>
+<li>
+<a href="http://craig.is/killing/mice">Mousetrap</a> (keyboard shortcuts)</li>
+<li>
+<a href="https://github.com/broofa/node-uuid">node-uuid</a> (guids)</li>
+</ul>
         </section>
 
         <footer>
