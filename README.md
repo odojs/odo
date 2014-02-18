@@ -75,14 +75,14 @@ An express plugin that provides urls and methods to authenticate a user with pas
 
 # Technologies
 
-## Technologies developed alongside Odo
+## Developed alongside Odo
 
 - [Tapinto](https://github.com/tcoats/tapinto) (tap into classes and methods)
 - [Injectinto](https://github.com/tcoats/injectinto) (dependency injection)
-- [Peekinto](https://github.com/tcoats/peekinto) (ui composition)
+- [Peekinto](https://github.com/tcoats/peekinto) (ui composition for express)
 - [Fetching](https://github.com/tcoats/fetching) (fetching strategies)
 
-## Technologies used and available in nodejs
+## Back end
 
 - [Requirejs](http://requirejs.org/) (dependency injection)
 - [Express](http://expressjs.com/) (http server)
@@ -95,7 +95,7 @@ An express plugin that provides urls and methods to authenticate a user with pas
 - [eventstore](https://github.com/jamuhl/nodeEventStore) (event sourcing)
 
 
-## Technologies used and available in browser
+## Front end
 
 - [Requirejs](http://requirejs.org/) (dependency injection)
 - [Durandaljs](http://durandaljs.com/) (single page app)
