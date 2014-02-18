@@ -14,6 +14,7 @@ define [
 			theDialog = dialog.getDialog context.model
 			$host = $ theDialog.host
 			$host.modal options
+			$('body').scrollTop 0
 			
 			# rebuild autofocus functionality - bootstrap messes with it
 			$host.one 'shown.bs.modal', ->
