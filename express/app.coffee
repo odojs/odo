@@ -8,4 +8,6 @@ define ['odo/express/recorder'], (Recorder) ->
 		'post'
 		'put'
 		'delete'
+		'engine'
+		'set'
 	]
