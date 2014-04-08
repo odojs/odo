@@ -35,7 +35,7 @@
         };
         app.engine('html', cons.handlebars);
         app.set('view engine', 'html');
-        app.set('views', path.dirname(module.uri) + '/../');
+        app.set('views', path.dirname(module.uri) + '/../../../');
         handlebars.registerHelper('uppercase', function(string) {
           return string.toUpperCase();
         });
