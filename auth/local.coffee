@@ -14,10 +14,26 @@ define [
 		web: =>
 			passport.use new passportlocal.Strategy @signin
 			
-			app.post '/odo/auth/local', passport.authenticate('local', {
-				successRedirect: '/#auth/local/success'
-				failureRedirect: '/'
-			})
+			app.post '/odo/auth/local', (req, res, next) ->
+				passport.authenticate('local', (err, user, info) ->
+					return next err if err?
+					
+					if !user
+						if config.odo.auth?.local?.failureRedirect?
+							return res.redirect config.odo.auth.local.failureRedirect
+						return res.redirect '/#auth/local/failure'
+						
+					req.logIn user, (err) ->
+						return next err if err?
+						
+						if req.session?.returnTo?
+							returnTo = req.session.returnTo
+							delete req.session.returnTo
+							return res.redirect returnTo
+						if config.odo.auth?.local?.successRedirect?
+							return res.redirect config.odo.auth.local.successRedirect
+						return res.redirect '/#auth/local/success'
+				)(req, res, next)
 			
 			app.get '/odo/auth/local/test', @test
 			app.get '/odo/auth/local/usernameavailability', @usernameavailability

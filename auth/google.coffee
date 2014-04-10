@@ -18,10 +18,26 @@ define [
 			, @signin)
 			
 			app.get '/odo/auth/google', passport.authenticate 'google'
-			app.get '/odo/auth/google/callback', passport.authenticate('google', {
-				successRedirect: '/#auth/google/success'
-				failureRedirect: '/#auth/google/failure'
-			})
+			app.get '/odo/auth/google/callback', (req, res, next) ->
+				passport.authenticate('google', (err, user, info) ->
+					return next err if err?
+					
+					if !user
+						if config.odo.auth?.google?.failureRedirect?
+							return res.redirect config.odo.auth.google.failureRedirect
+						return res.redirect '/#auth/google/failure'
+						
+					req.logIn user, (err) ->
+						return next err if err?
+						
+						if req.session?.returnTo?
+							returnTo = req.session.returnTo
+							delete req.session.returnTo
+							return res.redirect returnTo
+						if config.odo.auth?.google?.successRedirect?
+							return res.redirect config.odo.auth.google.successRedirect
+						return res.redirect '/#auth/google/success'
+				)(req, res, next)
 		
 		projection: =>
 			hub.receive 'userGoogleConnected', (event, cb) =>
