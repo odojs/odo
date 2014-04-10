@@ -140,24 +140,3 @@ define [
 				server.token()
 				server.errorHandler()
 			]
-			
-			# user authorization endpoint
-			#
-			# `authorization` middleware accepts a `validate` callback which is responsible for validating the client making the authorization request. In doing so, is recommended that the `redirectURI` be checked against a registered value, although security requirements may vary accross implementations. Once validated, the `done` callback must be invoked with a `client` instance, as well as the `redirectURI` to which the user will be redirected after an authorization decision is obtained.
-			#
-			# This middleware simply initializes a new authorization transaction. It is the application's responsibility to authenticate the user and render a dialog to obtain their approval (displaying details about the client requesting authorization). We accomplish that here by routing through `ensureLoggedIn()` first, and rendering the `dialog` view. 
-			app.get '/odo/auth/oauth2/authorise', [
-				login.ensureLoggedIn { redirectTo: '/signin' }
-				server.authorization (clientID, redirectURI, done) ->
-					db.clients.findByClientId clientID, (err, client) ->
-						return done(err) if err
-						
-						# WARNING: For security purposes, it is highly advisable to check that redirectURI provided by the client matches one registered with the server. For simplicity, this example does not. You have been warned.
-						done null, client, redirectURI
-				(req, res) ->
-					res.json {
-						transactionId: req.oauth2.transactionID
-						clientId: req.oauth2.client.clientId
-						clientName: req.oauth2.client.name
-					}
-			]

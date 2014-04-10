@@ -155,28 +155,10 @@
             });
           };
         })(this)));
-        app.post('/odo/auth/oauth2/token', [
+        return app.post('/odo/auth/oauth2/token', [
           passport.authenticate(['basic', 'oauth2-client-password'], {
             session: false
           }), server.token(), server.errorHandler()
-        ]);
-        return app.get('/odo/auth/oauth2/authorise', [
-          login.ensureLoggedIn({
-            redirectTo: '/signin'
-          }), server.authorization(function(clientID, redirectURI, done) {
-            return db.clients.findByClientId(clientID, function(err, client) {
-              if (err) {
-                return done(err);
-              }
-              return done(null, client, redirectURI);
-            });
-          }), function(req, res) {
-            return res.json({
-              transactionId: req.oauth2.transactionID,
-              clientId: req.oauth2.client.clientId,
-              clientName: req.oauth2.client.name
-            });
-          }
         ]);
       };
 
