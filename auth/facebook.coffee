@@ -19,11 +19,26 @@ define [
 			, @signin)
 
 			app.get '/odo/auth/facebook', passport.authenticate 'facebook'
-			app.get '/odo/auth/facebook/callback', passport.authenticate('facebook', {
-				successRedirect: '/#auth/facebook/success'
-				failureRedirect: '/#auth/facebook/failure'
-			})
-			app.get '/odo/auth/facebook'
+			app.get '/odo/auth/facebook/callback', (req, res, next) ->
+				passport.authenticate('facebook', (err, user, info) ->
+					return next err if err?
+					
+					if !user
+						if config.odo.auth?.facebook?.failureRedirect?
+							return res.redirect config.odo.auth.facebook.failureRedirect
+						return res.redirect '/#auth/facebook/failure'
+						
+					req.logIn user, (err) ->
+						return next err if err?
+						
+						if req.session?.returnTo?
+							returnTo = req.session.returnTo
+							delete req.session.returnTo
+							return res.redirect returnTo
+						if config.odo.auth?.facebook?.successRedirect?
+							return res.redirect config.odo.auth.facebook.successRedirect
+						return res.redirect '/#auth/facebook/success'
+				)(req, res, next)
 		
 		projection: =>
 			hub.receive 'userFacebookConnected', (event, cb) =>

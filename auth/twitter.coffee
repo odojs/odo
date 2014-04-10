@@ -19,10 +19,26 @@ define [
 			, @signin)
 			
 			app.get '/odo/auth/twitter', passport.authenticate 'twitter'
-			app.get '/odo/auth/twitter/callback', passport.authenticate('twitter', {
-				successRedirect: '/#auth/twitter/success'
-				failureRedirect: '/#auth/twitter/failure'
-			})
+			app.get '/odo/auth/twitter/callback', (req, res, next) ->
+				passport.authenticate('twitter', (err, user, info) ->
+					return next err if err?
+					
+					if !user
+						if config.odo.auth?.twitter?.failureRedirect?
+							return res.redirect config.odo.auth.twitter.failureRedirect
+						return res.redirect '/#auth/twitter/failure'
+						
+					req.logIn user, (err) ->
+						return next err if err?
+						
+						if req.session?.returnTo?
+							returnTo = req.session.returnTo
+							delete req.session.returnTo
+							return res.redirect returnTo
+						if config.odo.auth?.twitter?.successRedirect?
+							return res.redirect config.odo.auth.twitter.successRedirect
+						return res.redirect '/#auth/twitter/success'
+				)(req, res, next)
 		
 		projection: =>
 			hub.receive 'userTwitterConnected', (event, cb) =>
