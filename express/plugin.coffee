@@ -24,8 +24,6 @@ define [
 				@app.use express.json()
 				if @app.get('upload directory')?
 					@app.use express.bodyParser({ uploadDir: @app.get('upload directory') })
-				else
-					@app.use express.bodyParser()
 				@app.use express.methodOverride()
 				@app.use express.cookieParser @app.get 'cookie secret'
 				@app.use express.cookieSession

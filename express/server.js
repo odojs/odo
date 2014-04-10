@@ -22,7 +22,11 @@
             _this.app.use(express.compress());
             _this.app.use(express.urlencoded());
             _this.app.use(express.json());
-            _this.app.use(express.bodyParser());
+            if (_this.app.get('upload directory') != null) {
+              _this.app.use(express.bodyParser({
+                uploadDir: _this.app.get('upload directory')
+              }));
+            }
             _this.app.use(express.methodOverride());
             _this.app.use(express.cookieParser(_this.app.get('cookie secret')));
             _this.app.use(express.cookieSession({

@@ -23,8 +23,6 @@
               _this.app.use(express.bodyParser({
                 uploadDir: _this.app.get('upload directory')
               }));
-            } else {
-              _this.app.use(express.bodyParser());
             }
             _this.app.use(express.methodOverride());
             _this.app.use(express.cookieParser(_this.app.get('cookie secret')));
