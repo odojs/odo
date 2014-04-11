@@ -20,13 +20,9 @@
         express.use(passport.initialize());
         express.use(passport.session());
         passport.serializeUser(function(user, done) {
-          console.log('serializeUser');
-          console.log(user);
           return done(null, user.id);
         });
         passport.deserializeUser(function(id, done) {
-          console.log('deserializeUser');
-          console.log(id);
           return new UserProfile().get(id, done);
         });
         app.get('/odo/auth/signout', this.signout);

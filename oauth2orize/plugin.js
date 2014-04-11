@@ -94,8 +94,6 @@
               if (!user) {
                 return done(null, false);
               }
-              console.log('Completed bearer strategy');
-              console.log(user);
               info = {
                 scope: '*'
               };
@@ -162,6 +160,13 @@
             session: false
           }), server.token(), server.errorHandler()
         ]);
+        app.get('/odo/auth/oauth2/profile', function(req, res) {
+          return res.json({
+            id: 1,
+            displayName: 'Thomas Coats',
+            username: 'tcoats'
+          });
+        });
         app.get('/odo/auth/oauth2/authorize', [
           login.ensureLoggedIn({
             redirectTo: config.odo.auth.signin

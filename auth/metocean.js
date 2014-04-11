@@ -2,42 +2,37 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['passport', 'passport-oauth2', 'odo/config', 'odo/messaging/hub', 'node-uuid', 'redis', 'odo/express/app'], function(passport, passportoauth2, config, hub, uuid, redis, app) {
-    var OAuth2Authentication, db;
+  define(['passport', 'passport-metocean', 'odo/config', 'odo/messaging/hub', 'node-uuid', 'redis', 'odo/express/app'], function(passport, passportmetocean, config, hub, uuid, redis, app) {
+    var MetOceanAuthentication, db;
     db = redis.createClient();
-    return OAuth2Authentication = (function() {
-      function OAuth2Authentication() {
+    return MetOceanAuthentication = (function() {
+      function MetOceanAuthentication() {
         this.signin = __bind(this.signin, this);
         this.projection = __bind(this.projection, this);
         this.web = __bind(this.web, this);
       }
 
-      OAuth2Authentication.prototype.web = function() {
-        passport.use(new passportoauth2.Strategy({
-          clientID: config.passport.oauth2['client id'],
-          clientSecret: config.passport.oauth2['client secret'],
-          callbackURL: config.passport.oauth2['host'] + 'odo/auth/oauth2/callback',
-          authorizationURL: config.passport.oauth2['authorization url'],
-          tokenURL: config.passport.oauth2['token url']
-        }, function(accessToken, refreshToken, profile, done) {
-          console.log('Found profile!');
-          console.log(profile);
-          return process.nextTick(function() {
-            return done(null, profile);
-          });
-        }));
-        app.get('/odo/auth/oauth2', passport.authenticate('oauth2'));
-        return app.get('/odo/auth/oauth2/callback', function(req, res, next) {
-          return passport.authenticate('oauth2', function(err, user, info) {
+      MetOceanAuthentication.prototype.web = function() {
+        passport.use(new passportmetocean.Strategy({
+          clientID: config.passport.metocean['client id'],
+          clientSecret: config.passport.metocean['client secret'],
+          callbackURL: config.passport.metocean['host'] + 'odo/auth/metocean/callback',
+          authorizationURL: config.passport.metocean['authorization url'],
+          tokenURL: config.passport.metocean['token url'],
+          passReqToCallback: true
+        }, this.signin));
+        app.get('/odo/auth/metocean', passport.authenticate('metocean'));
+        return app.get('/odo/auth/metocean/callback', function(req, res, next) {
+          return passport.authenticate('metocean', function(err, user, info) {
             var _ref, _ref1;
             if (err != null) {
               return next(err);
             }
             if (!user) {
-              if (((_ref = config.odo.auth) != null ? (_ref1 = _ref.oauth2) != null ? _ref1.failureRedirect : void 0 : void 0) != null) {
-                return res.redirect(config.odo.auth.oauth2.failureRedirect);
+              if (((_ref = config.odo.auth) != null ? (_ref1 = _ref.metocean) != null ? _ref1.failureRedirect : void 0 : void 0) != null) {
+                return res.redirect(config.odo.auth.metocean.failureRedirect);
               }
-              return res.redirect('/#auth/oauth2/failure');
+              return res.redirect('/#auth/metocean/failure');
             }
             return req.logIn(user, function(err) {
               var returnTo, _ref2, _ref3, _ref4;
@@ -49,33 +44,33 @@
                 delete req.session.returnTo;
                 return res.redirect(returnTo);
               }
-              if (((_ref3 = config.odo.auth) != null ? (_ref4 = _ref3.oauth2) != null ? _ref4.successRedirect : void 0 : void 0) != null) {
-                return res.redirect(config.odo.auth.oauth2.successRedirect);
+              if (((_ref3 = config.odo.auth) != null ? (_ref4 = _ref3.metocean) != null ? _ref4.successRedirect : void 0 : void 0) != null) {
+                return res.redirect(config.odo.auth.metocean.successRedirect);
               }
-              return res.redirect('/#auth/oauth2/success');
+              return res.redirect('/#auth/metocean/success');
             });
           })(req, res, next);
         });
       };
 
-      OAuth2Authentication.prototype.projection = function() {
-        hub.receive('userOAuth2Connected', (function(_this) {
+      MetOceanAuthentication.prototype.projection = function() {
+        hub.receive('userMetOceanConnected', (function(_this) {
           return function(event, cb) {
-            return db.hset("" + config.odo.domain + ":useroauth2", event.payload.profile.id, event.payload.id, function() {
+            return db.hset("" + config.odo.domain + ":usermetocean", event.payload.profile.id, event.payload.id, function() {
               return cb();
             });
           };
         })(this));
-        return hub.receive('userOAuth2Disconnected', (function(_this) {
+        return hub.receive('userMetOceanDisconnected', (function(_this) {
           return function(event, cb) {
-            return db.hdel("" + config.odo.domain + ":useroauth2", event.payload.profile.id, function() {
+            return db.hdel("" + config.odo.domain + ":usermetocean", event.payload.profile.id, function() {
               return cb();
             });
           };
         })(this));
       };
 
-      OAuth2Authentication.prototype.signin = function(req, accessToken, refreshToken, profile, done) {
+      MetOceanAuthentication.prototype.signin = function(req, accessToken, refreshToken, profile, done) {
         var userid;
         userid = null;
         return this.get(profile.id, (function(_this) {
@@ -87,15 +82,15 @@
             }
             if ((req.user != null) && (userid != null) && req.user.id !== userid) {
               done(null, false, {
-                message: 'This OAuth2 account is connected to another Blackbeard account'
+                message: 'This MetOcean account is connected to another Blackbeard account'
               });
               return;
             }
             if (req.user != null) {
-              console.log('user already exists, connecting OAuth2 to user');
+              console.log('user already exists, connecting MetOcean to user');
               userid = req.user.id;
               hub.send({
-                command: 'connectOAuth2ToUser',
+                command: 'connectMetOceanToUser',
                 payload: {
                   id: userid,
                   profile: profile
@@ -112,7 +107,7 @@
                 }
               });
               hub.send({
-                command: 'connectOAuth2ToUser',
+                command: 'connectMetOceanToUser',
                 payload: {
                   id: userid,
                   profile: profile
@@ -127,7 +122,7 @@
               });
             } else {
               hub.send({
-                command: 'connectOAuth2ToUser',
+                command: 'connectMetOceanToUser',
                 payload: {
                   id: userid,
                   profile: profile
@@ -143,8 +138,8 @@
         })(this));
       };
 
-      OAuth2Authentication.prototype.get = function(id, callback) {
-        return db.hget("" + config.odo.domain + ":useroauth2", id, (function(_this) {
+      MetOceanAuthentication.prototype.get = function(id, callback) {
+        return db.hget("" + config.odo.domain + ":usermetocean", id, (function(_this) {
           return function(err, data) {
             if (err != null) {
               callback(err);
@@ -154,7 +149,7 @@
               callback(null, data);
               return;
             }
-            return db.hget("" + config.odo.domain + ":useroauth2", id, function(err, data) {
+            return db.hget("" + config.odo.domain + ":usermetocean", id, function(err, data) {
               if (err != null) {
                 callback(err);
                 return;
@@ -165,7 +160,7 @@
         })(this));
       };
 
-      return OAuth2Authentication;
+      return MetOceanAuthentication;
 
     })();
   });

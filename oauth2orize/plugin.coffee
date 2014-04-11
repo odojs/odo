@@ -82,9 +82,6 @@ define [
 						return done(err) if err
 						return done(null, false) unless user
 						
-						console.log 'Completed bearer strategy'
-						console.log user
-						
 						# to keep this example simple, restricted scopes are not implemented,
 						# and this is just for illustrative purposes
 						info = scope: '*'
@@ -145,6 +142,13 @@ define [
 				server.token()
 				server.errorHandler()
 			]
+			
+			app.get '/odo/auth/oauth2/profile', (req, res) ->
+				res.json {
+					id: 1
+					displayName: 'Thomas Coats'
+					username: 'tcoats'
+				}
 			
 			# user authorization endpoint
 			#
