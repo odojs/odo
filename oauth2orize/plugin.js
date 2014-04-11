@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['odo/express/app', 'odo/oauth2orize/db', 'odo/oauth2orize/server', 'oauth2orize', 'passport', 'passport-local', 'passport-http', 'passport-oauth2-client-password', 'passport-http-bearer', 'connect-ensure-login'], function(app, db, server, oauth2orize, passport, passportlocal, passportbasic, passportclientpassword, passportbearer, login) {
+  define(['odo/express/app', 'odo/oauth2orize/db', 'odo/oauth2orize/server', 'odo/config', 'oauth2orize', 'passport', 'passport-local', 'passport-http', 'passport-oauth2-client-password', 'passport-http-bearer', 'connect-ensure-login'], function(app, db, server, config, oauth2orize, passport, passportlocal, passportbasic, passportclientpassword, passportbearer, login) {
     var OAuth2;
     return OAuth2 = (function() {
       function OAuth2() {
@@ -155,10 +155,29 @@
             });
           };
         })(this)));
-        return app.post('/odo/auth/oauth2/token', [
+        app.post('/odo/auth/oauth2/token', [
           passport.authenticate(['basic', 'oauth2-client-password'], {
             session: false
           }), server.token(), server.errorHandler()
+        ]);
+        app.get('/auth/oauth2/authorize', [
+          login.ensureLoggedIn({
+            redirectTo: config.odo.auth.signin
+          }), server.authorization(function(clientID, redirectURI, done) {
+            return db.clients.findByClientId(clientID, function(err, client) {
+              if (err) {
+                return done(err);
+              }
+              return done(null, client, redirectURI);
+            });
+          }), function(req, res) {
+            return res.redirect("/#auth/oauth2/authorise/" + (encodeURIComponent(req.query.client_id)) + "/" + req.oauth2.client.name + "/" + req.oauth2.transactionID);
+          }
+        ]);
+        return app.post('/auth/oauth2/authorize', [
+          login.ensureLoggedIn({
+            redirectTo: config.odo.auth.signin
+          }), server.decision()
         ]);
       };
 

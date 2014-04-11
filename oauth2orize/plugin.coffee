@@ -2,6 +2,7 @@ define [
 	'odo/express/app'
 	'odo/oauth2orize/db'
 	'odo/oauth2orize/server'
+	'odo/config'
 	'oauth2orize'
 	'passport'
 	'passport-local'
@@ -14,6 +15,7 @@ define [
 	app,
 	db,
 	server,
+	config,
 	oauth2orize,
 	passport,
 	passportlocal,
@@ -139,4 +141,29 @@ define [
 				)
 				server.token()
 				server.errorHandler()
+			]
+			
+			# user authorization endpoint
+			#
+			# `authorization` middleware accepts a `validate` callback which is responsible for validating the client making the authorization request. In doing so, is recommended that the `redirectURI` be checked against a registered value, although security requirements may vary accross implementations. Once validated, the `done` callback must be invoked with a `client` instance, as well as the `redirectURI` to which the user will be redirected after an authorization decision is obtained.
+			#
+			# This middleware simply initializes a new authorization transaction. It is the application's responsibility to authenticate the user and render a dialog to obtain their approval (displaying details about the client requesting authorization). We accomplish that here by routing through `ensureLoggedIn()` first, and rendering the `dialog` view. 
+			app.get '/auth/oauth2/authorize', [
+				login.ensureLoggedIn { redirectTo: config.odo.auth.signin }
+				server.authorization (clientID, redirectURI, done) ->
+					db.clients.findByClientId clientID, (err, client) ->
+						return done err if err
+
+						# WARNING: For security purposes, it is highly advisable to check that redirectURI provided by the client matches one registered with the server. For simplicity, this example does not. You have been warned.
+						done null, client, redirectURI
+				(req, res) ->
+					res.redirect "/#auth/oauth2/authorise/#{encodeURIComponent req.query.client_id}/#{req.oauth2.client.name}/#{req.oauth2.transactionID}"
+			]
+			
+			# user decision endpoint
+			#
+			# `decision` middleware processes a user's decision to allow or deny access requested by a client application. Based on the grant type requested by the client, the above grant middleware configured above will be invoked to send a response.
+			app.post '/auth/oauth2/authorize', [
+				login.ensureLoggedIn { redirectTo: config.odo.auth.signin }
+				server.decision()
 			]
