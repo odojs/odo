@@ -74,6 +74,19 @@ define [], () ->
 				profile: command.profile
 			callback null
 			
+			
+		connectOAuth2ToUser: (command, callback) =>
+			@new 'userOAuth2Connected',
+				id: @id,
+				profile: command.profile
+			callback null
+			
+		disconnectOAuth2FromUser: (command, callback) =>
+			@new 'userOAuth2Disconnected',
+				id: @id
+				profile: command.profile
+			callback null
+			
 		
 		createLocalSigninForUser: (command, callback) =>
 			@new 'userHasLocalSignin',

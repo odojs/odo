@@ -16,6 +16,9 @@ define ['odo/messaging/hub', 'odo/messaging/eventstore', 'odo/user/user'], (hub,
 			'connectGoogleToUser'
 			'disconnectGoogleFromUser'
 			
+			'connectOAuth2ToUser'
+			'disconnectOAuth2FromUser'
+			
 			'createLocalSigninForUser'
 			'assignPasswordToUser'
 			'createPasswordResetToken'

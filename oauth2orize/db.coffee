@@ -39,9 +39,9 @@ define [], () ->
 		constructor: ->
 			@clients = [
 				id: '1'
-				name: 'Samplr'
-				clientId: 'abc123'
-				clientSecret: 'ssh-secret'
+				name: 'MetOceanView Forecasting'
+				clientId: 'mov-forecasting'
+				clientSecret: '323e9d9b-a0e7-4bdb-a977-f2d40485f3c5'
 			]
 		
 		find: (id, done) =>
