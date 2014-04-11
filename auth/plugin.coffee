@@ -20,9 +20,13 @@ define [
 			express.use passport.session()
 			
 			passport.serializeUser (user, done) ->
+				console.log 'serializeUser'
+				console.log user
 				done null, user.id
 
 			passport.deserializeUser (id, done) ->
+				console.log 'deserializeUser'
+				console.log id
 				new UserProfile().get id, done
 			
 			app.get '/odo/auth/signout', @signout

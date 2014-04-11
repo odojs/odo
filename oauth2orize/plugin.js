@@ -94,6 +94,8 @@
               if (!user) {
                 return done(null, false);
               }
+              console.log('Completed bearer strategy');
+              console.log(user);
               info = {
                 scope: '*'
               };
@@ -160,7 +162,7 @@
             session: false
           }), server.token(), server.errorHandler()
         ]);
-        app.get('/auth/oauth2/authorize', [
+        app.get('/odo/auth/oauth2/authorize', [
           login.ensureLoggedIn({
             redirectTo: config.odo.auth.signin
           }), server.authorization(function(clientID, redirectURI, done) {
@@ -170,11 +172,11 @@
               }
               return done(null, client, redirectURI);
             });
-          }), function(req, res) {
+          }), function(req, res, next) {
             return res.redirect("/#auth/oauth2/authorise/" + (encodeURIComponent(req.query.client_id)) + "/" + req.oauth2.client.name + "/" + req.oauth2.transactionID);
           }
         ]);
-        return app.post('/auth/oauth2/authorize', [
+        return app.post('/odo/auth/oauth2/authorize', [
           login.ensureLoggedIn({
             redirectTo: config.odo.auth.signin
           }), server.decision()
