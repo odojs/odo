@@ -350,8 +350,6 @@ define [
 					res.redirect '/'
 		
 		get: (username, callback) ->
-			console.log 
-			
 			db.hget "#{config.odo.domain}:localusers", username, (err, data) =>
 				if err?
 					callback err

@@ -69,6 +69,7 @@
           return function(event, cb) {
             return _this.get(event.payload.username, function(err, userid) {
               if (err != null) {
+                console.log('Error in userHasUsername');
                 console.log(err);
                 cb();
                 return;
@@ -97,6 +98,7 @@
             console.log(key);
             return db.multi().set(key, event.payload.id).expire(key, 60 * 60 * 24).exec(function(err, replies) {
               if (err != null) {
+                console.log('Error in userHasPasswordResetToken');
                 console.log(err);
                 cb();
                 return;
@@ -157,6 +159,7 @@
         return this.get(req.query.username, (function(_this) {
           return function(err, userid) {
             if (err != null) {
+              console.log('Error in get from username');
               console.log(err);
               res.send(500, 'Woops');
               return;
@@ -429,7 +432,6 @@
       };
 
       LocalAuthentication.prototype.get = function(username, callback) {
-        console.log;
         return db.hget("" + config.odo.domain + ":localusers", username, (function(_this) {
           return function(err, data) {
             if (err != null) {
