@@ -8,6 +8,15 @@ define ['node-uuid', 'eventstore', 'eventstore.redis', 'odo/messaging/hub'], (uu
 		es.use storage.createStorage()
 	).start()
 	
+	getclassname = (constructor) ->
+		# function classname(param1, param2) { body }
+		constructor
+			.toString()
+			# function classname
+			.split('(')[0]
+			# classname
+			.split(' ')[1]
+	
 	extend: (aggregate) ->
 		aggregate._uncommitted = []
 		
@@ -34,9 +43,16 @@ define ['node-uuid', 'eventstore', 'eventstore.redis', 'odo/messaging/hub'], (uu
 			
 			applyHistoryThenCommand: (command, callback) ->
 				es.getEventStream @id, (err, stream) =>
-					console.log "applying #{stream.events.length} events to #{aggregate.id}"
+					# only use the last section of the guid
+					identifier = aggregate.id.split('-').pop()
+					if @.constructor
+						classname = getclassname @.constructor
+						identifier = "#{classname} #{identifier}"
+					
+					console.log "#{identifier} applying #{stream.events.length} events"
+						
 					@loadFromHistory stream.events
-					console.log "applying #{command.command}"
+					console.log "#{identifier} calling #{command.command}"
 					@[command.command] command.payload, (err) =>
 						if err
 							console.log err
