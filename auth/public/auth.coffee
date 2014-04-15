@@ -9,6 +9,8 @@
 		else
 			Q($.get('/odo/auth/user'))
 				.then((data) =>
+					if !data? or data is ''
+						return dfd.reject()
 					@cache = data
 					dfd.resolve data
 				)

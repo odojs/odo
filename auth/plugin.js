@@ -63,10 +63,6 @@
       };
 
       Auth.prototype.user = function(req, res) {
-        if (req.user == null) {
-          res.send(403, 'authentication required');
-          return;
-        }
         return res.send(req.user);
       };
 

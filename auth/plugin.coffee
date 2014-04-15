@@ -56,10 +56,6 @@ define [
 			res.redirect '/'
 		
 		user: (req, res) ->
-			if !req.user?
-				res.send 403, 'authentication required'
-				return
-			
 			res.send req.user
 		
 		forgot: (req, res) =>
