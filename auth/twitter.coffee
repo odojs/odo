@@ -58,7 +58,7 @@ define [
 					return
 				
 				if req.user? and userid? and req.user.id isnt userid
-					done null, false, { message: 'This Twitter account is connected to another Blackbeard account' }
+					done null, false, { message: 'This Twitter account is connected to another account' }
 					return
 				
 				if req.user?

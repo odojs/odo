@@ -82,7 +82,7 @@
             }
             if ((req.user != null) && (userid != null) && req.user.id !== userid) {
               done(null, false, {
-                message: 'This MetOcean account is connected to another Blackbeard account'
+                message: 'This MetOcean account is connected to another account'
               });
               return;
             }
