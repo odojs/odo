@@ -1,7 +1,7 @@
 define [], () ->
 	class Plugins
-		constructor: (@plugins) ->
-			# construct plugins
+		constructor: (plugins) ->
+			@plugins = plugins
 			@plugins = @plugins.map (plugin) ->
 				if typeof(plugin) is 'function'
 					return new plugin
