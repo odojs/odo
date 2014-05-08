@@ -36,11 +36,11 @@ define ['knockout', 'plugins/router', 'durandal/app'], (ko, router, app) ->
 	router.enable = ->
 		isRouterEnabled = yes
 	
-	previousInstruction = null
+	router.currentInstruction = null
 	router.guardRoute = (instance, instruction) ->
-		if previousInstruction? and !isRouterEnabled
-			return previousInstruction.fragment
+		if router.currentInstruction? and !isRouterEnabled
+			return router.currentInstruction.fragment
 		
-		previousInstruction = instruction
+		router.currentInstruction = instruction
 		
 		yes
