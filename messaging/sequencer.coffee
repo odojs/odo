@@ -3,6 +3,13 @@ define [], ->
 		constructor: ->
 			@_queue = []
 			@_inprogress = no
+			@_last = null
+			
+			setInterval(=>
+				if @_inprogress
+					console.log "Waiting for"
+					console.log @_last
+			, 1000)
 			
 		_next: =>
 			@_inprogress = yes
@@ -13,12 +20,15 @@ define [], ->
 				return
 			
 			# pull off the next item and give it a callback
-			action = @_queue.shift()
-			action @_next
+			item = @_queue.shift()
+			@_last = item.event
+			item.action @_next
 		
-		push: (action) =>
+		push: (event, action) =>
 			# add another item to the queue
-			@_queue.push action
+			@_queue.push
+				event: event
+				action: action
 			
 			# if we aren't running, start running
 			if !@_inprogress

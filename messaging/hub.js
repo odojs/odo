@@ -90,7 +90,7 @@
     eventlistener = redis.createClient();
     eventsequencer = new Sequencer();
     ensequence = function(event, listener) {
-      return eventsequencer.push(function(cb) {
+      return eventsequencer.push(event, function(cb) {
         return listener(event, cb);
       });
     };

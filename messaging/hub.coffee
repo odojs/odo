@@ -88,7 +88,7 @@ define ['redis', 'odo/config', 'odo/messaging/sequencer'], (redis, config, Seque
 	eventlistener = redis.createClient()
 	eventsequencer = new Sequencer()
 	ensequence = (event, listener) ->
-		eventsequencer.push (cb) ->
+		eventsequencer.push event, (cb) ->
 			listener event, cb
 	eventlistener.on 'message', (channel, event) ->
 		event = JSON.parse event

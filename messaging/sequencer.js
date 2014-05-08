@@ -10,21 +10,34 @@
         this._next = __bind(this._next, this);
         this._queue = [];
         this._inprogress = false;
+        this._last = null;
+        setInterval((function(_this) {
+          return function() {
+            if (_this._inprogress) {
+              console.log("Waiting for");
+              return console.log(_this._last);
+            }
+          };
+        })(this), 1000);
       }
 
       Sequencer.prototype._next = function() {
-        var action;
+        var item;
         this._inprogress = true;
         if (this._queue.length === 0) {
           this._inprogress = false;
           return;
         }
-        action = this._queue.shift();
-        return action(this._next);
+        item = this._queue.shift();
+        this._last = item.event;
+        return item.action(this._next);
       };
 
-      Sequencer.prototype.push = function(action) {
-        this._queue.push(action);
+      Sequencer.prototype.push = function(event, action) {
+        this._queue.push({
+          event: event,
+          action: action
+        });
         if (!this._inprogress) {
           return this._next();
         }
