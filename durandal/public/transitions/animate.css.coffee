@@ -21,6 +21,7 @@ define ['durandal/system', 'jquery', 'q'], (system, $, Q) ->
 		
 		outTransition: =>
 			$previousView = $ @settings.activeView
+			$previousView.addClass 'transition'
 			$previousView.addClass 'animated'
 			$previousView.addClass @settings.outAnimation
 			
@@ -32,9 +33,9 @@ define ['durandal/system', 'jquery', 'q'], (system, $, Q) ->
 		inTransition: =>
 			@settings.triggerAttach()
 			$newView = $(@settings.child)
-				.removeClass([@settings.outAnimation, @settings.inAnimation])
-				.addClass('animated')
-			$newView.css 'display', ''
+			$newView.addClass 'transition'
+			$newView.addClass 'animated'
+			$newView.show()
 			$newView.addClass @settings.inAnimation
 			
 			# scroll to the top of the element for a transition
@@ -44,7 +45,10 @@ define ['durandal/system', 'jquery', 'q'], (system, $, Q) ->
 				}, 300)
 
 			setTimeout(=>
-				$newView.removeClass(@settings.inAnimation + ' ' + @settings.outAnimation + ' animated')
+				$newView.removeClass @settings.inAnimation
+				$newView.removeClass @settings.outAnimation
+				$newView.removeClass 'transition'
+				$newView.removeClass 'animated'
 				@endTransition()
 				$newView.find('[autofocus],.autofocus').first().focus()
 			, 300)

@@ -42,6 +42,7 @@
       Animate.prototype.outTransition = function() {
         var $previousView;
         $previousView = $(this.settings.activeView);
+        $previousView.addClass('transition');
         $previousView.addClass('animated');
         $previousView.addClass(this.settings.outAnimation);
         return setTimeout((function(_this) {
@@ -55,8 +56,10 @@
       Animate.prototype.inTransition = function() {
         var $newView;
         this.settings.triggerAttach();
-        $newView = $(this.settings.child).removeClass([this.settings.outAnimation, this.settings.inAnimation]).addClass('animated');
-        $newView.css('display', '');
+        $newView = $(this.settings.child);
+        $newView.addClass('transition');
+        $newView.addClass('animated');
+        $newView.show();
         $newView.addClass(this.settings.inAnimation);
         if ((this.settings.scrolltop != null) && $(window).scrollTop() > $newView.offset().top) {
           $('html, body').animate({
@@ -65,7 +68,10 @@
         }
         return setTimeout((function(_this) {
           return function() {
-            $newView.removeClass(_this.settings.inAnimation + ' ' + _this.settings.outAnimation + ' animated');
+            $newView.removeClass(_this.settings.inAnimation);
+            $newView.removeClass(_this.settings.outAnimation);
+            $newView.removeClass('transition');
+            $newView.removeClass('animated');
             _this.endTransition();
             return $newView.find('[autofocus],.autofocus').first().focus();
           };
