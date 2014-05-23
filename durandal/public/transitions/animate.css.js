@@ -47,6 +47,7 @@
         $previousView.addClass(this.settings.outAnimation);
         return setTimeout((function(_this) {
           return function() {
+            $previousView.hide();
             _this.inTransition();
             return _this.endTransition();
           };

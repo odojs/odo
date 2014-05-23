@@ -26,6 +26,7 @@ define ['durandal/system', 'jquery', 'q'], (system, $, Q) ->
 			$previousView.addClass @settings.outAnimation
 			
 			setTimeout(=>
+				$previousView.hide()
 				@inTransition()
 				@endTransition()
 			, 200)
