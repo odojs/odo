@@ -29,6 +29,12 @@ define [
 				@app.use express.cookieSession
 					key: @app.get 'session key'
 					secret: @app.get 'session secret'
+				if @app.get('allowed cross domains')?
+					@app.use (req, res, next) =>
+						res.header 'Access-Control-Allow-Origin', @app.get('allowed cross domains')
+						res.header 'Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE'
+						res.header 'Access-Control-Allow-Headers', 'Content-Type'
+						next()
 				
 				@app.route = (source, target) =>
 					@app.use source, express.static target

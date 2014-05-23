@@ -33,6 +33,14 @@
               key: _this.app.get('session key'),
               secret: _this.app.get('session secret')
             }));
+            if (_this.app.get('allowed cross domains') != null) {
+              _this.app.use(function(req, res, next) {
+                res.header('Access-Control-Allow-Origin', _this.app.get('allowed cross domains'));
+                res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+                res.header('Access-Control-Allow-Headers', 'Content-Type');
+                return next();
+              });
+            }
             _this.app.route = function(source, target) {
               return _this.app.use(source, express["static"](target));
             };
