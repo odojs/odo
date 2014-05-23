@@ -44,3 +44,15 @@ define ['knockout', 'plugins/router', 'durandal/app'], (ko, router, app) ->
 		router.currentInstruction = instruction
 		
 		yes
+	
+	oldNavigate = router.navigate
+	
+	router.currentTransition = null
+	router.transition = (fragment, transition) ->
+		console.log 'Setting tranisition'
+		router.currentTransition = transition
+		oldNavigate fragment
+	
+	router.on 'router:navigation:composition-complete', ->
+		console.log 'Clearing tranisition'
+		router.currentTransition = null
