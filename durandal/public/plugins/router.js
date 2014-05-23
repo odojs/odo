@@ -51,12 +51,10 @@
     oldNavigate = router.navigate;
     router.currentTransition = null;
     router.transition = function(fragment, transition) {
-      console.log('Setting tranisition');
       router.currentTransition = transition;
       return oldNavigate(fragment);
     };
     return router.on('router:navigation:composition-complete', function() {
-      console.log('Clearing tranisition');
       return router.currentTransition = null;
     });
   });

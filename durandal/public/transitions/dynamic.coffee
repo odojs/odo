@@ -1,19 +1,10 @@
-define [
-	'durandal/system'
-	'plugins/router'
-	'q'
-	'./animate.css'
-], (system, router, Q, Animate) ->
-	
-	
-	result = (context) ->
-		defered = Q.defer()
+define ['plugins/router', 'q'], (router, Q) ->
+	(context) ->
+		dfd = Q.defer()
 		if router.currentTransition?
-			console.log 'We have a transition ' + router.currentTransition
 			requirejs ['transitions/' + router.currentTransition], (transition) ->
-				transition(context).then defered.resolve()
+				transition(context).then dfd.resolve()
 		else
-			console.log 'No transition for this one'
 			context.scrolltop = yes if !context.scrolltop?
 			$(context.activeView).hide() if context.activeView?
 			if context.child?
@@ -25,11 +16,5 @@ define [
 					$('html, body').css({ scrollTop: view.offset().top })
 					
 				view.find('[autofocus],.autofocus').first().focus()
-			defered.resolve()
-		defered.promise
-		
-		#system.extend context, {
-		#	inAnimation: 'fadeInDown'
-		#	outAnimation: 'fadeOutDown'
-		#}
-		#new Animate().create context
+			dfd.resolve()
+		dfd.promise
