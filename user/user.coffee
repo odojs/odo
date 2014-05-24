@@ -87,6 +87,19 @@ define [], () ->
 				profile: command.profile
 			callback null
 			
+			
+		connectMetOceanToUser: (command, callback) =>
+			@new 'userMetOceanConnected',
+				id: @id,
+				profile: command.profile
+			callback null
+			
+		disconnectMetOceanFromUser: (command, callback) =>
+			@new 'userMetOceanDisconnected',
+				id: @id
+				profile: command.profile
+			callback null
+			
 		
 		createLocalSigninForUser: (command, callback) =>
 			@new 'userHasLocalSignin',

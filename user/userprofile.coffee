@@ -78,6 +78,21 @@ define ['redis', 'odo/config', 'odo/messaging/hub', 'js-md5'], (redis, config, h
 					user
 				, cb
 				
+			
+			hub.receive 'userMetOceanConnected', (event, cb) =>
+				@addOrRemoveValues event, (user) =>
+					user.metocean =
+						id: event.payload.profile.id
+						profile: event.payload.profile
+					user
+				, cb
+				
+			hub.receive 'userMetOceanDisconnected', (event, cb) =>
+				@addOrRemoveValues event, (user) =>
+					user.metocean = null
+					user
+				, cb
+				
 				
 			hub.receive 'userHasLocalSignin', (event, cb) =>
 				@addOrRemoveValues event, (user) =>

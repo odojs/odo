@@ -10,7 +10,7 @@
         this.defaultHandler = __bind(this.defaultHandler, this);
       }
 
-      UserCommands.prototype.commands = ['startTrackingUser', 'assignEmailAddressToUser', 'createVerifyEmailAddressToken', 'assignDisplayNameToUser', 'assignUsernameToUser', 'connectTwitterToUser', 'disconnectTwitterFromUser', 'connectFacebookToUser', 'disconnectFacebookFromUser', 'connectGoogleToUser', 'disconnectGoogleFromUser', 'connectOAuth2ToUser', 'disconnectOAuth2FromUser', 'createLocalSigninForUser', 'assignPasswordToUser', 'createPasswordResetToken', 'removeLocalSigninForUser'];
+      UserCommands.prototype.commands = ['startTrackingUser', 'assignEmailAddressToUser', 'createVerifyEmailAddressToken', 'assignDisplayNameToUser', 'assignUsernameToUser', 'connectTwitterToUser', 'disconnectTwitterFromUser', 'connectFacebookToUser', 'disconnectFacebookFromUser', 'connectGoogleToUser', 'disconnectGoogleFromUser', 'connectOAuth2ToUser', 'disconnectOAuth2FromUser', 'connectMetOceanToUser', 'disconnectMetOceanFromUser', 'createLocalSigninForUser', 'assignPasswordToUser', 'createPasswordResetToken', 'removeLocalSigninForUser'];
 
       UserCommands.prototype.defaultHandler = function(command) {
         var user;

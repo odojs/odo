@@ -105,6 +105,25 @@
             }, cb);
           };
         })(this));
+        hub.receive('userMetOceanConnected', (function(_this) {
+          return function(event, cb) {
+            return _this.addOrRemoveValues(event, function(user) {
+              user.metocean = {
+                id: event.payload.profile.id,
+                profile: event.payload.profile
+              };
+              return user;
+            }, cb);
+          };
+        })(this));
+        hub.receive('userMetOceanDisconnected', (function(_this) {
+          return function(event, cb) {
+            return _this.addOrRemoveValues(event, function(user) {
+              user.metocean = null;
+              return user;
+            }, cb);
+          };
+        })(this));
         hub.receive('userHasLocalSignin', (function(_this) {
           return function(event, cb) {
             return _this.addOrRemoveValues(event, function(user) {

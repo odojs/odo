@@ -10,6 +10,8 @@
         this.createPasswordResetToken = __bind(this.createPasswordResetToken, this);
         this.assignPasswordToUser = __bind(this.assignPasswordToUser, this);
         this.createLocalSigninForUser = __bind(this.createLocalSigninForUser, this);
+        this.disconnectMetOceanFromUser = __bind(this.disconnectMetOceanFromUser, this);
+        this.connectMetOceanToUser = __bind(this.connectMetOceanToUser, this);
         this.disconnectOAuth2FromUser = __bind(this.disconnectOAuth2FromUser, this);
         this.connectOAuth2ToUser = __bind(this.connectOAuth2ToUser, this);
         this.disconnectGoogleFromUser = __bind(this.disconnectGoogleFromUser, this);
@@ -125,6 +127,22 @@
 
       User.prototype.disconnectOAuth2FromUser = function(command, callback) {
         this["new"]('userOAuth2Disconnected', {
+          id: this.id,
+          profile: command.profile
+        });
+        return callback(null);
+      };
+
+      User.prototype.connectMetOceanToUser = function(command, callback) {
+        this["new"]('userMetOceanConnected', {
+          id: this.id,
+          profile: command.profile
+        });
+        return callback(null);
+      };
+
+      User.prototype.disconnectMetOceanFromUser = function(command, callback) {
+        this["new"]('userMetOceanDisconnected', {
           id: this.id,
           profile: command.profile
         });
