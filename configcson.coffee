@@ -36,6 +36,15 @@ define ['module', 'fs', 'path', 'cson'], (module, fs, path, CSON) ->
 			auth:
 				signout: yes
 	
+	copy = (source, target) ->
+		for key, value of source
+			if typeof value is 'object'
+				target[key] = {} if !target[key]?
+				copy value, target[key]
+			else
+				target[key] = value
+			
+	
 	# Recurse through an object looking for equivalent named environment variables
 	# e.g if the object is 'passport: google: { realm: yes, host: yes }''
 	# Look for: PASSPORT_GOOGLE_REALM and PASSPORT_GOOGLE_HOST variables in the environment and put them in the right place in 'result'
@@ -52,10 +61,20 @@ define ['module', 'fs', 'path', 'cson'], (module, fs, path, CSON) ->
 	
 	result = CSON.parseFileSync path.join path.dirname(module.uri), '../../config.cson'
 	
+	if process.env.ODO_CONFIG?
+		odoconfig = CSON.parseSync process.env.ODO_CONFIG
+		copy odoconfig, result
+	
+	envdomain = result.odo.domain.toUpperCase().replace(/[ -]/g, '_')
+	
+	if process.env["#{envdomain}_ODO_CONFIG"]?
+		domainodoconfig = CSON.parseSync process.env["#{envdomain}_ODO_CONFIG"]
+		copy domainodoconfig, result
+	
 	# Look for global configurations
 	parse '', config, result
 	
 	# Also look for application specific overrides
-	parse "#{result.odo.domain.toUpperCase().replace(/[ -]/g, '_')}_", config, result
+	parse "#{envdomain}_", config, result
 	
 	result
