@@ -10,4 +10,5 @@ define ['odo/express/recorder'], (Recorder) ->
 	
 	new Configure [
 		'route'
+		'use'
 	]
