@@ -53,6 +53,7 @@ define [
 						
 		signout: (req, res) ->
 			req.logout()
+			return res.redirect config.odo.auth.signout if config.odo.auth.signout?
 			res.redirect '/'
 		
 		user: (req, res) ->

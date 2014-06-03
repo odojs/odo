@@ -31,6 +31,10 @@ define ['module', 'fs', 'path', 'cson'], (module, fs, path, CSON) ->
 
 		mandrill:
 			'api key': yes
+		
+		odo:
+			auth:
+				signout: yes
 	
 	# Recurse through an object looking for equivalent named environment variables
 	# e.g if the object is 'passport: google: { realm: yes, host: yes }''

@@ -34,6 +34,11 @@
       },
       mandrill: {
         'api key': true
+      },
+      odo: {
+        auth: {
+          signout: true
+        }
       }
     };
     parse = function(prefix, node, result) {

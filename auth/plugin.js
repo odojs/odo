@@ -59,6 +59,9 @@
 
       Auth.prototype.signout = function(req, res) {
         req.logout();
+        if (config.odo.auth.signout != null) {
+          return res.redirect(config.odo.auth.signout);
+        }
         return res.redirect('/');
       };
 
