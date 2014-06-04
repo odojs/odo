@@ -47,7 +47,9 @@ define [
 		start: =>
 			# Put the server on app for extensibility
 			@app.server = http.createServer @app
-			@app.server.listen(process.env.PORT || 8080)
+			port = @app.get('port') || process.env.PORT || 8080
+			console.log "Listening on port #{port}..."
+			@app.server.listen port
 
 			# Initialise plugins
 			_app.play @app

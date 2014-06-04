@@ -10,7 +10,7 @@
       }
 
       Express.prototype.web = function() {
-        var key, value, _ref;
+        var key, port, value, _ref;
         this.app = express();
         _ref = config.express;
         for (key in _ref) {
@@ -54,7 +54,9 @@
           };
         })(this));
         this.app.server = http.createServer(this.app);
-        this.app.server.listen(process.env.PORT || 8080);
+        port = this.app.get('port') || process.env.PORT || 8080;
+        console.log("Listening on port " + port + "...");
+        this.app.server.listen(port);
         return _app.play(this.app);
       };
 

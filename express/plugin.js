@@ -45,8 +45,11 @@
       }
 
       Express.prototype.start = function() {
+        var port;
         this.app.server = http.createServer(this.app);
-        this.app.server.listen(process.env.PORT || 8080);
+        port = this.app.get('port') || process.env.PORT || 8080;
+        console.log("Listening on port " + port + "...");
+        this.app.server.listen(port);
         return _app.play(this.app);
       };
 
