@@ -4,7 +4,7 @@
 
   define(['passport', 'passport-google', 'odo/config', 'odo/messaging/hub', 'node-uuid', 'redis', 'odo/express/app'], function(passport, passportgoogle, config, hub, uuid, redis, app) {
     var GoogleAuthentication, db;
-    db = redis.createClient();
+    db = redis.createClient(config.redis.port, config.redis.host);
     return GoogleAuthentication = (function() {
       function GoogleAuthentication() {
         this.signin = __bind(this.signin, this);

@@ -4,7 +4,7 @@
 
   define(['passport', 'passport-local', 'odo/config', 'odo/messaging/hub', 'node-uuid', 'redis', 'odo/user/userprofile', 'odo/express/app'], function(passport, passportlocal, config, hub, uuid, redis, UserProfile, app) {
     var LocalAuthentication, db;
-    db = redis.createClient();
+    db = redis.createClient(config.redis.port, config.redis.host);
     return LocalAuthentication = (function() {
       function LocalAuthentication() {
         this.signup = __bind(this.signup, this);

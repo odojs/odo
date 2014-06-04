@@ -4,7 +4,7 @@
 
   define(['passport', 'passport-facebook', 'odo/config', 'odo/messaging/hub', 'node-uuid', 'redis', 'odo/express/app'], function(passport, passportfacebook, config, hub, uuid, redis, app) {
     var FacebookAuthentication, db;
-    db = redis.createClient();
+    db = redis.createClient(config.redis.port, config.redis.host);
     return FacebookAuthentication = (function() {
       function FacebookAuthentication() {
         this.signin = __bind(this.signin, this);

@@ -7,7 +7,7 @@ define [
 	'redis'
 	'odo/express/app'
 ], (passport, passportgoogle, config, hub, uuid, redis, app) ->
-	db = redis.createClient()
+	db = redis.createClient config.redis.port, config.redis.host
 	
 	class GoogleAuthentication
 		web: =>

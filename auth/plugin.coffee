@@ -10,7 +10,7 @@ define [
 	'odo/express/express'
 	'odo/express/app'
 ], (module, passport, config, redis, UserProfile, hub, uuid, configure, express, app) ->
-	db = redis.createClient()
+	db = redis.createClient config.redis.port, config.redis.host
 	
 	class Auth
 		web: =>

@@ -8,7 +8,7 @@ define [
 	'odo/user/userprofile'
 	'odo/express/app'
 ], (passport, passportlocal, config, hub, uuid, redis, UserProfile, app) ->
-	db = redis.createClient()
+	db = redis.createClient config.redis.port, config.redis.host
 	
 	class LocalAuthentication
 		web: =>

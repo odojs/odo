@@ -2,8 +2,8 @@
 (function() {
   define(['redis', 'odo/config', 'odo/messaging/sequencer'], function(redis, config, Sequencer) {
     var commandreceiver, commandsender, ensequence, eventlistener, eventpublisher, eventsequencer, getfilename, handlers, listeners, result, subscriptions;
-    commandsender = redis.createClient();
-    eventpublisher = redis.createClient();
+    commandsender = redis.createClient(config.redis.port, config.redis.host);
+    eventpublisher = redis.createClient(config.redis.port, config.redis.host);
     subscriptions = [];
     listeners = {};
     handlers = {};
@@ -74,7 +74,7 @@
         return subscriptions.push(callback);
       }
     };
-    commandreceiver = redis.createClient();
+    commandreceiver = redis.createClient(config.redis.port, config.redis.host);
     commandreceiver.on('message', function(channel, command) {
       var binding;
       command = JSON.parse(command);
@@ -87,7 +87,7 @@
     });
     console.log("Subscribing to " + config.odo.domain + ".commands redis channel for commands");
     commandreceiver.subscribe("" + config.odo.domain + ".commands");
-    eventlistener = redis.createClient();
+    eventlistener = redis.createClient(config.redis.port, config.redis.host);
     eventsequencer = new Sequencer();
     ensequence = function(event, listener) {
       return eventsequencer.push(event, function(cb) {

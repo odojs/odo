@@ -4,7 +4,7 @@
 
   define(['passport', 'passport-metocean', 'odo/config', 'odo/messaging/hub', 'node-uuid', 'redis', 'odo/express/app'], function(passport, passportmetocean, config, hub, uuid, redis, app) {
     var MetOceanAuthentication, db;
-    db = redis.createClient();
+    db = redis.createClient(config.redis.port, config.redis.host);
     return MetOceanAuthentication = (function() {
       function MetOceanAuthentication() {
         this.signin = __bind(this.signin, this);

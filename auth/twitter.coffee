@@ -7,7 +7,7 @@ define [
 	'redis'
 	'odo/express/app'
 ], (passport, passporttwitter, config, hub, uuid, redis, app) ->
-	db = redis.createClient()
+	db = redis.createClient config.redis.port, config.redis.host
 	
 	class TwitterAuthentication
 		web: =>

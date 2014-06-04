@@ -4,7 +4,7 @@
 
   define(['redis', 'odo/config', 'odo/messaging/hub', 'js-md5'], function(redis, config, hub, md5) {
     var UserProfile, db;
-    db = redis.createClient();
+    db = redis.createClient(config.redis.port, config.redis.host);
     return UserProfile = (function() {
       function UserProfile() {
         this.addOrRemoveValues = __bind(this.addOrRemoveValues, this);

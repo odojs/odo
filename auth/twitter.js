@@ -4,7 +4,7 @@
 
   define(['passport', 'passport-twitter', 'odo/config', 'odo/messaging/hub', 'node-uuid', 'redis', 'odo/express/app'], function(passport, passporttwitter, config, hub, uuid, redis, app) {
     var TwitterAuthentication, db;
-    db = redis.createClient();
+    db = redis.createClient(config.redis.port, config.redis.host);
     return TwitterAuthentication = (function() {
       function TwitterAuthentication() {
         this.signin = __bind(this.signin, this);

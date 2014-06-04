@@ -1,7 +1,7 @@
 define ['redis', 'odo/config', 'odo/messaging/sequencer'], (redis, config, Sequencer) ->
 
-	commandsender = redis.createClient()
-	eventpublisher = redis.createClient()
+	commandsender = redis.createClient config.redis.port, config.redis.host
+	eventpublisher = redis.createClient config.redis.port, config.redis.host
 	
 	subscriptions = []
 	listeners = {}
@@ -71,7 +71,7 @@ define ['redis', 'odo/config', 'odo/messaging/sequencer'], (redis, config, Seque
 			console.log "Subscribing to the eventstream"
 			subscriptions.push callback
 	
-	commandreceiver = redis.createClient()
+	commandreceiver = redis.createClient config.redis.port, config.redis.host
 	commandreceiver.on 'message', (channel, command) ->
 		command = JSON.parse command
 					
@@ -85,7 +85,7 @@ define ['redis', 'odo/config', 'odo/messaging/sequencer'], (redis, config, Seque
 	commandreceiver.subscribe "#{config.odo.domain}.commands"
 
 	# listen to events from redis and call each callback from subscribers
-	eventlistener = redis.createClient()
+	eventlistener = redis.createClient config.redis.port, config.redis.host
 	eventsequencer = new Sequencer()
 	ensequence = (event, listener) ->
 		eventsequencer.push event, (cb) ->

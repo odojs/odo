@@ -1,5 +1,5 @@
 define ['redis', 'odo/config', 'odo/messaging/hub', 'js-md5'], (redis, config, hub, md5) ->
-	db = redis.createClient()
+	db = redis.createClient config.redis.port, config.redis.host
 	
 	class UserProfile
 		projection: =>
