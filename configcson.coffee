@@ -1,11 +1,13 @@
 define ['module', 'fs', 'path', 'cson'], (module, fs, path, CSON) ->
 	# The configuration structure we are expecting in a config.cson file or as environment variables
-	config =
+	# Used to lookup specific overrides
+	template =
 		express:
 			'session key': yes
 			'cookie secret': yes
 			'session secret': yes
 			'allowed cross domains': yes
+			'port': yes
 			
 		passport:
 			twitter:
@@ -36,6 +38,7 @@ define ['module', 'fs', 'path', 'cson'], (module, fs, path, CSON) ->
 			auth:
 				signout: yes
 	
+	# Copy all of the properties on source to target, recurse if an object
 	copy = (source, target) ->
 		for key, value of source
 			if typeof value is 'object'
@@ -49,6 +52,8 @@ define ['module', 'fs', 'path', 'cson'], (module, fs, path, CSON) ->
 	# e.g if the object is 'passport: google: { realm: yes, host: yes }''
 	# Look for: PASSPORT_GOOGLE_REALM and PASSPORT_GOOGLE_HOST variables in the environment and put them in the right place in 'result'
 	parse = (prefix, node, result) ->
+		result = {} if !result?
+		
 		for key, value of node
 			envkey = "#{prefix}#{key.toUpperCase().replace(/[ -]/g, '_')}"
 			
@@ -57,24 +62,41 @@ define ['module', 'fs', 'path', 'cson'], (module, fs, path, CSON) ->
 				parse "#{envkey}_", value, result[key]
 				
 			else if value is yes and process.env[envkey]?
+				console.log "Reading #{envkey}"
 				result[key] = process.env[envkey]
+		
+		result
 	
-	result = CSON.parseFileSync path.join path.dirname(module.uri), '../../config.cson'
+	localfile = CSON.parseFileSync path.join path.dirname(module.uri), '../../config.cson'
 	
-	if process.env.ODO_CONFIG?
-		odoconfig = CSON.parseSync process.env.ODO_CONFIG
-		copy odoconfig, result
+	envdomain = localfile.odo.domain.toUpperCase().replace(/[ -]/g, '_')
 	
-	envdomain = result.odo.domain.toUpperCase().replace(/[ -]/g, '_')
-	
-	if process.env["#{envdomain}_ODO_CONFIG"]?
-		domainodoconfig = CSON.parseSync process.env["#{envdomain}_ODO_CONFIG"]
-		copy domainodoconfig, result
+	# Look for the global configuration blob
+	globalenvvar = 'ODO_CONFIG'
+	globalenvblob = {}
+	if process.env[globalenvvar]?
+		console.log "Reading #{globalenvvar}"
+		globalenvblob = CSON.parseSync process.env[globalenvvar]
 	
 	# Look for global configurations
-	parse '', config, result
+	globalenv = parse '', template
 	
-	# Also look for application specific overrides
-	parse "#{envdomain}_", config, result
+	# Look for the domain specific configuration blob
+	domainenvvar = "#{envdomain}_ODO_CONFIG"
+	domainenvblob = {}
+	if process.env[domainenvvar]?
+		console.log "Reading #{domainenvvar}"
+		domainenvblob = CSON.parseSync process.env[domainenvvar]
 	
+	# Also look for domain specific overrides
+	domainenv = parse "#{envdomain}_", template
+	
+	# Merge down the configuration objects in order
+	result = localfile
+	copy object, result for object in [
+		globalenvblob
+		globalenv
+		domainenvblob
+		domainenv
+	]
 	result
