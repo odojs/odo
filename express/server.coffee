@@ -53,7 +53,7 @@ define [
 			# Put the server on app for extensibility
 			@app.server = http.createServer @app
 			port = @app.get('port') || process.env.PORT || 8080
-			console.log "Listening on port #{port}..."
+			console.log "Express listening on port #{port}..."
 			@app.server.listen port
 
 			# Initialise plugins
