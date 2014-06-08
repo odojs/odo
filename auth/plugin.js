@@ -17,8 +17,8 @@
 
       Auth.prototype.web = function() {
         configure.route('/odo', configure.modulepath(module.uri) + '/public');
-        express.use(passport.initialize());
-        express.use(passport.session());
+        configure.use(passport.initialize());
+        configure.use(passport.session());
         passport.serializeUser(function(user, done) {
           return done(null, user.id);
         });
