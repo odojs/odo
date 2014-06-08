@@ -1,19 +1,18 @@
 define ['durandal/system', 'q'], (system, Q) ->
 	# use Q promises internally in durandal
 	system.defer = (action) ->
-		deferred = Q.defer()
-		action.call deferred, deferred
-		promise = deferred.promise
-		deferred.promise = ->
+		dfd = Q.defer()
+		action.call dfd, dfd
+		promise = dfd.promise
+		dfd.promise = ->
 			promise
 
-		deferred
+		dfd
 	
 	# a version of require that returns a promise immediately
 	window.requireQ = (deps) ->
 		dfd = Q.defer()
-		requirejs deps, ->
-			dfd.resolve arguments
+		requirejs deps, -> dfd.resolve arguments
 		dfd.promise
 	
 	originalDefine = window.define
@@ -63,21 +62,19 @@ define ['durandal/system', 'q'], (system, Q) ->
 			arrayRequest = true
 		else
 			deps = Array::slice.call arguments, 0
-		@defer((dfd) ->
-			requireQ(deps)
-				.spread(->
-					args = arguments
-					setTimeout (->
-						if args.length > 1 or arrayRequest
-							dfd.resolve Array::slice.call args, 0
-						else
-							dfd.resolve args[0]
-					), 1
-				)
-				.fail (err) ->
-					dfd.reject err
+		
+		dfd = Q.defer()
+		requirejs deps, ->
+			Q.spread arguments, ->
+				args = arguments
+				setTimeout (->
+					if args.length > 1 or arrayRequest
+						dfd.resolve Array::slice.call args, 0
+					else
+						dfd.resolve args[0]
+				), 1
 
-		).promise()
+		dfd.promise
 	
 	# can set module id on a promised object - it simply waits
 	originalSetModuleId = system.setModuleId

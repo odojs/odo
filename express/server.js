@@ -55,7 +55,7 @@
         })(this));
         this.app.server = http.createServer(this.app);
         port = this.app.get('port') || process.env.PORT || 8080;
-        console.log("Listening on port " + port + "...");
+        console.log("Express listening on port " + port + "...");
         this.app.server.listen(port);
         return _app.play(this.app);
       };
