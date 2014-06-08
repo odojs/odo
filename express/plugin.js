@@ -6,11 +6,8 @@
     var Express;
     return Express = (function() {
       function Express() {
-        this.web = __bind(this.web, this);
-      }
-
-      Express.prototype.web = function() {
-        var key, port, value, _ref;
+        this.start = __bind(this.start, this);
+        var key, value, _ref;
         this.app = express();
         _ref = config.express;
         for (key in _ref) {
@@ -33,14 +30,6 @@
               key: _this.app.get('session key'),
               secret: _this.app.get('session secret')
             }));
-            if (_this.app.get('allowed cross domains') != null) {
-              _this.app.use(function(req, res, next) {
-                res.header('Access-Control-Allow-Origin', _this.app.get('allowed cross domains'));
-                res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-                res.header('Access-Control-Allow-Headers', 'Content-Type');
-                return next();
-              });
-            }
             _this.app.route = function(source, target) {
               return _this.app.use(source, express["static"](target));
             };
@@ -53,6 +42,10 @@
             }));
           };
         })(this));
+      }
+
+      Express.prototype.start = function() {
+        var port;
         this.app.server = http.createServer(this.app);
         port = this.app.get('port') || process.env.PORT || 8080;
         console.log("Listening on port " + port + "...");

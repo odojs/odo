@@ -1,20 +1,23 @@
 define [], () ->
 	class Plugins
-		contexts: [
-			'web'
-			'domain'
-			'projection'
-			'api'
-		]
-		
 		constructor: (plugins) ->
 			@plugins = plugins
 			@plugins = @plugins.map (plugin) ->
-				return new plugin if typeof(plugin) is 'function'
+				if typeof(plugin) is 'function'
+					return new plugin
 				plugin
-			
-			@[context] = @context context for context in @contexts
 		
-		context: (name) => =>
+		web: =>
 			for plugin in @plugins
-				plugin[name]() if plugin[name]?
+				if plugin.web?
+					plugin.web()
+		
+		domain: =>
+			for plugin in @plugins
+				if plugin.domain?
+					plugin.domain()
+		
+		projection: =>
+			for plugin in @plugins
+				if plugin.projection?
+					plugin.projection()

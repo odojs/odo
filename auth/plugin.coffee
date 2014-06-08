@@ -16,8 +16,8 @@ define [
 		web: =>
 			configure.route '/odo', configure.modulepath(module.uri) + '/public'
 			
-			configure.use passport.initialize()
-			configure.use passport.session()
+			express.use passport.initialize()
+			express.use passport.session()
 			
 			passport.serializeUser (user, done) ->
 				done null, user.id

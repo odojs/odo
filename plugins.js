@@ -5,11 +5,10 @@
   define([], function() {
     var Plugins;
     return Plugins = (function() {
-      Plugins.prototype.contexts = ['web', 'domain', 'projection', 'api'];
-
       function Plugins(plugins) {
-        this.context = __bind(this.context, this);
-        var context, _i, _len, _ref;
+        this.projection = __bind(this.projection, this);
+        this.domain = __bind(this.domain, this);
+        this.web = __bind(this.web, this);
         this.plugins = plugins;
         this.plugins = this.plugins.map(function(plugin) {
           if (typeof plugin === 'function') {
@@ -17,30 +16,51 @@
           }
           return plugin;
         });
-        _ref = this.contexts;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          context = _ref[_i];
-          this[context] = this.context(context);
-        }
       }
 
-      Plugins.prototype.context = function(name) {
-        return (function(_this) {
-          return function() {
-            var plugin, _i, _len, _ref, _results;
-            _ref = _this.plugins;
-            _results = [];
-            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-              plugin = _ref[_i];
-              if (plugin[name] != null) {
-                _results.push(plugin[name]());
-              } else {
-                _results.push(void 0);
-              }
-            }
-            return _results;
-          };
-        })(this);
+      Plugins.prototype.web = function() {
+        var plugin, _i, _len, _ref, _results;
+        _ref = this.plugins;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          plugin = _ref[_i];
+          if (plugin.web != null) {
+            _results.push(plugin.web());
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      };
+
+      Plugins.prototype.domain = function() {
+        var plugin, _i, _len, _ref, _results;
+        _ref = this.plugins;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          plugin = _ref[_i];
+          if (plugin.domain != null) {
+            _results.push(plugin.domain());
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      };
+
+      Plugins.prototype.projection = function() {
+        var plugin, _i, _len, _ref, _results;
+        _ref = this.plugins;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          plugin = _ref[_i];
+          if (plugin.projection != null) {
+            _results.push(plugin.projection());
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
       };
 
       return Plugins;
