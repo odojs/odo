@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['module', 'passport', 'odo/config', 'redis', 'odo/user/userprofile', 'odo/messaging/hub', 'node-uuid', 'odo/express/configure', 'odo/express/express', 'odo/express/app'], function(module, passport, config, redis, UserProfile, hub, uuid, configure, express, app) {
+  define(['module', 'passport', 'odo/config', 'redis', 'odo/user/userprofile', 'odo/messaging/hub', 'node-uuid', 'odo/express/configure', 'odo/express/app', 'odo/restify/configure'], function(module, passport, config, redis, UserProfile, hub, uuid, configure, app, restify) {
     var Auth, db;
     db = redis.createClient(config.redis.port, config.redis.host);
     return Auth = (function() {
@@ -12,6 +12,7 @@
         this.verifyemail = __bind(this.verifyemail, this);
         this.forgot = __bind(this.forgot, this);
         this.projection = __bind(this.projection, this);
+        this.api = __bind(this.api, this);
         this.web = __bind(this.web, this);
       }
 
@@ -31,6 +32,17 @@
         app.post('/odo/auth/verifyemail', this.verifyemail);
         app.get('/odo/auth/checkemailverificationtoken', this.checkemailverificationtoken);
         return app.post('/odo/auth/emailverified', this.emailverified);
+      };
+
+      Auth.prototype.api = function() {
+        restify.use(passport.initialize());
+        restify.use(passport.session());
+        passport.serializeUser(function(user, done) {
+          return done(null, user.id);
+        });
+        return passport.deserializeUser(function(id, done) {
+          return new UserProfile().get(id, done);
+        });
       };
 
       Auth.prototype.projection = function() {

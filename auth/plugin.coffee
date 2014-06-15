@@ -7,9 +7,9 @@ define [
 	'odo/messaging/hub'
 	'node-uuid'
 	'odo/express/configure'
-	'odo/express/express'
 	'odo/express/app'
-], (module, passport, config, redis, UserProfile, hub, uuid, configure, express, app) ->
+	'odo/restify/configure'
+], (module, passport, config, redis, UserProfile, hub, uuid, configure, app, restify) ->
 	db = redis.createClient config.redis.port, config.redis.host
 	
 	class Auth
@@ -31,6 +31,16 @@ define [
 			app.post '/odo/auth/verifyemail', @verifyemail
 			app.get '/odo/auth/checkemailverificationtoken', @checkemailverificationtoken
 			app.post '/odo/auth/emailverified', @emailverified
+		
+		api: =>
+			restify.use passport.initialize()
+			restify.use passport.session()
+			
+			passport.serializeUser (user, done) ->
+				done null, user.id
+
+			passport.deserializeUser (id, done) ->
+				new UserProfile().get id, done
 		
 		projection: =>
 			hub.receive 'userHasEmailAddress', (event, cb) =>

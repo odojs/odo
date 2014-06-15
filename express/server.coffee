@@ -3,9 +3,8 @@ define [
 	'express'
 	'odo/config'
 	'odo/express/configure'
-	'odo/express/express'
 	'odo/express/app'
-], (http, express, config, _configure, _express, _app) ->
+], (http, express, config, _configure, _app) ->
 	
 	class Express
 		web: =>
@@ -40,7 +39,6 @@ define [
 					@app.use source, express.static target
 				
 				# Configure plugins
-				_express.play @app
 				_configure.play @app
 				
 				@app.use @app.router
@@ -53,7 +51,7 @@ define [
 			# Put the server on app for extensibility
 			@app.server = http.createServer @app
 			port = @app.get('port') || process.env.PORT || 8080
-			console.log "Express listening on port #{port}..."
+			console.log "Express is listening on port #{port}..."
 			@app.server.listen port
 
 			# Initialise plugins

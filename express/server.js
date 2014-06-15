@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['http', 'express', 'odo/config', 'odo/express/configure', 'odo/express/express', 'odo/express/app'], function(http, express, config, _configure, _express, _app) {
+  define(['http', 'express', 'odo/config', 'odo/express/configure', 'odo/express/app'], function(http, express, config, _configure, _app) {
     var Express;
     return Express = (function() {
       function Express() {
@@ -44,7 +44,6 @@
             _this.app.route = function(source, target) {
               return _this.app.use(source, express["static"](target));
             };
-            _express.play(_this.app);
             _configure.play(_this.app);
             _this.app.use(_this.app.router);
             return _this.app.use(express.errorHandler({
@@ -55,7 +54,7 @@
         })(this));
         this.app.server = http.createServer(this.app);
         port = this.app.get('port') || process.env.PORT || 8080;
-        console.log("Express listening on port " + port + "...");
+        console.log("Express is listening on port " + port + "...");
         this.app.server.listen(port);
         return _app.play(this.app);
       };

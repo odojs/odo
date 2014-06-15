@@ -10,13 +10,26 @@
       }
 
       Restify.prototype.api = function() {
-        var port, _ref;
+        var port, _ref, _ref1;
         this.server = restify.createServer();
+        this.server.use(restify.acceptParser(this.server.acceptable));
+        this.server.use(restify.authorizationParser());
+        this.server.use(restify.dateParser());
+        this.server.use(restify.queryParser());
+        this.server.use(restify.jsonp());
+        this.server.use(restify.gzipResponse());
+        this.server.use(restify.bodyParser());
+        if ((_ref = config.restify) != null ? _ref['allowed cross domains'] : void 0) {
+          this.server.use(restify.CORS({
+            origins: config.restify['allowed cross domains'].split(' ')
+          }));
+        }
+        this.server.use(restify.conditionalRequest());
         _configure.play(this.server);
         _app.play(this.server);
-        port = ((_ref = config.restify) != null ? _ref.port : void 0) || process.env.PORT || 8080;
+        port = ((_ref1 = config.restify) != null ? _ref1.port : void 0) || process.env.PORT || 8080;
         return this.server.listen(port, function() {
-          return console.log("Restify listening on port " + port + "...");
+          return console.log("Restify is listening on port " + port + "...");
         });
       };
 
