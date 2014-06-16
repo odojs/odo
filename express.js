@@ -37,7 +37,7 @@
       };
 
       Express.prototype.web = function() {
-        var express, http, key, port, value, _ref;
+        var bodyParser, express, http, key, port, value, _ref;
         http = require('http');
         express = require('express');
         this.app = express();
@@ -46,41 +46,41 @@
           value = _ref[key];
           this.app.set(key, value);
         }
-        this.app.configure((function(_this) {
-          return function() {
-            _this.app.use(express.compress());
-            _this.app.use(express.urlencoded());
-            _this.app.use(express.json());
-            if (_this.app.get('upload directory') != null) {
-              _this.app.use(express.bodyParser({
-                uploadDir: _this.app.get('upload directory')
-              }));
-            }
-            _this.app.use(express.methodOverride());
-            _this.app.use(express.cookieParser(_this.app.get('cookie secret')));
-            _this.app.use(express.cookieSession({
-              key: _this.app.get('session key'),
-              secret: _this.app.get('session secret')
-            }));
-            if (_this.app.get('allowed cross domains') != null) {
-              _this.app.use(function(req, res, next) {
-                res.header('Access-Control-Allow-Origin', _this.app.get('allowed cross domains'));
-                res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-                res.header('Access-Control-Allow-Headers', 'Content-Type');
-                return next();
-              });
-            }
-            _this.app.route = function(source, target) {
-              return _this.app.use(source, express["static"](target));
+        this.app.use(require('compression')());
+        bodyParser = require('body-parser');
+        this.app.use(bodyParser.urlencoded());
+        this.app.use(bodyParser.json());
+        if (this.app.get('upload directory') != null) {
+          this.app.use(require('multer')({
+            dest: this.app.get('upload directory')
+          }));
+        }
+        this.app.use(require('method-override')());
+        this.app.use(require('cookie-parser')(this.app.get('cookie secret')));
+        this.app.use(require('cookie-session')({
+          key: this.app.get('session key'),
+          secret: this.app.get('session secret')
+        }));
+        if (this.app.get('allowed cross domains') != null) {
+          this.app.use((function(_this) {
+            return function(req, res, next) {
+              res.header('Access-Control-Allow-Origin', _this.app.get('allowed cross domains'));
+              res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+              res.header('Access-Control-Allow-Headers', 'Content-Type');
+              return next();
             };
-            _this.play(_this.app, _this.configMethods);
-            _this.app.use(_this.app.router);
-            return _this.app.use(express.errorHandler({
-              dumpExceptions: true,
-              showStack: true
-            }));
+          })(this));
+        }
+        this.app.route = (function(_this) {
+          return function(source, target) {
+            return _this.app.use(source, express["static"](target));
           };
-        })(this));
+        })(this);
+        this.play(this.app, this.configMethods);
+        this.app.use(require('errorhandler')({
+          dumpExceptions: true,
+          showStack: true
+        }));
         this.app.server = http.createServer(this.app);
         port = this.app.get('port') || process.env.PORT || 8080;
         console.log("Express is listening on port " + port + "...");
