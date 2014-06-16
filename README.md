@@ -20,8 +20,9 @@ A Nodejs framework for creating awesome things.
 - [Schema-less database](http://martinfowler.com/nosql.html)
 - [Dependency injection](http://martinfowler.com/articles/injection.html)
 
-# Get started
+---
 
+# Get started
 Fork [odo example](https://github.com/tcoats/odo-example)
 
 # Overview
@@ -49,13 +50,15 @@ Plugins are loaded on startup and either expose themselves as a class or as a pl
 ```coffee
 class ExamplePlugin
     web: =>
-        console.log "I'm running in web context, I should setup routes here"
+        console.log "I'm running in web context"
+        # I can register express routes here
 ```
 
 Frontend plugins are registered by backend code in the 'web' context. They have the ability to register themselves against several hooks, most importantly as single page application routes through durandal.
 
-# Backend infrastructure
+---
 
+# Backend infrastructure
 ## [Requirejs](http://requirejs.org/)
 All of odo uses require.js to pull together plugins and components. In the backend node.js's require function is passed into require to include npm modules.
 
@@ -95,7 +98,7 @@ define ['odo/mandrill'], (Mandrill) ->
 ## Configuration
 A component to requirejs into your code to access configuration 'odo/config'.
 
-This includes the cson file 'config.cson'. Use that file to add additional plugins to the project, add global configuration that won't change per environment and add events and commands you want published and sent at the start of the application.
+This reads the cson file 'config.cson'. Use that file to add plugins to the project, add global configuration that won't change per environment and add events and commands you want published and sent at the start of the application.
 
 Additionally an environment variable named 'ODO_CONFIG' is parsed as a cson file. Use this and other environment configuration for database details, and other values that change between development and production environments.
 
@@ -143,8 +146,9 @@ define [
 ## Misc helpers
 Recorder and sequencer are used internally.
 
-# Backend plugins
+---
 
+# Backend plugins
 ## [Express](http://expressjs.com/)
 The web context is based around express. Plugins exposed in the web context are given an opportunity to register against different parts of express to define routes and extend the express system.
 
@@ -180,7 +184,11 @@ E.g. `bower install --save jquery` will result in `http://localhost:1234/jquery/
 An express plugin to register durandal components you want called in the Front End.
 
 ```coffee
-define ['module', 'odo/express', 'odo/durandal'], (module, express, durandal) ->
+define [
+    'module'
+    'odo/express'
+    'odo/durandal'
+], (module, express, durandal) ->
     web: ->
         express.route '/views', express.modulepath(module.uri) + '/public'
         durandal.register 'views/welcome'
@@ -247,7 +255,7 @@ layout.html:
 
 test.html:
 
-```handlebars
+```html
 <div class="test">
     <h1>Test Page</h1>
     <p>Welcome {{displayName}}<p>
@@ -260,8 +268,9 @@ Hosts the odo public directory which includes durandal components and identity a
 ## Passport authentication - local, google, facebook, twitter and metocean
 A set of plugins that provide urls and methods to authenticate a user with passport and passport plugins. Custom local, twitter, facebook, google and metocean passport plugins have been provided.
 
-# Technologies
+---
 
+# Technologies
 ## Developed alongside Odo
 - [Tapinto](https://github.com/tcoats/tapinto) (tap into classes and methods)
 - [Injectinto](https://github.com/tcoats/injectinto) (dependency injection)
