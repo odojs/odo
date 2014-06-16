@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['module', 'handlebars', 'express/lib/response', 'consolidate', 'path', 'odo/express'], function(module, handlebars, response, cons, path, express) {
+  define(['module', 'path', 'handlebars', 'consolidate', 'express/lib/response', 'odo/express'], function(module, path, handlebars, cons, response, express) {
     var Handlebars;
     return Handlebars = (function() {
       function Handlebars() {

@@ -1,11 +1,11 @@
 define [
 	'module'
-	'handlebars'
-	'express/lib/response'
-	'consolidate'
 	'path'
+	'handlebars'
+	'consolidate'
+	'express/lib/response'
 	'odo/express'
-], (module, handlebars, response, cons, path, express) ->
+], (module, path, handlebars, cons, response, express) ->
 	class Handlebars
 		web: =>
 			#res.render
