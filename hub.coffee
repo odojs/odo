@@ -49,7 +49,7 @@ define ['redis', 'odo/config', 'odo/sequencer'], (redis, config, Sequencer) ->
 				callback: callback
 			}
 		
-		# Don't use this - it's used interally by the event store
+		# Don't use this - it's used internally by the event store
 		publish: (event) ->
 			filename = getfilename()
 			console.log "#{filename} publishing event #{event.event}"

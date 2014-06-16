@@ -32,78 +32,261 @@ Tools, frameworks and techniques make up the odo infrastructure. Using existing 
 
 The goal of any infrastructure code is to accomplish one goal, do it well and have few touch points with any other code.
 
+Infrastructure is included as and when you need it by code you write. Components like the hub 'odo/hub' and humanize 'odo/humanize' are examples of infrastructure.
+
 ## Plugins
 Plugins are independent features of the application loosely coupled to other plugins to make up the whole application. Usually plugins communicate through a combination of dependency injection and events.
 
-Backend plugins can run in three contexts: web, domain and projection. This technique allows the web code, database logic, and validation rules for a particular piece of information to exist in the same codebase but run in three different contexts. Having all aspects in the same codebase increases speed of development and still provides good decoupling between concepts.
+Plugins are added to the systems property in config.cson. Express web authentication modules 'odo/auth', 'odo/auth/local', 'odo/auth/facebook' and public folder 'odo/public' are examples of plugins.
 
-Frontend plugins are registered by backend code. They have the ability to register themselves against several hooks - most importantly single page application routes through durandal.
+An application is generally written as a collection of plugins.
+
+## Execution context
+Backend plugins can run in four contexts: web, api, domain and projection. This technique allows the web code, database logic, and validation rules for a particular piece of information to exist in the same codebase but run in four different contexts. Having all aspects in the same codebase increases speed of development and still provides good decoupling between concepts.
+
+Plugins are loaded on startup and either expose themselves as a class or as a plain object. Specific methods are checked for and will be called depending on the context the plugin is running in. These methods are 'web', 'api', 'domain' and 'projection'.
+
+```coffee
+class ExamplePlugin
+    web: =>
+        console.log "I'm running in web context, I should setup routes here"
+```
+
+Frontend plugins are registered by backend code in the 'web' context. They have the ability to register themselves against several hooks, most importantly as single page application routes through durandal.
 
 # Backend infrastructure
 
-## Require.js
+## [Requirejs](http://requirejs.org/)
 All of odo uses require.js to pull together plugins and components. In the backend node.js's require function is passed into require to include npm modules.
 
-## Express
-The root component to requirejs into your web application to setup an express website. Web plugins are given an opportunity to register against different parts of express to define routes and extend the express system.
+```coffee
+requirejs = require 'requirejs'
+requirejs.config
+    nodeRequire: require
+    paths:
+        odo: './node_modules/odo'
+        local: './'
+requirejs ['odo/bootstrap']
+```
 
-## Config
-A component to requirejs into your code to access the top level configuration json file. Use that file to store environment specific settings and other pieces of information you don't want in source control.
+## [Mandrill](http://mandrill.com/)
+For sending emails.
+
+```coffee
+define ['odo/mandrill'], (Mandrill) ->
+    options =
+        message:
+            text: 'An email sent with Mandrill'
+            subject: 'Email from Odo'
+            from_email: 'odo@odojs.com'
+            from_name: 'Odo'
+            to: [
+                email: 'john.smith@example.com'
+                name: 'John Smith'
+                type: 'to'
+            ]
+
+    new Mandrill()
+        .send(options)
+        .then(-> console.log 'Email away!')
+        .catch((err) -> console.log err)
+```
+
+## Configuration
+A component to requirejs into your code to access configuration 'odo/config'.
+
+This includes the cson file 'config.cson'. Use that file to add additional plugins to the project, add global configuration that won't change per environment and add events and commands you want published and sent at the start of the application.
+
+Additionally an environment variable named 'ODO_CONFIG' is parsed as a cson file. Use this and other environment configuration for database details, and other values that change between development and production environments.
+
+Using the domain configuration set in config.cson a further environment variable is also loaded as a cson file. For example if odo: domain: 'odo-example' was present in the config.cson file then 'ODO_EXAMPLE_ODO_CONFIG' is also parsed. Use this for configuration specific to a project.
+
+Direct environment variables are also checked, see config.coffee for a template. For example both 'EXPRESS_PORT' and 'ODO_EXAMPLE_EXPRESS_PORT' will be checked to get the port express should run on, along with any values set in 'ODO_CONFIG' and 'ODO_EXAMPLE_ODO_CONFIG'.
 
 ## Eventstore
 A component to requirejs into your application to setup and connect to an eventstore. Exposes an extend method to add methods and properties to an aggregate object to support event sourcing and the CQRS pattern. Uses the eventstore library.
 
+See user.coffee for a web, domain and projection eventstore example.
+
 ## Hub
 A component to requirejs into your application to create a CQRS hub that is connected to redis. Bind event listers through the exported receive method and bind command handlers through the exported handle method. Use send and publish to send commands and publish events.
 
+```coffee
+define ['odo/hub'], (hub) ->
+    hub.send
+        command: 'assignDisplayNameToUser'
+        payload:
+            id: 34
+            displayName: 'John Smith'
+            
+    hub.publish
+        event: 'subspotActivityHasIncreased'
+        payload:
+            amount: '100%'
+```
+
 ## Plugin
-A component to help load other plugins. Provides web, domain and projection methods that call the same named method on an array of plugins passed to it's constructor.
+A component to help load other plugins. Provides web, api, domain and projection methods that call the same named method on an array of plugins passed to it's constructor.
+
+```coffee
+define [
+    'odo/plugins'
+    'local/identity/user'
+    'local/identity/organisation'
+    'local/identity/invitation'
+    'local/identity/permissions'
+    'local/identity/public'
+], (Plugins, plugins...) ->
+    new Plugins plugins
+```
+
+## Misc helpers
+Recorder and sequencer are used internally.
 
 # Backend plugins
 
-## Messaging
-Provides a sendcommand endpoint to make it easy to create commands from the web.
+## [Express](http://expressjs.com/)
+The web context is based around express. Plugins exposed in the web context are given an opportunity to register against different parts of express to define routes and extend the express system.
+
+Needs to be after any plugins wanting web context in the systems array.
+
+```coffee
+define ['odo/express'], (express) ->
+    web: ->
+        express.get '/test', (req, res) ->
+            res.send 'Hello World'
+
+```
+
+## [Restify](http://mcavage.me/node-restify/)
+The api context is based around restify. Plugins exposed in the api context are given the opportunity to register against different parts of restify to define routes and extend the restify system.
+
+Needs to be after any plugins wanting api context in the systems array.
+
+```coffee
+define ['odo/restify'], (restify) ->
+    web: ->
+        restify.get '/test', (req, res) ->
+            res.send 'Hello World'
+
+```
 
 ## Bower
-An express plugin to host the /bower_components directory so anything you've installed with bower is available to the web. Also provides the inject library to the front end for UI composition.
+A web plugin to host the /bower_components directory so anything you've installed with bower is available to the web.
+
+E.g. `bower install --save jquery` will result in `http://localhost:1234/jquery/dist/jquery.min.js` being available (depending on your express port).
 
 ## Durandal
-An express plugin to host the contents of /odo/durandal/public to the web so the custom durandal components can be used by your odo durandal application. This includes dialogs, wizards and many extensions to the durandal system.
+An express plugin to register durandal components you want called in the Front End.
 
-## Passport authentication - local, google, facebook and twitter
-An express plugin that provides urls and methods to authenticate a user with passport and passport plugins. Custom local, twitter, facebook and google passport plugins have been provided.
+```coffee
+define ['module', 'odo/express', 'odo/durandal'], (module, express, durandal) ->
+    web: ->
+        express.route '/views', express.modulepath(module.uri) + '/public'
+        durandal.register 'views/welcome'
+```
+
+And in a public folder is welcome.coffee and welcome.html:
+
+```coffee
+define ['knockout', 'plugins/router'], (ko, router) ->
+    router.map
+        route: ''
+        moduleId: 'views/welcome'
+    
+    class Welcome
+        title: 'Welcome'
+        
+        constructor: ->
+            @displayName = ko.observable 'John Smith'
+```
+
+```html
+<div class="test">
+    <h1>Test Page</h1>
+    <p>Welcome <span data-bind="text: displayName"></span><p>
+</div>
+```
+
+## Handlebars
+A plugin for web context to register handlebars as the view engine for express and add additional functionality.
+
+```coffee
+define ['odo/express'], (module, express) ->
+    web: =>
+        express.get '/test', (req, res) ->
+            res.render
+                view: 'templates/layout'
+                data:
+                    title: req.user.displayName
+                    displayName: 'John Smith'
+                partials:
+                    content: 'test'
+```
+
+This will combine the layout template with the test template from a directory called 'templates'.
+
+layout.html:
+
+```handlebars
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>{{title}}</title>
+    </head>
+
+    <body>
+        {{hook 'content'}}
+    </body>
+</html>
+```
+
+test.html:
+
+```handlebars
+<div class="test">
+    <h1>Test Page</h1>
+    <p>Welcome {{displayName}}<p>
+</div>
+```
+
+## Public
+Hosts the odo public directory which includes durandal components and identity and authentication code. Also hosts a public directory available in your application for static assets and durandal models and views.
+
+## Passport authentication - local, google, facebook, twitter and metocean
+A set of plugins that provide urls and methods to authenticate a user with passport and passport plugins. Custom local, twitter, facebook, google and metocean passport plugins have been provided.
 
 # Technologies
 
 ## Developed alongside Odo
-
 - [Tapinto](https://github.com/tcoats/tapinto) (tap into classes and methods)
 - [Injectinto](https://github.com/tcoats/injectinto) (dependency injection)
 - [Peekinto](https://github.com/tcoats/peekinto) (ui composition for express)
 - [Fetching](https://github.com/tcoats/fetching) (fetching strategies)
 
-## Back end
-
+## Backend and front end
 - [Requirejs](http://requirejs.org/) (dependency injection)
-- [Express](http://expressjs.com/) (http server)
-- [Redis](http://redis.io/) (storage)
-- [Passport](http://passportjs.org/) (authentication)
-- [hub.js](http://maxantoni.de/projects/hub.js/) (messaging)
 - [Q](https://github.com/kriskowal/q) (promises)
 - [node-uuid](https://github.com/broofa/node-uuid) (guids)
+- [humanize](https://github.com/hubspot/humanize) (string formatting)
+
+## Back end
+- [Express](http://expressjs.com/) (http server)
+- [Restify](http://mcavage.me/node-restify/) (rest api)
+- [Redis](http://redis.io/) (storage)
+- [Passport](http://passportjs.org/) (authentication)
 - [js-md5](https://github.com/emn178/js-md5) (md5 hash)
 - [eventstore](https://github.com/jamuhl/nodeEventStore) (event sourcing)
 
-
 ## Front end
-
-- [Requirejs](http://requirejs.org/) (dependency injection)
 - [Durandaljs](http://durandaljs.com/) (single page app)
 - [Knockoutjs](http://knockoutjs.com/) (mvvm in browser)
 - [Knockoutjs Validation](https://github.com/Knockout-Contrib/Knockout-Validation) (validation)
 - [jQuery](http://jquery.com/) (dom manipulation)
-- [Q](https://github.com/kriskowal/q) (promises)
 - [Bootstrap](http://getbootstrap.com/) (scaffolding)
 - [Animate.css](https://daneden.me/animate/) (css animations)
 - [Mousetrap](http://craig.is/killing/mice) (keyboard shortcuts)
-- [node-uuid](https://github.com/broofa/node-uuid) (guids)
