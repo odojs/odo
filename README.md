@@ -1,5 +1,4 @@
 # Odo - whatever you want it to be
-
 A Nodejs framework for creating awesome things.
 
 [Status and current work on Trello](https://trello.com/board/odo/4f7b3e995aa70d786202e667)
@@ -9,6 +8,8 @@ A Nodejs framework for creating awesome things.
 2. Modular and lightweight components that are useful independently
 3. Strong cohesion where things change at the same rate, loose coupling where things change at a different rate
 4. Few concepts needed in any one area of the code to keep mental effort of development low
+
+Odo hopefully follows these goals and also makes it easy to write applications that follow these goals.
 
 ## Techniques
 - [Domain-driven design](http://martinfowler.com/tags/domain%20driven%20design.html)
@@ -29,9 +30,9 @@ Fork [odo example](https://github.com/tcoats/odo-example)
 There are two types of code in Odo: infrastructure and plugins.
 
 ## Infrastructure
-Tools, frameworks and techniques make up the odo infrastructure. Using existing 3rd party frameworks and libraries is prioritised over custom development. Where existing frameworks are not available small independent utilities have been written.
+Tools, frameworks and techniques make up the odo infrastructure. Using existing 3rd party frameworks and libraries has been prioritised over custom development. Where existing frameworks are not available small independent utilities have been written.
 
-The goal of any infrastructure code is to accomplish one goal, do it well and have few touch points with any other code.
+The goal of any infrastructure code is to accomplish one task, do it well and have few touch points with any other code.
 
 Infrastructure is included as and when you need it by code you write. Components like the hub 'odo/hub' and humanize 'odo/humanize' are examples of infrastructure.
 
@@ -40,10 +41,8 @@ Plugins are independent features of the application loosely coupled to other plu
 
 Plugins are added to the systems property in config.cson. Express web authentication modules 'odo/auth', 'odo/auth/local', 'odo/auth/facebook' and public folder 'odo/public' are examples of plugins.
 
-An application is generally written as a collection of plugins.
-
 ## Execution context
-Backend plugins can run in four contexts: web, api, domain and projection. This technique allows the web code, database logic, and validation rules for a particular piece of information to exist in the same codebase but run in four different contexts. Having all aspects in the same codebase increases speed of development and still provides good decoupling between concepts.
+Plugins can run in four contexts: web, api, domain and projection. This technique allows the web code, database logic, and validation rules for a particular piece of information to exist in the same codebase but run in four different contexts. Having all aspects in the same codebase increases speed of development and still provides good decoupling between concepts.
 
 Plugins are loaded on startup and either expose themselves as a class or as a plain object. Specific methods are checked for and will be called depending on the context the plugin is running in. These methods are 'web', 'api', 'domain' and 'projection'.
 
@@ -54,13 +53,13 @@ class ExamplePlugin
         # I can register express routes here
 ```
 
-Frontend plugins are registered by backend code in the 'web' context. They have the ability to register themselves against several hooks, most importantly as single page application routes through durandal.
+Frontend plugins are registered by backend code in the 'web' context. They have the ability to bind themselves to several hooks, most importantly as single page application routes through durandal.
 
 ---
 
 # Backend infrastructure
 ## [Requirejs](http://requirejs.org/)
-All of odo uses require.js to pull together plugins and components. In the backend node.js's require function is passed into require to include npm modules.
+All of odo uses requirejs to pull together plugins and components. In the backend node.js's require function is passed into require to include npm modules.
 
 ```coffee
 requirejs = require 'requirejs'
@@ -71,6 +70,8 @@ requirejs.config
         local: './'
 requirejs ['odo/bootstrap']
 ```
+
+In the frontend requirejs is used more conventionally - included by the html file and configured by a javascript file.
 
 ## [Mandrill](http://mandrill.com/)
 For sending emails.
@@ -96,26 +97,30 @@ define ['odo/mandrill'], (Mandrill) ->
 ```
 
 ## Configuration
-A component to requirejs into your code to access configuration 'odo/config'.
+Require 'odo/config' into your code to access all configuration.
 
-This reads the cson file 'config.cson'. Use that file to add plugins to the project, add global configuration that won't change per environment and add events and commands you want published and sent at the start of the application.
+The code reads a local cson file 'config.cson'. Use this file to add plugins to your project, add global configuration that won't change per environment and add events and commands you want published and sent at the start of the application.
 
-Additionally an environment variable named 'ODO_CONFIG' is parsed as a cson file. Use this and other environment configuration for database details, and other values that change between development and production environments.
+Additionally an environment variable named 'ODO_CONFIG' is parsed as a cson file. Use this for database details and other values that change between development and production environments.
 
-Using the domain configuration set in config.cson a further environment variable is also loaded as a cson file. For example if odo: domain: 'odo-example' was present in the config.cson file then 'ODO_EXAMPLE_ODO_CONFIG' is also parsed. Use this for configuration specific to a project.
+Using the domain configuration set in config.cson a further environment variable is also loaded as a cson file. For example if odo: domain: 'odo-example' is present in the config.cson file then 'ODO_EXAMPLE_ODO_CONFIG' is also parsed. Use this for configuration specific to a project.
 
 Direct environment variables are also checked, see config.coffee for a template. For example both 'EXPRESS_PORT' and 'ODO_EXAMPLE_EXPRESS_PORT' will be checked to get the port express should run on, along with any values set in 'ODO_CONFIG' and 'ODO_EXAMPLE_ODO_CONFIG'.
 
 ## Eventstore
-A component to requirejs into your application to setup and connect to an eventstore. Exposes an extend method to add methods and properties to an aggregate object to support event sourcing and the CQRS pattern. Uses the eventstore library.
+Eventstore provides tooling to help implement Event Sourcing. The infrustructire includes an extend method to add methods and properties to an aggregate object to support event sourcing and the CQRS pattern. It uses the eventstore library and is backed by redis.
 
 See user.coffee for a web, domain and projection eventstore example.
 
 ## Hub
-A component to requirejs into your application to create a CQRS hub that is connected to redis. Bind event listers through the exported receive method and bind command handlers through the exported handle method. Use send and publish to send commands and publish events.
+The hub used for cross plugin communication. It's following the CQRS pattern separating commands from events. The hub is using redis publish and subscribe. Event listers can be bound through the receive method and command handlers can be bound through the handle method. Send and publish methods are used to send commands and publish events.
 
 ```coffee
 define ['odo/hub'], (hub) ->
+    hub.receive 'userHasDisplayName', (event, cb) ->
+        console.log "A new display name! #{event.payload.displayName}"
+        cb()
+
     hub.send
         command: 'assignDisplayNameToUser'
         payload:
@@ -129,7 +134,7 @@ define ['odo/hub'], (hub) ->
 ```
 
 ## Plugin
-A component to help load other plugins. Provides web, api, domain and projection methods that call the same named method on an array of plugins passed to it's constructor.
+Plugin is a component to help load other plugins. Provides web, api, domain and projection methods that call the same named method on an array of plugins passed to it's constructor.
 
 ```coffee
 define [
@@ -144,15 +149,13 @@ define [
 ```
 
 ## Misc helpers
-Recorder and sequencer are used internally.
+Recorder and sequencer are used internally, you're welcome to use them too.
 
 ---
 
 # Backend plugins
 ## [Express](http://expressjs.com/)
 The web context is based around express. Plugins exposed in the web context are given an opportunity to register against different parts of express to define routes and extend the express system.
-
-Needs to be after any plugins wanting web context in the systems array.
 
 ```coffee
 define ['odo/express'], (express) ->
@@ -162,10 +165,10 @@ define ['odo/express'], (express) ->
 
 ```
 
+'odo/express' needs to be included in the systems array after any plugins wanting web context.
+
 ## [Restify](http://mcavage.me/node-restify/)
 The api context is based around restify. Plugins exposed in the api context are given the opportunity to register against different parts of restify to define routes and extend the restify system.
-
-Needs to be after any plugins wanting api context in the systems array.
 
 ```coffee
 define ['odo/restify'], (restify) ->
@@ -175,10 +178,12 @@ define ['odo/restify'], (restify) ->
 
 ```
 
+'odo/restify' needs to be included in the systems array after any plugins wanting api context.
+
 ## Bower
 A web plugin to host the /bower_components directory so anything you've installed with bower is available to the web.
 
-E.g. `bower install --save jquery` will result in `http://localhost:1234/jquery/dist/jquery.min.js` being available (depending on your express port).
+E.g. `bower install --save jquery` will result in `http://localhost:1234/jquery/dist/jquery.min.js` being available, depending on your express port.
 
 ## Durandal
 An express plugin to register durandal components you want called in the Front End.
