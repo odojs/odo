@@ -35,7 +35,7 @@
         };
         express.engine('html', cons.handlebars);
         express.set('view engine', 'html');
-        express.set('views', path.dirname(module.uri) + '/../../../');
+        express.set('views', path.dirname(module.uri) + '/../../');
         handlebars.registerHelper('uppercase', function(string) {
           return string.toUpperCase();
         });
