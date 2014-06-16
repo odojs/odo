@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['module', 'passport', 'odo/config', 'redis', 'odo/user/userprofile', 'odo/messaging/hub', 'node-uuid', 'odo/express', 'odo/restify'], function(module, passport, config, redis, UserProfile, hub, uuid, express, restify) {
+  define(['module', 'passport', 'odo/config', 'redis', 'odo/user', 'odo/messaging/hub', 'node-uuid', 'odo/express', 'odo/restify'], function(module, passport, config, redis, User, hub, uuid, express, restify) {
     var Auth, db;
     db = redis.createClient(config.redis.port, config.redis.host);
     return Auth = (function() {
@@ -24,7 +24,7 @@
           return done(null, user.id);
         });
         passport.deserializeUser(function(id, done) {
-          return new UserProfile().get(id, done);
+          return new User().get(id, done);
         });
         express.get('/odo/auth/signout', this.signout);
         express.get('/odo/auth/user', this.user);
@@ -41,7 +41,7 @@
           return done(null, user.id);
         });
         return passport.deserializeUser(function(id, done) {
-          return new UserProfile().get(id, done);
+          return new User().get(id, done);
         });
       };
 
@@ -100,7 +100,7 @@
               });
               return;
             }
-            return new UserProfile().get(userid, function(err, user) {
+            return new User().get(userid, function(err, user) {
               if (err != null) {
                 res.send(500, 'Couldn\'t find user');
                 return;

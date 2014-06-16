@@ -10,7 +10,7 @@
       }
 
       Public.prototype.web = function() {
-        return express.route('/', express.modulepath(module.uri) + '/../../../public');
+        return express.route('/', express.modulepath(module.uri) + '/../../public');
       };
 
       return Public;

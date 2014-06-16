@@ -5,9 +5,9 @@ define [
 	'odo/messaging/hub'
 	'node-uuid'
 	'redis'
-	'odo/user/userprofile'
+	'odo/user'
 	'odo/express'
-], (passport, passportlocal, config, hub, uuid, redis, UserProfile, express) ->
+], (passport, passportlocal, config, hub, uuid, redis, User, express) ->
 	db = redis.createClient config.redis.port, config.redis.host
 	
 	class LocalAuthentication
@@ -93,7 +93,7 @@ define [
 					done null, false, { message: 'Incorrect username or password.' }
 					return
 				
-				new UserProfile().get userid, (err, user) =>
+				new User().get userid, (err, user) =>
 					if err?
 						done err
 						return
@@ -129,7 +129,7 @@ define [
 						message: 'Incorrect username or password'
 					return
 				
-				new UserProfile().get userid, (err, user) =>
+				new User().get userid, (err, user) =>
 					if err?
 						console.log err
 						res.send 500, 'Woops'
@@ -187,7 +187,7 @@ define [
 						message: 'Token not valid'
 					return
 				
-				new UserProfile().get userid, (err, user) =>
+				new User().get userid, (err, user) =>
 					if err?
 						console.log err
 						res.send 500, 'Woops'
@@ -337,7 +337,7 @@ define [
 					id: userid
 					password: profile.password
 			
-			new UserProfile().get userid, (err, user) =>
+			new User().get userid, (err, user) =>
 				if err?
 					res.send 500, 'Couldn\'t find user'
 					return

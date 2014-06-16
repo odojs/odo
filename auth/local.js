@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['passport', 'passport-local', 'odo/config', 'odo/messaging/hub', 'node-uuid', 'redis', 'odo/user/userprofile', 'odo/express'], function(passport, passportlocal, config, hub, uuid, redis, UserProfile, express) {
+  define(['passport', 'passport-local', 'odo/config', 'odo/messaging/hub', 'node-uuid', 'redis', 'odo/user', 'odo/express'], function(passport, passportlocal, config, hub, uuid, redis, User, express) {
     var LocalAuthentication, db;
     db = redis.createClient(config.redis.port, config.redis.host);
     return LocalAuthentication = (function() {
@@ -122,7 +122,7 @@
               });
               return;
             }
-            return new UserProfile().get(userid, function(err, user) {
+            return new User().get(userid, function(err, user) {
               if (err != null) {
                 done(err);
                 return;
@@ -168,7 +168,7 @@
               });
               return;
             }
-            return new UserProfile().get(userid, function(err, user) {
+            return new User().get(userid, function(err, user) {
               if (err != null) {
                 console.log(err);
                 res.send(500, 'Woops');
@@ -239,7 +239,7 @@
               });
               return;
             }
-            return new UserProfile().get(userid, function(err, user) {
+            return new User().get(userid, function(err, user) {
               if (err != null) {
                 console.log(err);
                 res.send(500, 'Woops');
@@ -411,7 +411,7 @@
             password: profile.password
           }
         });
-        return new UserProfile().get(userid, (function(_this) {
+        return new User().get(userid, (function(_this) {
           return function(err, user) {
             if (err != null) {
               res.send(500, 'Couldn\'t find user');

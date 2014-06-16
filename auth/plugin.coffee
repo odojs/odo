@@ -3,12 +3,12 @@ define [
 	'passport'
 	'odo/config'
 	'redis'
-	'odo/user/userprofile'
+	'odo/user'
 	'odo/messaging/hub'
 	'node-uuid'
 	'odo/express'
 	'odo/restify'
-], (module, passport, config, redis, UserProfile, hub, uuid, express, restify) ->
+], (module, passport, config, redis, User, hub, uuid, express, restify) ->
 	db = redis.createClient config.redis.port, config.redis.host
 	
 	class Auth
@@ -22,7 +22,7 @@ define [
 				done null, user.id
 
 			passport.deserializeUser (id, done) ->
-				new UserProfile().get id, done
+				new User().get id, done
 			
 			express.get '/odo/auth/signout', @signout
 			express.get '/odo/auth/user', @user
@@ -39,7 +39,7 @@ define [
 				done null, user.id
 
 			passport.deserializeUser (id, done) ->
-				new UserProfile().get id, done
+				new User().get id, done
 		
 		projection: =>
 			hub.receive 'userHasEmailAddress', (event, cb) =>
@@ -85,7 +85,7 @@ define [
 						message: 'No account found for this email address'
 					return
 					
-				new UserProfile().get userid, (err, user) =>
+				new User().get userid, (err, user) =>
 					if err?
 						res.send 500, 'Couldn\'t find user'
 						return
