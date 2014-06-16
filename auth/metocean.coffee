@@ -5,8 +5,8 @@ define [
 	'odo/messaging/hub'
 	'node-uuid'
 	'redis'
-	'odo/express/app'
-], (passport, passportmetocean, config, hub, uuid, redis, app) ->
+	'odo/express'
+], (passport, passportmetocean, config, hub, uuid, redis, express) ->
 	db = redis.createClient config.redis.port, config.redis.host
 	
 	class MetOceanAuthentication
@@ -20,8 +20,8 @@ define [
 				passReqToCallback: true
 			, @signin)
 			
-			app.get '/odo/auth/metocean', passport.authenticate('metocean')
-			app.get '/odo/auth/metocean/callback', (req, res, next) ->
+			express.get '/odo/auth/metocean', passport.authenticate('metocean')
+			express.get '/odo/auth/metocean/callback', (req, res, next) ->
 				passport.authenticate('metocean', (err, user, info) ->
 					return next err if err?
 					

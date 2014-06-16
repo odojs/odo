@@ -1,7 +1,8 @@
-define ['odo/messaging/hub', 'odo/express/app'], (hub, app) ->
+define ['odo/messaging/hub', 'odo/express'], (hub, express) ->
 	class Messaging
 		web: =>
-			app.post '/sendcommand/:command', @sendcommand
+			# Disabled as not secure
+			#express.post '/sendcommand/:command', @sendcommand
 		
 		sendcommand: (req, res) =>
 			if !req.user?

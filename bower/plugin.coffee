@@ -1,5 +1,5 @@
-define ['module', 'odo/express/configure'], (module, configure) ->
+define ['module', 'odo/express'], (module, express) ->
 	class Bower
 		web: ->
-			configure.route '/', configure.modulepath(module.uri) + '/../../../bower_components'
-			configure.route '/odo', configure.modulepath(module.uri) + '/public'
+			express.route '/', express.modulepath(module.uri) + '/../../../bower_components'
+			express.route '/odo', express.modulepath(module.uri) + '/public'

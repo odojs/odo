@@ -6,18 +6,17 @@ define [
 	'odo/user/userprofile'
 	'odo/messaging/hub'
 	'node-uuid'
-	'odo/express/configure'
-	'odo/express/app'
-	'odo/restify/configure'
-], (module, passport, config, redis, UserProfile, hub, uuid, configure, app, restify) ->
+	'odo/express'
+	'odo/restify'
+], (module, passport, config, redis, UserProfile, hub, uuid, express, restify) ->
 	db = redis.createClient config.redis.port, config.redis.host
 	
 	class Auth
 		web: =>
-			configure.route '/odo', configure.modulepath(module.uri) + '/public'
+			express.route '/odo', express.modulepath(module.uri) + '/public'
 			
-			configure.use passport.initialize()
-			configure.use passport.session()
+			express.use passport.initialize()
+			express.use passport.session()
 			
 			passport.serializeUser (user, done) ->
 				done null, user.id
@@ -25,12 +24,12 @@ define [
 			passport.deserializeUser (id, done) ->
 				new UserProfile().get id, done
 			
-			app.get '/odo/auth/signout', @signout
-			app.get '/odo/auth/user', @user
-			app.get '/odo/auth/forgot', @forgot
-			app.post '/odo/auth/verifyemail', @verifyemail
-			app.get '/odo/auth/checkemailverificationtoken', @checkemailverificationtoken
-			app.post '/odo/auth/emailverified', @emailverified
+			express.get '/odo/auth/signout', @signout
+			express.get '/odo/auth/user', @user
+			express.get '/odo/auth/forgot', @forgot
+			express.post '/odo/auth/verifyemail', @verifyemail
+			express.get '/odo/auth/checkemailverificationtoken', @checkemailverificationtoken
+			express.post '/odo/auth/emailverified', @emailverified
 		
 		api: =>
 			restify.use passport.initialize()

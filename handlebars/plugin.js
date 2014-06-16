@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['module', 'handlebars', 'express/lib/response', 'consolidate', 'underscore', 'path', 'odo/express/app'], function(module, handlebars, response, cons, _, path, app) {
+  define(['module', 'handlebars', 'express/lib/response', 'consolidate', 'underscore', 'path', 'odo/express'], function(module, handlebars, response, cons, _, path, express) {
     var Handlebars;
     return Handlebars = (function() {
       function Handlebars() {
@@ -11,7 +11,7 @@
 
       Handlebars.prototype.web = function() {
         response.render = function(options) {
-          var fn, req, result, self, view;
+          var app, fn, req, result, self, view;
           self = this;
           req = this.req;
           app = req.app;
@@ -33,9 +33,9 @@
           };
           return app.render(view, options, fn);
         };
-        app.engine('html', cons.handlebars);
-        app.set('view engine', 'html');
-        app.set('views', path.dirname(module.uri) + '/../../../');
+        express.engine('html', cons.handlebars);
+        express.set('view engine', 'html');
+        express.set('views', path.dirname(module.uri) + '/../../../');
         handlebars.registerHelper('uppercase', function(string) {
           return string.toUpperCase();
         });

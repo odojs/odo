@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['passport', 'passport-twitter', 'odo/config', 'odo/messaging/hub', 'node-uuid', 'redis', 'odo/express/app'], function(passport, passporttwitter, config, hub, uuid, redis, app) {
+  define(['passport', 'passport-twitter', 'odo/config', 'odo/messaging/hub', 'node-uuid', 'redis', 'odo/express'], function(passport, passporttwitter, config, hub, uuid, redis, express) {
     var TwitterAuthentication, db;
     db = redis.createClient(config.redis.port, config.redis.host);
     return TwitterAuthentication = (function() {
@@ -19,8 +19,8 @@
           callbackURL: config.passport.twitter['host'] + '/odo/auth/twitter/callback',
           passReqToCallback: true
         }, this.signin));
-        app.get('/odo/auth/twitter', passport.authenticate('twitter'));
-        return app.get('/odo/auth/twitter/callback', function(req, res, next) {
+        express.get('/odo/auth/twitter', passport.authenticate('twitter'));
+        return express.get('/odo/auth/twitter/callback', function(req, res, next) {
           return passport.authenticate('twitter', function(err, user, info) {
             var _ref, _ref1;
             if (err != null) {

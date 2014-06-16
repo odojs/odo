@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['passport', 'passport-facebook', 'odo/config', 'odo/messaging/hub', 'node-uuid', 'redis', 'odo/express/app'], function(passport, passportfacebook, config, hub, uuid, redis, app) {
+  define(['passport', 'passport-facebook', 'odo/config', 'odo/messaging/hub', 'node-uuid', 'redis', 'odo/express'], function(passport, passportfacebook, config, hub, uuid, redis, express) {
     var FacebookAuthentication, db;
     db = redis.createClient(config.redis.port, config.redis.host);
     return FacebookAuthentication = (function() {
@@ -19,8 +19,8 @@
           callbackURL: config.passport.facebook['host'] + '/odo/auth/facebook/callback',
           passReqToCallback: true
         }, this.signin));
-        app.get('/odo/auth/facebook', passport.authenticate('facebook'));
-        return app.get('/odo/auth/facebook/callback', function(req, res, next) {
+        express.get('/odo/auth/facebook', passport.authenticate('facebook'));
+        return express.get('/odo/auth/facebook/callback', function(req, res, next) {
           return passport.authenticate('facebook', function(err, user, info) {
             var _ref, _ref1;
             if (err != null) {

@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['passport', 'passport-metocean', 'odo/config', 'odo/messaging/hub', 'node-uuid', 'redis', 'odo/express/app'], function(passport, passportmetocean, config, hub, uuid, redis, app) {
+  define(['passport', 'passport-metocean', 'odo/config', 'odo/messaging/hub', 'node-uuid', 'redis', 'odo/express'], function(passport, passportmetocean, config, hub, uuid, redis, express) {
     var MetOceanAuthentication, db;
     db = redis.createClient(config.redis.port, config.redis.host);
     return MetOceanAuthentication = (function() {
@@ -21,8 +21,8 @@
           tokenURL: config.passport.metocean['token url'],
           passReqToCallback: true
         }, this.signin));
-        app.get('/odo/auth/metocean', passport.authenticate('metocean'));
-        return app.get('/odo/auth/metocean/callback', function(req, res, next) {
+        express.get('/odo/auth/metocean', passport.authenticate('metocean'));
+        return express.get('/odo/auth/metocean/callback', function(req, res, next) {
           return passport.authenticate('metocean', function(err, user, info) {
             var _ref, _ref1;
             if (err != null) {

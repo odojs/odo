@@ -6,15 +6,15 @@ define [
 	'node-uuid'
 	'redis'
 	'odo/user/userprofile'
-	'odo/express/app'
-], (passport, passportlocal, config, hub, uuid, redis, UserProfile, app) ->
+	'odo/express'
+], (passport, passportlocal, config, hub, uuid, redis, UserProfile, express) ->
 	db = redis.createClient config.redis.port, config.redis.host
 	
 	class LocalAuthentication
 		web: =>
 			passport.use new passportlocal.Strategy @signin
 			
-			app.post '/odo/auth/local', (req, res, next) ->
+			express.post '/odo/auth/local', (req, res, next) ->
 				passport.authenticate('local', (err, user, info) ->
 					return next err if err?
 					
@@ -35,12 +35,12 @@ define [
 						return res.redirect '/#auth/local/success'
 				)(req, res, next)
 			
-			app.get '/odo/auth/local/test', @test
-			app.get '/odo/auth/local/usernameavailability', @usernameavailability
-			app.get '/odo/auth/local/resettoken', @getresettoken
-			app.post '/odo/auth/local/resettoken', @generateresettoken
-			app.post '/odo/auth/local/reset', @reset
-			app.post '/odo/auth/local/signup', @signup
+			express.get '/odo/auth/local/test', @test
+			express.get '/odo/auth/local/usernameavailability', @usernameavailability
+			express.get '/odo/auth/local/resettoken', @getresettoken
+			express.post '/odo/auth/local/resettoken', @generateresettoken
+			express.post '/odo/auth/local/reset', @reset
+			express.post '/odo/auth/local/signup', @signup
 		
 		projection: =>
 			hub.receive 'userHasLocalSignin', (event, cb) =>

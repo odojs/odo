@@ -1,13 +1,40 @@
 define [
-	'http'
-	'express'
 	'odo/config'
-	'odo/express/configure'
-	'odo/express/app'
-], (http, express, config, _configure, _app) ->
-	
-	class Express
+	'odo/recorder'
+], (config, Recorder) ->
+	class Express extends Recorder
+		configMethods: [
+			'route'
+			'use'
+		]
+		
+		appMethods: [
+			'get'
+			'post'
+			'put'
+			'delete'
+			'engine'
+			'set'
+		]
+		
+		constructor: ->
+			for method in @configMethods
+				@[method] = @_record method
+				
+			for method in @appMethods
+				@[method] = @_record method
+			
+			super()
+		
+		modulepath: (uri) ->
+			items = uri.split '/'
+			items.pop()
+			items.join '/'
+			
 		web: =>
+			http = require 'http'
+			express = require 'express'
+			
 			@app = express()
 
 			# express config
@@ -39,7 +66,7 @@ define [
 					@app.use source, express.static target
 				
 				# Configure plugins
-				_configure.play @app
+				@play @app, @configMethods
 				
 				@app.use @app.router
 
@@ -55,4 +82,6 @@ define [
 			@app.server.listen port
 
 			# Initialise plugins
-			_app.play @app
+			@play @app, @appMethods
+	
+	new Express()

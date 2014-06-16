@@ -5,8 +5,8 @@ define [
 	'odo/messaging/hub'
 	'node-uuid'
 	'redis'
-	'odo/express/app'
-], (passport, passporttwitter, config, hub, uuid, redis, app) ->
+	'odo/express'
+], (passport, passporttwitter, config, hub, uuid, redis, express) ->
 	db = redis.createClient config.redis.port, config.redis.host
 	
 	class TwitterAuthentication
@@ -18,8 +18,8 @@ define [
 				passReqToCallback: true
 			, @signin)
 			
-			app.get '/odo/auth/twitter', passport.authenticate 'twitter'
-			app.get '/odo/auth/twitter/callback', (req, res, next) ->
+			express.get '/odo/auth/twitter', passport.authenticate 'twitter'
+			express.get '/odo/auth/twitter/callback', (req, res, next) ->
 				passport.authenticate('twitter', (err, user, info) ->
 					return next err if err?
 					

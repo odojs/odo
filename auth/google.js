@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['passport', 'passport-google', 'odo/config', 'odo/messaging/hub', 'node-uuid', 'redis', 'odo/express/app'], function(passport, passportgoogle, config, hub, uuid, redis, app) {
+  define(['passport', 'passport-google', 'odo/config', 'odo/messaging/hub', 'node-uuid', 'redis', 'odo/express'], function(passport, passportgoogle, config, hub, uuid, redis, express) {
     var GoogleAuthentication, db;
     db = redis.createClient(config.redis.port, config.redis.host);
     return GoogleAuthentication = (function() {
@@ -18,8 +18,8 @@
           returnURL: config.passport.google['host'] + '/odo/auth/google/callback',
           passReqToCallback: true
         }, this.signin));
-        app.get('/odo/auth/google', passport.authenticate('google'));
-        return app.get('/odo/auth/google/callback', function(req, res, next) {
+        express.get('/odo/auth/google', passport.authenticate('google'));
+        return express.get('/odo/auth/google/callback', function(req, res, next) {
           return passport.authenticate('google', function(err, user, info) {
             var _ref, _ref1;
             if (err != null) {

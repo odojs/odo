@@ -5,8 +5,8 @@ define [
 	'odo/messaging/hub'
 	'node-uuid'
 	'redis'
-	'odo/express/app'
-], (passport, passportfacebook, config, hub, uuid, redis, app) ->
+	'odo/express'
+], (passport, passportfacebook, config, hub, uuid, redis, express) ->
 	db = redis.createClient config.redis.port, config.redis.host
 	
 	class FacebookAuthentication
@@ -18,8 +18,8 @@ define [
 				passReqToCallback: true
 			, @signin)
 
-			app.get '/odo/auth/facebook', passport.authenticate 'facebook'
-			app.get '/odo/auth/facebook/callback', (req, res, next) ->
+			express.get '/odo/auth/facebook', passport.authenticate 'facebook'
+			express.get '/odo/auth/facebook/callback', (req, res, next) ->
 				passport.authenticate('facebook', (err, user, info) ->
 					return next err if err?
 					

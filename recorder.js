@@ -10,9 +10,11 @@
         this._record = __bind(this._record, this);
         var method, _i, _len;
         this._calls = [];
-        for (_i = 0, _len = methods.length; _i < _len; _i++) {
-          method = methods[_i];
-          this[method] = this._record(method);
+        if (methods != null) {
+          for (_i = 0, _len = methods.length; _i < _len; _i++) {
+            method = methods[_i];
+            this[method] = this._record(method);
+          }
         }
       }
 
@@ -27,13 +29,25 @@
         })(this);
       };
 
-      Recorder.prototype.play = function(target) {
-        var call, _i, _len, _ref, _results;
-        _ref = this._calls;
+      Recorder.prototype.play = function(target, methods) {
+        var call, _i, _j, _len, _len1, _ref, _ref1, _results;
+        if (methods == null) {
+          _ref = this._calls;
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            call = _ref[_i];
+            target[call.method].apply(target, call.params);
+          }
+          return;
+        }
+        _ref1 = this._calls;
         _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          call = _ref[_i];
-          _results.push(target[call.method].apply(target, call.params));
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          call = _ref1[_j];
+          if (methods.indexOf(call.method) !== -1) {
+            _results.push(target[call.method].apply(target, call.params));
+          } else {
+            _results.push(void 0);
+          }
         }
         return _results;
       };

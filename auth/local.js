@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['passport', 'passport-local', 'odo/config', 'odo/messaging/hub', 'node-uuid', 'redis', 'odo/user/userprofile', 'odo/express/app'], function(passport, passportlocal, config, hub, uuid, redis, UserProfile, app) {
+  define(['passport', 'passport-local', 'odo/config', 'odo/messaging/hub', 'node-uuid', 'redis', 'odo/user/userprofile', 'odo/express'], function(passport, passportlocal, config, hub, uuid, redis, UserProfile, express) {
     var LocalAuthentication, db;
     db = redis.createClient(config.redis.port, config.redis.host);
     return LocalAuthentication = (function() {
@@ -20,7 +20,7 @@
 
       LocalAuthentication.prototype.web = function() {
         passport.use(new passportlocal.Strategy(this.signin));
-        app.post('/odo/auth/local', function(req, res, next) {
+        express.post('/odo/auth/local', function(req, res, next) {
           return passport.authenticate('local', function(err, user, info) {
             var _ref, _ref1;
             if (err != null) {
@@ -49,12 +49,12 @@
             });
           })(req, res, next);
         });
-        app.get('/odo/auth/local/test', this.test);
-        app.get('/odo/auth/local/usernameavailability', this.usernameavailability);
-        app.get('/odo/auth/local/resettoken', this.getresettoken);
-        app.post('/odo/auth/local/resettoken', this.generateresettoken);
-        app.post('/odo/auth/local/reset', this.reset);
-        return app.post('/odo/auth/local/signup', this.signup);
+        express.get('/odo/auth/local/test', this.test);
+        express.get('/odo/auth/local/usernameavailability', this.usernameavailability);
+        express.get('/odo/auth/local/resettoken', this.getresettoken);
+        express.post('/odo/auth/local/resettoken', this.generateresettoken);
+        express.post('/odo/auth/local/reset', this.reset);
+        return express.post('/odo/auth/local/signup', this.signup);
       };
 
       LocalAuthentication.prototype.projection = function() {

@@ -5,8 +5,8 @@ define [
 	'odo/messaging/hub'
 	'node-uuid'
 	'redis'
-	'odo/express/app'
-], (passport, passportgoogle, config, hub, uuid, redis, app) ->
+	'odo/express'
+], (passport, passportgoogle, config, hub, uuid, redis, express) ->
 	db = redis.createClient config.redis.port, config.redis.host
 	
 	class GoogleAuthentication
@@ -17,8 +17,8 @@ define [
 				passReqToCallback: true
 			, @signin)
 			
-			app.get '/odo/auth/google', passport.authenticate 'google'
-			app.get '/odo/auth/google/callback', (req, res, next) ->
+			express.get '/odo/auth/google', passport.authenticate 'google'
+			express.get '/odo/auth/google/callback', (req, res, next) ->
 				passport.authenticate('google', (err, user, info) ->
 					return next err if err?
 					

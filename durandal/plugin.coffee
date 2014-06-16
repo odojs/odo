@@ -1,11 +1,11 @@
-define ['module', 'odo/express/configure', 'odo/express/app'], (module, configure, app) ->
+define ['module', 'odo/express'], (module, express) ->
 	
 	components = []
 	
 	web: ->
-		configure.route '/odo/durandal', configure.modulepath(module.uri) + '/public'
+		express.route '/odo/durandal', express.modulepath(module.uri) + '/public'
 		
-		app.get '/odo/components', (req, res) ->
+		express.get '/odo/components', (req, res) ->
 			res.send components
 		
 	register: (component) ->

@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['module', 'passport', 'odo/config', 'redis', 'odo/user/userprofile', 'odo/messaging/hub', 'node-uuid', 'odo/express/configure', 'odo/express/app', 'odo/restify/configure'], function(module, passport, config, redis, UserProfile, hub, uuid, configure, app, restify) {
+  define(['module', 'passport', 'odo/config', 'redis', 'odo/user/userprofile', 'odo/messaging/hub', 'node-uuid', 'odo/express', 'odo/restify'], function(module, passport, config, redis, UserProfile, hub, uuid, express, restify) {
     var Auth, db;
     db = redis.createClient(config.redis.port, config.redis.host);
     return Auth = (function() {
@@ -17,21 +17,21 @@
       }
 
       Auth.prototype.web = function() {
-        configure.route('/odo', configure.modulepath(module.uri) + '/public');
-        configure.use(passport.initialize());
-        configure.use(passport.session());
+        express.route('/odo', express.modulepath(module.uri) + '/public');
+        express.use(passport.initialize());
+        express.use(passport.session());
         passport.serializeUser(function(user, done) {
           return done(null, user.id);
         });
         passport.deserializeUser(function(id, done) {
           return new UserProfile().get(id, done);
         });
-        app.get('/odo/auth/signout', this.signout);
-        app.get('/odo/auth/user', this.user);
-        app.get('/odo/auth/forgot', this.forgot);
-        app.post('/odo/auth/verifyemail', this.verifyemail);
-        app.get('/odo/auth/checkemailverificationtoken', this.checkemailverificationtoken);
-        return app.post('/odo/auth/emailverified', this.emailverified);
+        express.get('/odo/auth/signout', this.signout);
+        express.get('/odo/auth/user', this.user);
+        express.get('/odo/auth/forgot', this.forgot);
+        express.post('/odo/auth/verifyemail', this.verifyemail);
+        express.get('/odo/auth/checkemailverificationtoken', this.checkemailverificationtoken);
+        return express.post('/odo/auth/emailverified', this.emailverified);
       };
 
       Auth.prototype.api = function() {

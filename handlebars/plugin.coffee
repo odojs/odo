@@ -5,8 +5,8 @@ define [
 	'consolidate'
 	'underscore'
 	'path'
-	'odo/express/app']
-, (module, handlebars, response, cons, _, path, app) ->
+	'odo/express']
+, (module, handlebars, response, cons, _, path, express) ->
 	class Handlebars
 		web: =>
 			#res.render
@@ -51,9 +51,9 @@ define [
 				# Render
 				app.render view, options, fn
 
-			app.engine('html', cons.handlebars)
-			app.set('view engine', 'html')
-			app.set('views', path.dirname(module.uri) + '/../../../')
+			express.engine('html', cons.handlebars)
+			express.set('view engine', 'html')
+			express.set('views', path.dirname(module.uri) + '/../../../')
 			
 			# 'hello' -> 'HELLO'
 			handlebars.registerHelper 'uppercase', (string) ->
