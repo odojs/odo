@@ -75,70 +75,258 @@
 
 <p>The goal of any infrastructure code is to accomplish one goal, do it well and have few touch points with any other code.</p>
 
+<p>Infrastructure is included as and when you need it by code you write. Components like the hub 'odo/hub' and humanize 'odo/humanize' are examples of infrastructure.</p>
+
 <h2>
 <a name="plugins" class="anchor" href="#plugins"><span class="octicon octicon-link"></span></a>Plugins</h2>
 
 <p>Plugins are independent features of the application loosely coupled to other plugins to make up the whole application. Usually plugins communicate through a combination of dependency injection and events.</p>
 
-<p>Backend plugins can run in three contexts: web, domain and projection. This technique allows the web code, database logic, and validation rules for a particular piece of information to exist in the same codebase but run in three different contexts. Having all aspects in the same codebase increases speed of development and still provides good decoupling between concepts.</p>
+<p>Plugins are added to the systems property in config.cson. Express web authentication modules 'odo/auth', 'odo/auth/local', 'odo/auth/facebook' and public folder 'odo/public' are examples of plugins.</p>
 
-<p>Frontend plugins are registered by backend code. They have the ability to register themselves against several hooks - most importantly single page application routes through durandal.</p>
+<p>An application is generally written as a collection of plugins.</p>
+
+<h2>
+<a name="execution-context" class="anchor" href="#execution-context"><span class="octicon octicon-link"></span></a>Execution context</h2>
+
+<p>Backend plugins can run in four contexts: web, api, domain and projection. This technique allows the web code, database logic, and validation rules for a particular piece of information to exist in the same codebase but run in four different contexts. Having all aspects in the same codebase increases speed of development and still provides good decoupling between concepts.</p>
+
+<p>Plugins are loaded on startup and either expose themselves as a class or as a plain object. Specific methods are checked for and will be called depending on the context the plugin is running in. These methods are 'web', 'api', 'domain' and 'projection'.</p>
+
+<div class="highlight highlight-coffee"><pre><span class="k">class</span> <span class="nx">ExamplePlugin</span>
+    <span class="nv">web: </span><span class="nf">=&gt;</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s">"I'm running in web context, I should setup routes here"</span>
+</pre></div>
+
+<p>Frontend plugins are registered by backend code in the 'web' context. They have the ability to register themselves against several hooks, most importantly as single page application routes through durandal.</p>
 
 <h1>
 <a name="backend-infrastructure" class="anchor" href="#backend-infrastructure"><span class="octicon octicon-link"></span></a>Backend infrastructure</h1>
 
 <h2>
-<a name="requirejs" class="anchor" href="#requirejs"><span class="octicon octicon-link"></span></a>Require.js</h2>
+<a name="requirejs" class="anchor" href="#requirejs"><span class="octicon octicon-link"></span></a><a href="http://requirejs.org/">Requirejs</a>
+</h2>
 
 <p>All of odo uses require.js to pull together plugins and components. In the backend node.js's require function is passed into require to include npm modules.</p>
 
+<div class="highlight highlight-coffee"><pre><span class="nv">requirejs = </span><span class="nx">require</span> <span class="s">'requirejs'</span>
+<span class="nx">requirejs</span><span class="p">.</span><span class="nx">config</span>
+    <span class="nv">nodeRequire: </span><span class="nx">require</span>
+    <span class="nv">paths:</span>
+        <span class="nv">odo: </span><span class="s">'./node_modules/odo'</span>
+        <span class="nv">local: </span><span class="s">'./'</span>
+<span class="nx">requirejs</span> <span class="p">[</span><span class="s">'odo/bootstrap'</span><span class="p">]</span>
+</pre></div>
+
 <h2>
-<a name="express" class="anchor" href="#express"><span class="octicon octicon-link"></span></a>Express</h2>
+<a name="mandrill" class="anchor" href="#mandrill"><span class="octicon octicon-link"></span></a><a href="http://mandrill.com/">Mandrill</a>
+</h2>
 
-<p>The root component to requirejs into your web application to setup an express website. Web plugins are given an opportunity to register against different parts of express to define routes and extend the express system.</p>
+<p>For sending emails.</p>
+
+<div class="highlight highlight-coffee"><pre><span class="nx">define</span> <span class="p">[</span><span class="s">'odo/mandrill'</span><span class="p">],</span> <span class="nf">(Mandrill) -&gt;</span>
+    <span class="nv">options =</span>
+        <span class="nv">message:</span>
+            <span class="nv">text: </span><span class="s">'An email sent with Mandrill'</span>
+            <span class="nv">subject: </span><span class="s">'Email from Odo'</span>
+            <span class="nv">from_email: </span><span class="s">'odo@odojs.com'</span>
+            <span class="nv">from_name: </span><span class="s">'Odo'</span>
+            <span class="nv">to: </span><span class="p">[</span>
+                <span class="nv">email: </span><span class="s">'john.smith@example.com'</span>
+                <span class="nv">name: </span><span class="s">'John Smith'</span>
+                <span class="nv">type: </span><span class="s">'to'</span>
+            <span class="p">]</span>
+
+    <span class="k">new</span> <span class="nx">Mandrill</span><span class="p">()</span>
+        <span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nf">-&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s">'Email away!'</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">catch</span><span class="p">(</span><span class="nf">(err) -&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">err</span><span class="p">)</span>
+</pre></div>
 
 <h2>
-<a name="config" class="anchor" href="#config"><span class="octicon octicon-link"></span></a>Config</h2>
+<a name="configuration" class="anchor" href="#configuration"><span class="octicon octicon-link"></span></a>Configuration</h2>
 
-<p>A component to requirejs into your code to access the top level configuration json file. Use that file to store environment specific settings and other pieces of information you don't want in source control.</p>
+<p>A component to requirejs into your code to access configuration 'odo/config'.</p>
+
+<p>This includes the cson file 'config.cson'. Use that file to add additional plugins to the project, add global configuration that won't change per environment and add events and commands you want published and sent at the start of the application.</p>
+
+<p>Additionally an environment variable named 'ODO_CONFIG' is parsed as a cson file. Use this and other environment configuration for database details, and other values that change between development and production environments.</p>
+
+<p>Using the domain configuration set in config.cson a further environment variable is also loaded as a cson file. For example if odo: domain: 'odo-example' was present in the config.cson file then 'ODO_EXAMPLE_ODO_CONFIG' is also parsed. Use this for configuration specific to a project.</p>
+
+<p>Direct environment variables are also checked, see config.coffee for a template. For example both 'EXPRESS_PORT' and 'ODO_EXAMPLE_EXPRESS_PORT' will be checked to get the port express should run on, along with any values set in 'ODO_CONFIG' and 'ODO_EXAMPLE_ODO_CONFIG'.</p>
 
 <h2>
 <a name="eventstore" class="anchor" href="#eventstore"><span class="octicon octicon-link"></span></a>Eventstore</h2>
 
 <p>A component to requirejs into your application to setup and connect to an eventstore. Exposes an extend method to add methods and properties to an aggregate object to support event sourcing and the CQRS pattern. Uses the eventstore library.</p>
 
+<p>See user.coffee for a web, domain and projection eventstore example.</p>
+
 <h2>
 <a name="hub" class="anchor" href="#hub"><span class="octicon octicon-link"></span></a>Hub</h2>
 
 <p>A component to requirejs into your application to create a CQRS hub that is connected to redis. Bind event listers through the exported receive method and bind command handlers through the exported handle method. Use send and publish to send commands and publish events.</p>
 
+<div class="highlight highlight-coffee"><pre><span class="nx">define</span> <span class="p">[</span><span class="s">'odo/hub'</span><span class="p">],</span> <span class="nf">(hub) -&gt;</span>
+    <span class="nx">hub</span><span class="p">.</span><span class="nx">send</span>
+        <span class="nv">command: </span><span class="s">'assignDisplayNameToUser'</span>
+        <span class="nv">payload:</span>
+            <span class="nv">id: </span><span class="mi">34</span>
+            <span class="nv">displayName: </span><span class="s">'John Smith'</span>
+
+    <span class="nx">hub</span><span class="p">.</span><span class="nx">publish</span>
+        <span class="nv">event: </span><span class="s">'subspotActivityHasIncreased'</span>
+        <span class="nv">payload:</span>
+            <span class="nv">amount: </span><span class="s">'100%'</span>
+</pre></div>
+
 <h2>
 <a name="plugin" class="anchor" href="#plugin"><span class="octicon octicon-link"></span></a>Plugin</h2>
 
-<p>A component to help load other plugins. Provides web, domain and projection methods that call the same named method on an array of plugins passed to it's constructor.</p>
+<p>A component to help load other plugins. Provides web, api, domain and projection methods that call the same named method on an array of plugins passed to it's constructor.</p>
+
+<div class="highlight highlight-coffee"><pre><span class="nx">define</span> <span class="p">[</span>
+    <span class="s">'odo/plugins'</span>
+    <span class="s">'local/identity/user'</span>
+    <span class="s">'local/identity/organisation'</span>
+    <span class="s">'local/identity/invitation'</span>
+    <span class="s">'local/identity/permissions'</span>
+    <span class="s">'local/identity/public'</span>
+<span class="p">],</span> <span class="nf">(Plugins, plugins...) -&gt;</span>
+    <span class="k">new</span> <span class="nx">Plugins</span> <span class="nx">plugins</span>
+</pre></div>
+
+<h2>
+<a name="misc-helpers" class="anchor" href="#misc-helpers"><span class="octicon octicon-link"></span></a>Misc helpers</h2>
+
+<p>Recorder and sequencer are used internally.</p>
 
 <h1>
 <a name="backend-plugins" class="anchor" href="#backend-plugins"><span class="octicon octicon-link"></span></a>Backend plugins</h1>
 
 <h2>
-<a name="messaging" class="anchor" href="#messaging"><span class="octicon octicon-link"></span></a>Messaging</h2>
+<a name="express" class="anchor" href="#express"><span class="octicon octicon-link"></span></a><a href="http://expressjs.com/">Express</a>
+</h2>
 
-<p>Provides a sendcommand endpoint to make it easy to create commands from the web.</p>
+<p>The web context is based around express. Plugins exposed in the web context are given an opportunity to register against different parts of express to define routes and extend the express system.</p>
+
+<p>Needs to be after any plugins wanting web context in the systems array.</p>
+
+<div class="highlight highlight-coffee"><pre><span class="nx">define</span> <span class="p">[</span><span class="s">'odo/express'</span><span class="p">],</span> <span class="nf">(express) -&gt;</span>
+    <span class="nv">web: </span><span class="nf">-&gt;</span>
+        <span class="nx">express</span><span class="p">.</span><span class="nx">get</span> <span class="s">'/test'</span><span class="p">,</span> <span class="nf">(req, res) -&gt;</span>
+            <span class="nx">res</span><span class="p">.</span><span class="nx">send</span> <span class="s">'Hello World'</span>
+
+</pre></div>
+
+<h2>
+<a name="restify" class="anchor" href="#restify"><span class="octicon octicon-link"></span></a><a href="http://mcavage.me/node-restify/">Restify</a>
+</h2>
+
+<p>The api context is based around restify. Plugins exposed in the api context are given the opportunity to register against different parts of restify to define routes and extend the restify system.</p>
+
+<p>Needs to be after any plugins wanting api context in the systems array.</p>
+
+<div class="highlight highlight-coffee"><pre><span class="nx">define</span> <span class="p">[</span><span class="s">'odo/restify'</span><span class="p">],</span> <span class="nf">(restify) -&gt;</span>
+    <span class="nv">web: </span><span class="nf">-&gt;</span>
+        <span class="nx">restify</span><span class="p">.</span><span class="nx">get</span> <span class="s">'/test'</span><span class="p">,</span> <span class="nf">(req, res) -&gt;</span>
+            <span class="nx">res</span><span class="p">.</span><span class="nx">send</span> <span class="s">'Hello World'</span>
+
+</pre></div>
 
 <h2>
 <a name="bower" class="anchor" href="#bower"><span class="octicon octicon-link"></span></a>Bower</h2>
 
-<p>An express plugin to host the /bower_components directory so anything you've installed with bower is available to the web. Also provides the inject library to the front end for UI composition.</p>
+<p>A web plugin to host the /bower_components directory so anything you've installed with bower is available to the web.</p>
+
+<p>E.g. <code>bower install --save jquery</code> will result in <code>http://localhost:1234/jquery/dist/jquery.min.js</code> being available (depending on your express port).</p>
 
 <h2>
 <a name="durandal" class="anchor" href="#durandal"><span class="octicon octicon-link"></span></a>Durandal</h2>
 
-<p>An express plugin to host the contents of /odo/durandal/public to the web so the custom durandal components can be used by your odo durandal application. This includes dialogs, wizards and many extensions to the durandal system.</p>
+<p>An express plugin to register durandal components you want called in the Front End.</p>
+
+<div class="highlight highlight-coffee"><pre><span class="nx">define</span> <span class="p">[</span><span class="s">'module'</span><span class="p">,</span> <span class="s">'odo/express'</span><span class="p">,</span> <span class="s">'odo/durandal'</span><span class="p">],</span> <span class="nf">(module, express, durandal) -&gt;</span>
+    <span class="nv">web: </span><span class="nf">-&gt;</span>
+        <span class="nx">express</span><span class="p">.</span><span class="nx">route</span> <span class="s">'/views'</span><span class="p">,</span> <span class="nx">express</span><span class="p">.</span><span class="nx">modulepath</span><span class="p">(</span><span class="nx">module</span><span class="p">.</span><span class="nx">uri</span><span class="p">)</span> <span class="o">+</span> <span class="s">'/public'</span>
+        <span class="nx">durandal</span><span class="p">.</span><span class="nx">register</span> <span class="s">'views/welcome'</span>
+</pre></div>
+
+<p>And in a public folder is welcome.coffee and welcome.html:</p>
+
+<div class="highlight highlight-coffee"><pre><span class="nx">define</span> <span class="p">[</span><span class="s">'knockout'</span><span class="p">,</span> <span class="s">'plugins/router'</span><span class="p">],</span> <span class="nf">(ko, router) -&gt;</span>
+    <span class="nx">router</span><span class="p">.</span><span class="nx">map</span>
+        <span class="nv">route: </span><span class="s">''</span>
+        <span class="nv">moduleId: </span><span class="s">'views/welcome'</span>
+
+    <span class="k">class</span> <span class="nx">Welcome</span>
+        <span class="nv">title: </span><span class="s">'Welcome'</span>
+
+        <span class="nv">constructor: </span><span class="nf">-&gt;</span>
+            <span class="vi">@displayName = </span><span class="nx">ko</span><span class="p">.</span><span class="nx">observable</span> <span class="s">'John Smith'</span>
+</pre></div>
+
+<div class="highlight highlight-html"><pre><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"test"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;h1&gt;</span>Test Page<span class="nt">&lt;/h1&gt;</span>
+    <span class="nt">&lt;p&gt;</span>Welcome <span class="nt">&lt;span</span> <span class="na">data-bind=</span><span class="s">"text: displayName"</span><span class="nt">&gt;&lt;/span&gt;&lt;p&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+</pre></div>
 
 <h2>
-<a name="passport-authentication---local-google-facebook-and-twitter" class="anchor" href="#passport-authentication---local-google-facebook-and-twitter"><span class="octicon octicon-link"></span></a>Passport authentication - local, google, facebook and twitter</h2>
+<a name="handlebars" class="anchor" href="#handlebars"><span class="octicon octicon-link"></span></a>Handlebars</h2>
 
-<p>An express plugin that provides urls and methods to authenticate a user with passport and passport plugins. Custom local, twitter, facebook and google passport plugins have been provided.</p>
+<p>A plugin for web context to register handlebars as the view engine for express and add additional functionality.</p>
+
+<div class="highlight highlight-coffee"><pre><span class="nx">define</span> <span class="p">[</span><span class="s">'odo/express'</span><span class="p">],</span> <span class="nf">(module, express) -&gt;</span>
+    <span class="nv">web: </span><span class="nf">=&gt;</span>
+        <span class="nx">express</span><span class="p">.</span><span class="nx">get</span> <span class="s">'/test'</span><span class="p">,</span> <span class="nf">(req, res) -&gt;</span>
+            <span class="nx">res</span><span class="p">.</span><span class="nx">render</span>
+                <span class="nv">view: </span><span class="s">'templates/layout'</span>
+                <span class="nv">data:</span>
+                    <span class="nv">title: </span><span class="nx">req</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">displayName</span>
+                    <span class="nv">displayName: </span><span class="s">'John Smith'</span>
+                <span class="nv">partials:</span>
+                    <span class="nv">content: </span><span class="s">'test'</span>
+</pre></div>
+
+<p>This will combine the layout template with the test template from a directory called 'templates'.</p>
+
+<p>layout.html:</p>
+
+<div class="highlight highlight-handlebars"><pre><span class="x">&lt;!DOCTYPE html&gt;</span>
+<span class="x">&lt;html lang="en"&gt;</span>
+<span class="x">    &lt;head&gt;</span>
+<span class="x">        &lt;meta charset="utf-8"&gt;</span>
+<span class="x">        &lt;meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" /&gt;</span>
+<span class="x">        &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</span>
+
+<span class="x">        &lt;title&gt;</span><span class="cp">{{</span><span class="nv">title</span><span class="cp">}}</span><span class="x">&lt;/title&gt;</span>
+<span class="x">    &lt;/head&gt;</span>
+
+<span class="x">    &lt;body&gt;</span>
+<span class="x">        </span><span class="cp">{{</span><span class="nv">hook</span> <span class="s1">'content'</span><span class="cp">}}</span><span class="x"></span>
+<span class="x">    &lt;/body&gt;</span>
+<span class="x">&lt;/html&gt;</span>
+</pre></div>
+
+<p>test.html:</p>
+
+<div class="highlight highlight-handlebars"><pre><span class="x">&lt;div class="test"&gt;</span>
+<span class="x">    &lt;h1&gt;Test Page&lt;/h1&gt;</span>
+<span class="x">    &lt;p&gt;Welcome </span><span class="cp">{{</span><span class="nv">displayName</span><span class="cp">}}</span><span class="x">&lt;p&gt;</span>
+<span class="x">&lt;/div&gt;</span>
+</pre></div>
+
+<h2>
+<a name="public" class="anchor" href="#public"><span class="octicon octicon-link"></span></a>Public</h2>
+
+<p>Hosts the odo public directory which includes durandal components and identity and authentication code. Also hosts a public directory available in your application for static assets and durandal models and views.</p>
+
+<h2>
+<a name="passport-authentication---local-google-facebook-twitter-and-metocean" class="anchor" href="#passport-authentication---local-google-facebook-twitter-and-metocean"><span class="octicon octicon-link"></span></a>Passport authentication - local, google, facebook, twitter and metocean</h2>
+
+<p>A set of plugins that provide urls and methods to authenticate a user with passport and passport plugins. Custom local, twitter, facebook, google and metocean passport plugins have been provided.</p>
 
 <h1>
 <a name="technologies" class="anchor" href="#technologies"><span class="octicon octicon-link"></span></a>Technologies</h1>
@@ -156,23 +344,29 @@
 <li>
 <a href="https://github.com/tcoats/fetching">Fetching</a> (fetching strategies)</li>
 </ul><h2>
-<a name="back-end" class="anchor" href="#back-end"><span class="octicon octicon-link"></span></a>Back end</h2>
+<a name="backend-and-front-end" class="anchor" href="#backend-and-front-end"><span class="octicon octicon-link"></span></a>Backend and front end</h2>
 
 <ul>
 <li>
 <a href="http://requirejs.org/">Requirejs</a> (dependency injection)</li>
 <li>
+<a href="https://github.com/kriskowal/q">Q</a> (promises)</li>
+<li>
+<a href="https://github.com/broofa/node-uuid">node-uuid</a> (guids)</li>
+<li>
+<a href="https://github.com/hubspot/humanize">humanize</a> (string formatting)</li>
+</ul><h2>
+<a name="back-end" class="anchor" href="#back-end"><span class="octicon octicon-link"></span></a>Back end</h2>
+
+<ul>
+<li>
 <a href="http://expressjs.com/">Express</a> (http server)</li>
+<li>
+<a href="http://mcavage.me/node-restify/">Restify</a> (rest api)</li>
 <li>
 <a href="http://redis.io/">Redis</a> (storage)</li>
 <li>
 <a href="http://passportjs.org/">Passport</a> (authentication)</li>
-<li>
-<a href="http://maxantoni.de/projects/hub.js/">hub.js</a> (messaging)</li>
-<li>
-<a href="https://github.com/kriskowal/q">Q</a> (promises)</li>
-<li>
-<a href="https://github.com/broofa/node-uuid">node-uuid</a> (guids)</li>
 <li>
 <a href="https://github.com/emn178/js-md5">js-md5</a> (md5 hash)</li>
 <li>
@@ -182,8 +376,6 @@
 
 <ul>
 <li>
-<a href="http://requirejs.org/">Requirejs</a> (dependency injection)</li>
-<li>
 <a href="http://durandaljs.com/">Durandaljs</a> (single page app)</li>
 <li>
 <a href="http://knockoutjs.com/">Knockoutjs</a> (mvvm in browser)</li>
@@ -192,15 +384,11 @@
 <li>
 <a href="http://jquery.com/">jQuery</a> (dom manipulation)</li>
 <li>
-<a href="https://github.com/kriskowal/q">Q</a> (promises)</li>
-<li>
 <a href="http://getbootstrap.com/">Bootstrap</a> (scaffolding)</li>
 <li>
 <a href="https://daneden.me/animate/">Animate.css</a> (css animations)</li>
 <li>
 <a href="http://craig.is/killing/mice">Mousetrap</a> (keyboard shortcuts)</li>
-<li>
-<a href="https://github.com/broofa/node-uuid">node-uuid</a> (guids)</li>
 </ul>
         </section>
 
