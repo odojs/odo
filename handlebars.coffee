@@ -3,10 +3,9 @@ define [
 	'handlebars'
 	'express/lib/response'
 	'consolidate'
-	'underscore'
 	'path'
 	'odo/express'
-], (module, handlebars, response, cons, _, path, express) ->
+], (module, handlebars, response, cons, path, express) ->
 	class Handlebars
 		web: =>
 			#res.render
@@ -34,14 +33,18 @@ define [
 				if options.result?
 					result = options.result
 
-				options = _.extend {}, options.data, self.locals, {
-					query: req.query
-					body: req.body
-					partials: _.extend {}, self.locals.partials, options.partials
-				}
+				content = {}
+				
+				content[key] = value for key, value of options.data
+				content[key] = value for key, value of self.locals
+				content.query = req.query
+				content.body = req.body
+				content.partials = {}
+				content.partials[key] = value for key, value of self.locals.partials
+				content.partials[key] = value for key, value of options.partials
 
 				# Merge res.locals
-				options._locals = self.locals
+				content._locals = self.locals
 
 				# Default callback to respond
 				fn = result or (err, str) ->
@@ -49,7 +52,7 @@ define [
 					self.send str
 
 				# Render
-				app.render view, options, fn
+				app.render view, content, fn
 
 			express.engine 'html', cons.handlebars
 			express.set 'view engine', 'html'
