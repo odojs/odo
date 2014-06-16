@@ -6,8 +6,7 @@
       function Bower() {}
 
       Bower.prototype.web = function() {
-        express.route('/', express.modulepath(module.uri) + '/../../../bower_components');
-        return express.route('/odo', express.modulepath(module.uri) + '/public');
+        return express.route('/', express.modulepath(module.uri) + '/../../bower_components');
       };
 
       return Bower;

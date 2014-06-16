@@ -2,7 +2,7 @@
 (function() {
   var __slice = [].slice;
 
-  define(['odo/plugins', 'odo/messaging/hub', 'odo/config'], function(Plugins, hub, config) {
+  define(['odo/plugins', 'odo/hub', 'odo/config'], function(Plugins, hub, config) {
     return requirejs(config.systems, function() {
       var context, contexts, e, plugins, _i, _j, _len, _len1, _results;
       plugins = 1 <= arguments.length ? __slice.call(arguments, 0) : [];

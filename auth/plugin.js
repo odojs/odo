@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['module', 'passport', 'odo/config', 'redis', 'odo/user', 'odo/messaging/hub', 'node-uuid', 'odo/express', 'odo/restify'], function(module, passport, config, redis, User, hub, uuid, express, restify) {
+  define(['module', 'passport', 'odo/config', 'redis', 'odo/user', 'odo/hub', 'node-uuid', 'odo/express', 'odo/restify'], function(module, passport, config, redis, User, hub, uuid, express, restify) {
     var Auth, db;
     db = redis.createClient(config.redis.port, config.redis.host);
     return Auth = (function() {

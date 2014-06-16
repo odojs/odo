@@ -1,7 +1,7 @@
 define [
 	'odo/config'
-	'odo/messaging/hub'
-	'odo/messaging/eventstore'
+	'odo/hub'
+	'odo/eventstore'
 	'redis'
 	'js-md5'
 ], (config, hub, es, redis, md5) ->

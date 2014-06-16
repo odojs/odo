@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['passport', 'passport-metocean', 'odo/config', 'odo/messaging/hub', 'node-uuid', 'redis', 'odo/express'], function(passport, passportmetocean, config, hub, uuid, redis, express) {
+  define(['passport', 'passport-metocean', 'odo/config', 'odo/hub', 'node-uuid', 'redis', 'odo/express'], function(passport, passportmetocean, config, hub, uuid, redis, express) {
     var MetOceanAuthentication, db;
     db = redis.createClient(config.redis.port, config.redis.host);
     return MetOceanAuthentication = (function() {

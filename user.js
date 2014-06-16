@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['odo/config', 'odo/messaging/hub', 'odo/messaging/eventstore', 'redis', 'js-md5'], function(config, hub, es, redis, md5) {
+  define(['odo/config', 'odo/hub', 'odo/eventstore', 'redis', 'js-md5'], function(config, hub, es, redis, md5) {
     var User, UserApi, db;
     db = redis.createClient(config.redis.port, config.redis.host);
     User = (function() {

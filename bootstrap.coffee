@@ -1,6 +1,6 @@
 define [
 	'odo/plugins'
-	'odo/messaging/hub'
+	'odo/hub'
 	'odo/config'
 ], (Plugins, hub, config) ->
 	requirejs config.systems, (plugins...) ->

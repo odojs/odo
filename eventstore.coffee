@@ -1,4 +1,4 @@
-define ['node-uuid', 'eventstore', 'eventstore.redis', 'odo/messaging/hub', 'odo/config'], (uuid, eventstore, storage, hub, config) ->
+define ['node-uuid', 'eventstore', 'eventstore.redis', 'odo/hub', 'odo/config'], (uuid, eventstore, storage, hub, config) ->
 
 	# Setup the event store to publish to redis
 	es = eventstore.createStore

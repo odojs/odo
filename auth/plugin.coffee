@@ -4,7 +4,7 @@ define [
 	'odo/config'
 	'redis'
 	'odo/user'
-	'odo/messaging/hub'
+	'odo/hub'
 	'node-uuid'
 	'odo/express'
 	'odo/restify'

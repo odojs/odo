@@ -2,7 +2,7 @@ define [
 	'passport'
 	'passport-metocean'
 	'odo/config'
-	'odo/messaging/hub'
+	'odo/hub'
 	'node-uuid'
 	'redis'
 	'odo/express'
