@@ -249,7 +249,7 @@ The code sample above will combine the layout template with the test template fr
 
 layout.html:
 
-```handlebars
+```html
 <!DOCTYPE html>
 <html lang="en">
     <head>
