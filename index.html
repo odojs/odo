@@ -147,14 +147,15 @@
 
 <p>Require 'odo/config' into your code to access all configuration.</p>
 
-<p>Configuration is merged from five sources:
-1. A local config.cson file
-2. A cson formatted environment variable 'ODO_CONFIG'
-3. Individual environment variables like 'EXPRESS_PORT'
-4. A cson formatted environment variable 'ODO_EXAMPLE_ODO_CONFIG'
-5. Individual environment variables like 'ODO_EXAMPLE_EXPRESS_PORT'</p>
+<p>Configuration is merged from five sources:</p>
 
-<p>Use the local config.cson file to add plugins to your project, add configuration that won't change per environment and add events and commands you want published and sent at the start of the application.</p>
+<ol>
+<li>A local config.cson file</li>
+<li>A cson formatted environment variable 'ODO_CONFIG'</li>
+<li>Individual environment variables like 'EXPRESS_PORT'</li>
+<li>A cson formatted environment variable 'ODO_EXAMPLE_ODO_CONFIG'</li>
+<li>Individual environment variables like 'ODO_EXAMPLE_EXPRESS_PORT'</li>
+</ol><p>Use the local config.cson file to add plugins to your project, add configuration that won't change per environment and add events and commands you want published and sent at the start of the application.</p>
 
 <p>Use the environment variable named 'ODO_CONFIG' for database details and other values that change between development and production environments and are shared across all applications running on the same computer.</p>
 
