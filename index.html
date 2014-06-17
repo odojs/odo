@@ -80,7 +80,7 @@
 
 <p>Plugins are independent features of the application loosely coupled to other plugins to make up the whole application. Usually plugins communicate through a combination of dependency injection and events.</p>
 
-<p>Plugins are added to the systems property in config.cson. Express web authentication modules 'odo/auth', 'odo/auth/local', 'odo/auth/facebook' and public folder 'odo/public' are examples of plugins.</p>
+<p>Plugins are added to the systems array in config.cson. Express web authentication modules 'odo/auth', 'odo/auth/local', 'odo/auth/facebook' and public folder 'odo/public' are examples of plugins.</p>
 
 <h2>
 <a name="execution-context" class="anchor" href="#execution-context"><span class="octicon octicon-link"></span></a>Execution context</h2>
@@ -115,7 +115,7 @@
 <span class="nx">requirejs</span> <span class="p">[</span><span class="s">'odo/bootstrap'</span><span class="p">]</span>
 </pre></div>
 
-<p>In the frontend requirejs is used more conventionally - included by the html file and configured by a javascript file.</p>
+<p>In the frontend requirejs is used more conventionally - included by a html file and configured by a javascript file.</p>
 
 <h2>
 <a name="mandrill" class="anchor" href="#mandrill"><span class="octicon octicon-link"></span></a><a href="http://mandrill.com/">Mandrill</a>
@@ -147,25 +147,32 @@
 
 <p>Require 'odo/config' into your code to access all configuration.</p>
 
-<p>The code reads a local cson file 'config.cson'. Use this file to add plugins to your project, add global configuration that won't change per environment and add events and commands you want published and sent at the start of the application.</p>
+<p>Configuration is merged from five sources:
+1. A local config.cson file
+2. A cson formatted environment variable 'ODO_CONFIG'
+3. Individual environment variables like 'EXPRESS_PORT'
+4. A cson formatted environment variable 'ODO_EXAMPLE_ODO_CONFIG'
+5. Individual environment variables like 'ODO_EXAMPLE_EXPRESS_PORT'</p>
 
-<p>Additionally an environment variable named 'ODO_CONFIG' is parsed as a cson file. Use this for database details and other values that change between development and production environments.</p>
+<p>Use the local config.cson file to add plugins to your project, add configuration that won't change per environment and add events and commands you want published and sent at the start of the application.</p>
 
-<p>Using the domain configuration set in config.cson a further environment variable is also loaded as a cson file. For example if odo: domain: 'odo-example' is present in the config.cson file then 'ODO_EXAMPLE_ODO_CONFIG' is also parsed. Use this for configuration specific to a project.</p>
+<p>Use the environment variable named 'ODO_CONFIG' for database details and other values that change between development and production environments and are shared across all applications running on the same computer.</p>
 
-<p>Direct environment variables are also checked, see config.coffee for a template. For example both 'EXPRESS_PORT' and 'ODO_EXAMPLE_EXPRESS_PORT' will be checked to get the port express should run on, along with any values set in 'ODO_CONFIG' and 'ODO_EXAMPLE_ODO_CONFIG'.</p>
+<p>Using the domain configuration set in config.cson an additional environment variable is also loaded. For example if odo: domain: 'odo-example' is present in the config.cson file then 'ODO_EXAMPLE_ODO_CONFIG' is also parsed. Use this for configuration specific to a project.</p>
+
+<p>Direct environment variables are checked, see config.coffee for a template. For example both 'EXPRESS_PORT' and 'ODO_EXAMPLE_EXPRESS_PORT' will be checked to get the port express should run on, along with any values set in 'ODO_CONFIG' and 'ODO_EXAMPLE_ODO_CONFIG'.</p>
 
 <h2>
 <a name="eventstore" class="anchor" href="#eventstore"><span class="octicon octicon-link"></span></a>Eventstore</h2>
 
-<p>Eventstore provides tooling to help implement Event Sourcing. The infrustructire includes an extend method to add methods and properties to an aggregate object to support event sourcing and the CQRS pattern. It uses the eventstore library and is backed by redis.</p>
+<p>Eventstore provides tooling to help implement Event Sourcing. The infrastructure includes an extend method to add methods and properties to an aggregate object to support event sourcing and the CQRS pattern. It uses the eventstore library and is backed by redis.</p>
 
 <p>See user.coffee for a web, domain and projection eventstore example.</p>
 
 <h2>
 <a name="hub" class="anchor" href="#hub"><span class="octicon octicon-link"></span></a>Hub</h2>
 
-<p>The hub used for cross plugin communication. It's following the CQRS pattern separating commands from events. The hub is using redis publish and subscribe. Event listers can be bound through the receive method and command handlers can be bound through the handle method. Send and publish methods are used to send commands and publish events.</p>
+<p>The hub used for cross plugin communication. It follows the CQRS pattern separating commands from events. The hub is using redis publish and subscribe with specific channels dedicated to each application. Event listers can be bound through the receive method and command handlers can be bound through the handle method. Send and publish methods are used to send commands and publish events.</p>
 
 <div class="highlight highlight-coffee"><pre><span class="nx">define</span> <span class="p">[</span><span class="s">'odo/hub'</span><span class="p">],</span> <span class="nf">(hub) -&gt;</span>
     <span class="nx">hub</span><span class="p">.</span><span class="nx">receive</span> <span class="s">'userHasDisplayName'</span><span class="p">,</span> <span class="nf">(event, cb) -&gt;</span>
@@ -187,7 +194,7 @@
 <h2>
 <a name="plugin" class="anchor" href="#plugin"><span class="octicon octicon-link"></span></a>Plugin</h2>
 
-<p>Plugin is a component to help load other plugins. Provides web, api, domain and projection methods that call the same named method on an array of plugins passed to it's constructor.</p>
+<p>Plugin is a component to help load other plugins. It provides web, api, domain and projection methods that call the same named method on an array of plugins passed to it's constructor.</p>
 
 <div class="highlight highlight-coffee"><pre><span class="nx">define</span> <span class="p">[</span>
     <span class="s">'odo/plugins'</span>
@@ -203,7 +210,7 @@
 <h2>
 <a name="misc-helpers" class="anchor" href="#misc-helpers"><span class="octicon octicon-link"></span></a>Misc helpers</h2>
 
-<p>Recorder and sequencer are used internally, you're welcome to use them too.</p>
+<p>Recorder and sequencer are classes used internally, you're welcome to use them too although they might change.</p>
 
 <hr><h1>
 <a name="backend-plugins" class="anchor" href="#backend-plugins"><span class="octicon octicon-link"></span></a>Backend plugins</h1>
@@ -241,14 +248,14 @@
 <h2>
 <a name="bower" class="anchor" href="#bower"><span class="octicon octicon-link"></span></a>Bower</h2>
 
-<p>A web plugin to host the /bower_components directory so anything you've installed with bower is available to the web.</p>
+<p>The bower plugin hosts the /bower_components directory so anything you've installed with bower is available to the web.</p>
 
 <p>E.g. <code>bower install --save jquery</code> will result in <code>http://localhost:1234/jquery/dist/jquery.min.js</code> being available, depending on your express port.</p>
 
 <h2>
 <a name="durandal" class="anchor" href="#durandal"><span class="octicon octicon-link"></span></a>Durandal</h2>
 
-<p>An express plugin to register durandal components you want called in the Front End.</p>
+<p>The durandal plugin allows other plugins to register components to be used in the Front End.</p>
 
 <div class="highlight highlight-coffee"><pre><span class="nx">define</span> <span class="p">[</span>
     <span class="s">'module'</span>
@@ -283,7 +290,7 @@
 <h2>
 <a name="handlebars" class="anchor" href="#handlebars"><span class="octicon octicon-link"></span></a>Handlebars</h2>
 
-<p>A plugin for web context to register handlebars as the view engine for express and add additional functionality.</p>
+<p>Handlebars is a plugin in the web context to register handlebars as the view engine for express and add additional functionality for handlebars including a custom render method.</p>
 
 <div class="highlight highlight-coffee"><pre><span class="nx">define</span> <span class="p">[</span><span class="s">'odo/express'</span><span class="p">],</span> <span class="nf">(module, express) -&gt;</span>
     <span class="nv">web: </span><span class="nf">=&gt;</span>
@@ -297,7 +304,7 @@
                     <span class="nv">content: </span><span class="s">'test'</span>
 </pre></div>
 
-<p>This will combine the layout template with the test template from a directory called 'templates'.</p>
+<p>The code sample above will combine the layout template with the test template from a directory called 'templates' and pass in some information to be used when rendering.</p>
 
 <p>layout.html:</p>
 
@@ -328,12 +335,12 @@
 <h2>
 <a name="public" class="anchor" href="#public"><span class="octicon octicon-link"></span></a>Public</h2>
 
-<p>Hosts the odo public directory which includes durandal components and identity and authentication code. Also hosts a public directory available in your application for static assets and durandal models and views.</p>
+<p>The public plugin hosts the odo public directory through express which includes durandal components and identity and authentication code. Also hosts a public directory available in your application for static assets and durandal models and views.</p>
 
 <h2>
 <a name="passport-authentication---local-google-facebook-twitter-and-metocean" class="anchor" href="#passport-authentication---local-google-facebook-twitter-and-metocean"><span class="octicon octicon-link"></span></a>Passport authentication - local, google, facebook, twitter and metocean</h2>
 
-<p>A set of plugins that provide urls and methods to authenticate a user with passport and passport plugins. Custom local, twitter, facebook, google and metocean passport plugins have been provided.</p>
+<p>The passport authentication plugins provide urls and methods to authenticate a user with passport and passport plugins. Custom local, twitter, facebook, google and metocean passport plugins have been provided.</p>
 
 <hr><h1>
 <a name="technologies" class="anchor" href="#technologies"><span class="octicon octicon-link"></span></a>Technologies</h1>
@@ -378,6 +385,12 @@
 <a href="https://github.com/emn178/js-md5">js-md5</a> (md5 hash)</li>
 <li>
 <a href="https://github.com/jamuhl/nodeEventStore">eventstore</a> (event sourcing)</li>
+<li>
+<a href="https://github.com/visionmedia/debug">debug</a> (tracing)</li>
+<li>
+<a href="https://github.com/bevry/cson">cson</a> (coffeescript object notation)</li>
+<li>
+<a href="https://github.com/expressjs/multer">multer</a> (file uploads)</li>
 </ul><h2>
 <a name="front-end" class="anchor" href="#front-end"><span class="octicon octicon-link"></span></a>Front end</h2>
 
