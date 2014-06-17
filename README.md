@@ -39,7 +39,7 @@ Infrastructure is included as and when you need it by code you write. Components
 ## Plugins
 Plugins are independent features of the application loosely coupled to other plugins to make up the whole application. Usually plugins communicate through a combination of dependency injection and events.
 
-Plugins are added to the systems property in config.cson. Express web authentication modules 'odo/auth', 'odo/auth/local', 'odo/auth/facebook' and public folder 'odo/public' are examples of plugins.
+Plugins are added to the systems array in config.cson. Express web authentication modules 'odo/auth', 'odo/auth/local', 'odo/auth/facebook' and public folder 'odo/public' are examples of plugins.
 
 ## Execution context
 Plugins can run in four contexts: web, api, domain and projection. This technique allows the web code, database logic, and validation rules for a particular piece of information to exist in the same codebase but run in four different contexts. Having all aspects in the same codebase increases speed of development and still provides good decoupling between concepts.
@@ -71,7 +71,7 @@ requirejs.config
 requirejs ['odo/bootstrap']
 ```
 
-In the frontend requirejs is used more conventionally - included by the html file and configured by a javascript file.
+In the frontend requirejs is used more conventionally - included by a html file and configured by a javascript file.
 
 ## [Mandrill](http://mandrill.com/)
 For sending emails.
@@ -99,21 +99,28 @@ define ['odo/mandrill'], (Mandrill) ->
 ## Configuration
 Require 'odo/config' into your code to access all configuration.
 
-The code reads a local cson file 'config.cson'. Use this file to add plugins to your project, add global configuration that won't change per environment and add events and commands you want published and sent at the start of the application.
+Configuration is merged from five sources:
+1. A local config.cson file
+2. A cson formatted environment variable 'ODO_CONFIG'
+3. Individual environment variables like 'EXPRESS_PORT'
+4. A cson formatted environment variable 'ODO_EXAMPLE_ODO_CONFIG'
+5. Individual environment variables like 'ODO_EXAMPLE_EXPRESS_PORT'
 
-Additionally an environment variable named 'ODO_CONFIG' is parsed as a cson file. Use this for database details and other values that change between development and production environments.
+Use the local config.cson file to add plugins to your project, add configuration that won't change per environment and add events and commands you want published and sent at the start of the application.
 
-Using the domain configuration set in config.cson a further environment variable is also loaded as a cson file. For example if odo: domain: 'odo-example' is present in the config.cson file then 'ODO_EXAMPLE_ODO_CONFIG' is also parsed. Use this for configuration specific to a project.
+Use the environment variable named 'ODO_CONFIG' for database details and other values that change between development and production environments and are shared across all applications running on the same computer.
 
-Direct environment variables are also checked, see config.coffee for a template. For example both 'EXPRESS_PORT' and 'ODO_EXAMPLE_EXPRESS_PORT' will be checked to get the port express should run on, along with any values set in 'ODO_CONFIG' and 'ODO_EXAMPLE_ODO_CONFIG'.
+Using the domain configuration set in config.cson an additional environment variable is also loaded. For example if odo: domain: 'odo-example' is present in the config.cson file then 'ODO_EXAMPLE_ODO_CONFIG' is also parsed. Use this for configuration specific to a project.
+
+Direct environment variables are checked, see config.coffee for a template. For example both 'EXPRESS_PORT' and 'ODO_EXAMPLE_EXPRESS_PORT' will be checked to get the port express should run on, along with any values set in 'ODO_CONFIG' and 'ODO_EXAMPLE_ODO_CONFIG'.
 
 ## Eventstore
-Eventstore provides tooling to help implement Event Sourcing. The infrustructire includes an extend method to add methods and properties to an aggregate object to support event sourcing and the CQRS pattern. It uses the eventstore library and is backed by redis.
+Eventstore provides tooling to help implement Event Sourcing. The infrastructure includes an extend method to add methods and properties to an aggregate object to support event sourcing and the CQRS pattern. It uses the eventstore library and is backed by redis.
 
 See user.coffee for a web, domain and projection eventstore example.
 
 ## Hub
-The hub used for cross plugin communication. It's following the CQRS pattern separating commands from events. The hub is using redis publish and subscribe. Event listers can be bound through the receive method and command handlers can be bound through the handle method. Send and publish methods are used to send commands and publish events.
+The hub used for cross plugin communication. It follows the CQRS pattern separating commands from events. The hub is using redis publish and subscribe with specific channels dedicated to each application. Event listers can be bound through the receive method and command handlers can be bound through the handle method. Send and publish methods are used to send commands and publish events.
 
 ```coffee
 define ['odo/hub'], (hub) ->
@@ -134,7 +141,7 @@ define ['odo/hub'], (hub) ->
 ```
 
 ## Plugin
-Plugin is a component to help load other plugins. Provides web, api, domain and projection methods that call the same named method on an array of plugins passed to it's constructor.
+Plugin is a component to help load other plugins. It provides web, api, domain and projection methods that call the same named method on an array of plugins passed to it's constructor.
 
 ```coffee
 define [
@@ -149,7 +156,7 @@ define [
 ```
 
 ## Misc helpers
-Recorder and sequencer are used internally, you're welcome to use them too.
+Recorder and sequencer are classes used internally, you're welcome to use them too although they might change.
 
 ---
 
@@ -181,12 +188,12 @@ define ['odo/restify'], (restify) ->
 'odo/restify' needs to be included in the systems array after any plugins wanting api context.
 
 ## Bower
-A web plugin to host the /bower_components directory so anything you've installed with bower is available to the web.
+The bower plugin hosts the /bower_components directory so anything you've installed with bower is available to the web.
 
 E.g. `bower install --save jquery` will result in `http://localhost:1234/jquery/dist/jquery.min.js` being available, depending on your express port.
 
 ## Durandal
-An express plugin to register durandal components you want called in the Front End.
+The durandal plugin allows other plugins to register components to be used in the Front End.
 
 ```coffee
 define [
@@ -222,7 +229,7 @@ define ['knockout', 'plugins/router'], (ko, router) ->
 ```
 
 ## Handlebars
-A plugin for web context to register handlebars as the view engine for express and add additional functionality.
+Handlebars is a plugin in the web context to register handlebars as the view engine for express and add additional functionality for handlebars including a custom render method.
 
 ```coffee
 define ['odo/express'], (module, express) ->
@@ -237,7 +244,7 @@ define ['odo/express'], (module, express) ->
                     content: 'test'
 ```
 
-This will combine the layout template with the test template from a directory called 'templates'.
+The code sample above will combine the layout template with the test template from a directory called 'templates' and pass in some information to be used when rendering.
 
 layout.html:
 
@@ -268,10 +275,10 @@ test.html:
 ```
 
 ## Public
-Hosts the odo public directory which includes durandal components and identity and authentication code. Also hosts a public directory available in your application for static assets and durandal models and views.
+The public plugin hosts the odo public directory through express which includes durandal components and identity and authentication code. Also hosts a public directory available in your application for static assets and durandal models and views.
 
 ## Passport authentication - local, google, facebook, twitter and metocean
-A set of plugins that provide urls and methods to authenticate a user with passport and passport plugins. Custom local, twitter, facebook, google and metocean passport plugins have been provided.
+The passport authentication plugins provide urls and methods to authenticate a user with passport and passport plugins. Custom local, twitter, facebook, google and metocean passport plugins have been provided.
 
 ---
 
@@ -295,6 +302,9 @@ A set of plugins that provide urls and methods to authenticate a user with passp
 - [Passport](http://passportjs.org/) (authentication)
 - [js-md5](https://github.com/emn178/js-md5) (md5 hash)
 - [eventstore](https://github.com/jamuhl/nodeEventStore) (event sourcing)
+- [debug](https://github.com/visionmedia/debug) (tracing)
+- [cson](https://github.com/bevry/cson) (coffeescript object notation)
+- [multer](https://github.com/expressjs/multer) (file uploads)
 
 ## Front end
 - [Durandaljs](http://durandaljs.com/) (single page app)
