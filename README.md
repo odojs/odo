@@ -100,6 +100,7 @@ define ['odo/mandrill'], (Mandrill) ->
 Require 'odo/config' into your code to access all configuration.
 
 Configuration is merged from five sources:
+
 1. A local config.cson file
 2. A cson formatted environment variable 'ODO_CONFIG'
 3. Individual environment variables like 'EXPRESS_PORT'
