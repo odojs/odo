@@ -1,6 +1,12 @@
 # Odo - whatever you want it to be
 A Nodejs framework for creating awesome things.
 
+Install via npm
+
+```zsh
+npm install --save odo
+```
+
 [Status and current work on Trello](https://trello.com/board/odo/4f7b3e995aa70d786202e667)
 
 ## Goals
