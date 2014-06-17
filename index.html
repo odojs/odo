@@ -309,20 +309,20 @@
 
 <p>layout.html:</p>
 
-<div class="highlight highlight-handlebars"><pre><span class="x">&lt;!DOCTYPE html&gt;</span>
-<span class="x">&lt;html lang="en"&gt;</span>
-<span class="x">    &lt;head&gt;</span>
-<span class="x">        &lt;meta charset="utf-8"&gt;</span>
-<span class="x">        &lt;meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" /&gt;</span>
-<span class="x">        &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</span>
+<div class="highlight highlight-html"><pre><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html</span> <span class="na">lang=</span><span class="s">"en"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;head&gt;</span>
+        <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"utf-8"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">"X-UA-Compatible"</span> <span class="na">content=</span><span class="s">"IE=edge, chrome=1"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"viewport"</span> <span class="na">content=</span><span class="s">"width=device-width, initial-scale=1.0"</span><span class="nt">&gt;</span>
 
-<span class="x">        &lt;title&gt;</span><span class="cp">{{</span><span class="nv">title</span><span class="cp">}}</span><span class="x">&lt;/title&gt;</span>
-<span class="x">    &lt;/head&gt;</span>
+        <span class="nt">&lt;title&gt;</span>{{title}}<span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;/head&gt;</span>
 
-<span class="x">    &lt;body&gt;</span>
-<span class="x">        </span><span class="cp">{{</span><span class="nv">hook</span> <span class="s1">'content'</span><span class="cp">}}</span><span class="x"></span>
-<span class="x">    &lt;/body&gt;</span>
-<span class="x">&lt;/html&gt;</span>
+    <span class="nt">&lt;body&gt;</span>
+        {{hook 'content'}}
+    <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
 </pre></div>
 
 <p>test.html:</p>
