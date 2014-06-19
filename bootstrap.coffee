@@ -7,6 +7,8 @@ define [
 		plugins = new Plugins plugins
 		contexts = process.argv.slice 2
 		
+		contexts.push 'web' if contexts.length is 0
+		
 		for context in contexts
 			plugins[context]()
 		

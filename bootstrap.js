@@ -8,6 +8,9 @@
       plugins = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
       plugins = new Plugins(plugins);
       contexts = process.argv.slice(2);
+      if (contexts.length === 0) {
+        contexts.push('web');
+      }
       for (_i = 0, _len = contexts.length; _i < _len; _i++) {
         context = contexts[_i];
         plugins[context]();
