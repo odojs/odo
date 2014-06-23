@@ -43,7 +43,8 @@ define [
 				
 			@app.use require('compression')()
 			bodyParser = require 'body-parser'
-			@app.use bodyParser.urlencoded()
+			@app.use bodyParser.urlencoded
+				extended: yes
 			@app.use bodyParser.json()
 			if @app.get('upload directory')?
 				@app.use require('multer')({ dest: @app.get('upload directory') })

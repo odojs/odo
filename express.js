@@ -48,7 +48,9 @@
         }
         this.app.use(require('compression')());
         bodyParser = require('body-parser');
-        this.app.use(bodyParser.urlencoded());
+        this.app.use(bodyParser.urlencoded({
+          extended: true
+        }));
         this.app.use(bodyParser.json());
         if (this.app.get('upload directory') != null) {
           this.app.use(require('multer')({
