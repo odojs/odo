@@ -3,50 +3,57 @@
   var __slice = [].slice;
 
   define(['odo/plugins', 'odo/hub', 'odo/config'], function(Plugins, hub, config) {
-    return requirejs(config.systems, function() {
-      var context, contexts, e, plugins, _i, _j, _len, _len1, _results;
-      plugins = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-      plugins = new Plugins(plugins);
-      contexts = process.argv.slice(2);
-      if (contexts.length === 0) {
-        contexts.push('web');
-      }
-      for (_i = 0, _len = contexts.length; _i < _len; _i++) {
-        context = contexts[_i];
-        plugins[context]();
-      }
-      _results = [];
-      for (_j = 0, _len1 = contexts.length; _j < _len1; _j++) {
-        context = contexts[_j];
-        if (config[context] == null) {
-          continue;
+    return function(contexts) {
+      return requirejs(config.systems, function() {
+        var context, e, plugins, _i, _j, _len, _len1, _results;
+        plugins = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+        plugins = new Plugins(plugins);
+        if (contexts == null) {
+          contexts = ['web'];
         }
-        _results.push((function() {
-          var _k, _len2, _ref, _results1;
-          _ref = config[context];
-          _results1 = [];
-          for (_k = 0, _len2 = _ref.length; _k < _len2; _k++) {
-            e = _ref[_k];
-            if (e.e != null) {
-              hub.publish({
-                event: e.e,
-                payload: e.p
-              });
-            }
-            if (e.c != null) {
-              _results1.push(hub.send({
-                command: e.c,
-                payload: e.p
-              }));
-            } else {
-              _results1.push(void 0);
-            }
+        if (typeof contexts === 'string') {
+          contexts = [contexts];
+        }
+        if (contexts.length === 0) {
+          contexts = ['web'];
+        }
+        for (_i = 0, _len = contexts.length; _i < _len; _i++) {
+          context = contexts[_i];
+          plugins[context]();
+        }
+        _results = [];
+        for (_j = 0, _len1 = contexts.length; _j < _len1; _j++) {
+          context = contexts[_j];
+          if (config[context] == null) {
+            continue;
           }
-          return _results1;
-        })());
-      }
-      return _results;
-    });
+          _results.push((function() {
+            var _k, _len2, _ref, _results1;
+            _ref = config[context];
+            _results1 = [];
+            for (_k = 0, _len2 = _ref.length; _k < _len2; _k++) {
+              e = _ref[_k];
+              if (e.e != null) {
+                hub.publish({
+                  event: e.e,
+                  payload: e.p
+                });
+              }
+              if (e.c != null) {
+                _results1.push(hub.send({
+                  command: e.c,
+                  payload: e.p
+                }));
+              } else {
+                _results1.push(void 0);
+              }
+            }
+            return _results1;
+          })());
+        }
+        return _results;
+      });
+    };
   });
 
 }).call(this);
