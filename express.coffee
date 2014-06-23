@@ -58,6 +58,7 @@ define [
 					res.header 'Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE'
 					res.header 'Access-Control-Allow-Headers', 'Content-Type'
 					next()
+			@app.use require('morgan')()
 			
 			@app.route = (source, target) =>
 				@app.use source, express.static target

@@ -71,6 +71,7 @@
             };
           })(this));
         }
+        this.app.use(require('morgan')());
         this.app.route = (function(_this) {
           return function(source, target) {
             return _this.app.use(source, express["static"](target));

@@ -31,6 +31,7 @@
           }));
         }
         server.use(restify.conditionalRequest());
+        server.use(require('morgan')());
         this.play(server);
         port = ((_ref1 = config.restify) != null ? _ref1.port : void 0) || process.env.PORT || 8080;
         return server.listen(port, function() {

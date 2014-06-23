@@ -34,6 +34,7 @@ define [
 			#			rate: 0
 			#			burst: 0
 			server.use restify.conditionalRequest()
+			server.use require('morgan')()
 			
 			@play server
 			port = config.restify?.port || process.env.PORT || 8080
