@@ -1,7 +1,7 @@
-define ['durandal/system', './animate.css'], (system, Animate) ->
+define ['durandal/system', './velocity'], (system, Velocity) ->
 	(context) ->
 		system.extend context, {
 			inAnimation: 'slideInRight'
 			outAnimation: 'slideOutLeft'
 		}
-		new Animate().create context
+		new Velocity().create context

@@ -2,10 +2,10 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['durandal/system', 'jquery', 'q'], function(system, $, Q) {
-    var Animate;
-    return Animate = (function() {
-      function Animate() {
+  define(['durandal/system', 'jquery', 'q', 'velocity'], function(system, $, Q) {
+    var Velocity;
+    return Velocity = (function() {
+      function Velocity() {
         this.inTransition = __bind(this.inTransition, this);
         this.outTransition = __bind(this.outTransition, this);
         this.endTransition = __bind(this.endTransition, this);
@@ -13,7 +13,22 @@
         this.create = __bind(this.create, this);
       }
 
-      Animate.prototype.create = function(settings) {
+      Velocity.prototype.animations = {
+        slideInRight: {
+          translateX: ['0px', '2000px']
+        },
+        slideInLeft: {
+          translateX: ['0px', '-2000px']
+        },
+        slideOutRight: {
+          translateX: ['2000px', '0px']
+        },
+        slideOutLeft: {
+          translateX: ['-2000px', '0px']
+        }
+      };
+
+      Velocity.prototype.create = function(settings) {
         this.settings = settings;
         this.deferred = Q.defer();
         if (this.settings.scrolltop == null) {
@@ -27,7 +42,7 @@
         return this.deferred.promise;
       };
 
-      Animate.prototype.startTransition = function() {
+      Velocity.prototype.startTransition = function() {
         if (this.settings.activeView != null) {
           return this.outTransition();
         } else {
@@ -35,51 +50,48 @@
         }
       };
 
-      Animate.prototype.endTransition = function() {
+      Velocity.prototype.endTransition = function() {
         return this.deferred.resolve();
       };
 
-      Animate.prototype.outTransition = function() {
+      Velocity.prototype.outTransition = function() {
         var $previousView;
         $previousView = $(this.settings.activeView);
         $previousView.addClass('transition');
-        $previousView.addClass('animated');
-        $previousView.addClass(this.settings.outAnimation);
-        return setTimeout((function(_this) {
+        return $previousView.velocity(this.animations[this.settings.outAnimation], 300, (function(_this) {
           return function() {
+            $previousView.removeClass('transition');
             $previousView.hide();
             _this.inTransition();
             return _this.endTransition();
           };
-        })(this), 200);
+        })(this));
       };
 
-      Animate.prototype.inTransition = function() {
+      Velocity.prototype.inTransition = function() {
         var $newView;
         this.settings.triggerAttach();
         $newView = $(this.settings.child);
         $newView.addClass('transition');
-        $newView.addClass('animated');
-        $newView.show();
-        $newView.addClass(this.settings.inAnimation);
-        if ((this.settings.scrolltop != null) && $(window).scrollTop() > $newView.offset().top) {
-          $('html, body').animate({
-            scrollTop: $newView.offset().top
-          }, 300);
-        }
-        return setTimeout((function(_this) {
+        $newView.velocity(this.animations[this.settings.inAnimation], 300, (function(_this) {
           return function() {
-            $newView.removeClass(_this.settings.inAnimation);
-            $newView.removeClass(_this.settings.outAnimation);
+            $newView.css('-webkit-transform', '');
+            $newView.css('-moz-transform', '');
+            $newView.css('-ms-transform', '');
+            $newView.css('transform', '');
             $newView.removeClass('transition');
-            $newView.removeClass('animated');
             _this.endTransition();
             return $newView.find('[autofocus],.autofocus').first().focus();
           };
-        })(this), 300);
+        })(this));
+        if ((this.settings.scrolltop != null) && $(window).scrollTop() > $newView.offset().top) {
+          return $('html, body').velocity({
+            scrollTop: $newView.offset().top
+          }, 300);
+        }
       };
 
-      return Animate;
+      return Velocity;
 
     })();
   });
