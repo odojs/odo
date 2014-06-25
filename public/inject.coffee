@@ -1,2 +1,2 @@
-define ['injectinto/inject'], (Inject) ->
+define ['injectinto'], (Inject) ->
 	new Inject()
