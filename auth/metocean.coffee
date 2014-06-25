@@ -14,9 +14,8 @@ define [
 			passport.use new passportmetocean.Strategy(
 				clientID: config.passport.metocean['client id']
 				clientSecret: config.passport.metocean['client secret']
+				host: "#{config.metocean.protocol}://mov.#{config.metocean.rootdomain}"
 				callbackURL: config.passport.metocean['host'] + 'odo/auth/metocean/callback'
-				authorizationURL: config.passport.metocean['authorization url']
-				tokenURL: config.passport.metocean['token url']
 				passReqToCallback: true
 			, @signin)
 			
