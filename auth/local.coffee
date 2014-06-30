@@ -41,6 +41,9 @@ define [
 			express.post '/odo/auth/local/resettoken', @generateresettoken
 			express.post '/odo/auth/local/reset', @reset
 			express.post '/odo/auth/local/signup', @signup
+			express.post '/odo/auth/local/assignusername', @assignusername
+			express.post '/odo/auth/local/assignpassword', @assignpassword
+			express.post '/odo/auth/local/remove', @remove
 		
 		projection: =>
 			hub.receive 'userHasLocalSignin', (event, cb) =>
@@ -219,13 +222,13 @@ define [
 					res.send 400, 'Incorrect email address'
 					return
 				
-				token = uuid.v1()
+				token = uuid.v4()
 				console.log "createPasswordResetToken #{token}"
 				hub.send
 					command: 'createPasswordResetToken'
 					payload:
 						id: userid
-						token: uuid.v1()
+						token: token
 					
 				res.send 'Token generated'
 		
@@ -301,7 +304,7 @@ define [
 			
 			else
 				console.log 'no user exists yet, creating a new id'
-				userid = uuid.v1()
+				userid = uuid.v4()
 				profile.id = userid
 				hub.send
 					command: 'startTrackingUser'
@@ -348,6 +351,54 @@ define [
 						return
 					
 					res.redirect '/'
+		
+		assignusername: (req, res) =>
+			if !req.body.username?
+				res.send 400, 'Username required'
+				return
+				
+			if !req.body.id?
+				res.send 400, 'Id required'
+				return
+				
+			console.log "Assigning username #{req.body.username} to #{req.body.id}"
+			hub.send
+				command: 'assignUsernameToUser'
+				payload:
+					id: req.body.id
+					username: req.body.username
+		
+		assignpassword: (req, res) =>
+			if !req.body.password?
+				res.send 400, 'Password required'
+				return
+				
+			if !req.body.id?
+				res.send 400, 'Id required'
+				return
+				
+			console.log "Assigning a password to #{req.body.id}"
+			hub.send
+				command: 'assignPasswordToUser'
+				payload:
+					id: req.body.id
+					password: req.body.password
+		
+		remove: (req, res) =>
+			if !req.body.id?
+				res.send 400, 'Id required'
+				return
+				
+			if !req.body.profile?
+				res.send 400, 'Profile required'
+				return
+				
+			console.log "Removing local signin for #{req.body.id}"
+			hub.send
+				command: 'removeLocalSigninForUser'
+				payload:
+					id: req.body.id
+					profile: req.body.profile
 		
 		get: (username, callback) ->
 			db.hget "#{config.odo.domain}:localusers", username, (err, data) =>

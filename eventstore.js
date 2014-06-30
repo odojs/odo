@@ -40,7 +40,7 @@
           },
           "new": function(event, payload) {
             return this.apply({
-              id: uuid.v1(),
+              id: uuid.v4(),
               time: new Date(),
               payload: payload,
               event: event

@@ -97,7 +97,7 @@
               });
             } else if (userid == null) {
               console.log('no user exists yet, creating a new id');
-              userid = uuid.v1();
+              userid = uuid.v4();
               hub.send({
                 command: 'startTrackingUser',
                 payload: {

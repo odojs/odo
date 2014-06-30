@@ -19,12 +19,17 @@
 		dfd.promise
 		
 	assignUsernameToUser: (id, username) =>
-		Q $.post '/sendcommand/assignUsernameToUser',
+		Q $.post '/odo/auth/local/assignusername',
 			id: id
 			username: username
 	
+	assignPasswordToUser: (id, password) =>
+		Q $.post '/odo/auth/local/assignpassword',
+			id: id
+			password: password
+	
 	assignDisplayNameToUser: (id, displayName) =>
-		Q $.post '/sendcommand/assignDisplayNameToUser',
+		Q $.post '/odo/auth/assigndisplayname',
 			id: id
 			displayName: displayName
 	
@@ -51,28 +56,23 @@
 			username: username
 			password: password
 	
-	assignPasswordToUser: (id, password) =>
-		Q $.post '/sendcommand/assignPasswordToUser',
-			id: id
-			password: password
-	
 	disconnectTwitterFromUser: (id, profile) =>
-		Q $.post '/sendcommand/disconnectTwitterFromUser',
+		Q $.post '/odo/auth/twitter/disconnect',
 			id: id
 			profile: profile
 	
 	disconnectFacebookFromUser: (id, profile) =>
-		Q $.post '/sendcommand/disconnectFacebookFromUser',
+		Q $.post '/odo/auth/facebook/disconnect',
 			id: id
 			profile: profile
 	
 	disconnectGoogleFromUser: (id, profile) =>
-		Q $.post '/sendcommand/disconnectGoogleFromUser',
+		Q $.post '/odo/auth/google/disconnect',
 			id: id
 			profile: profile
 	
 	removeLocalSigninForUser: (id, profile) =>
-		Q $.post '/sendcommand/removeLocalSigninForUser',
+		Q $.post '/odo/auth/local/remove',
 			id: id
 			profile: profile
 	

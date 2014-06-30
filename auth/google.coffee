@@ -38,6 +38,22 @@ define [
 							return res.redirect config.odo.auth.google.successRedirect
 						return res.redirect '/#auth/google/success'
 				)(req, res, next)
+				
+			express.post '/odo/auth/google/disconnect', (req, res) =>
+				if !req.body.id?
+					res.send 400, 'Id required'
+					return
+					
+				if !req.body.profile?
+					res.send 400, 'Profile required'
+					return
+					
+				console.log "Disconnecting google from #{req.body.id}"
+				hub.send
+					command: 'disconnectGoogleFromUser'
+					payload:
+						id: req.body.id
+						profile: req.body.profile
 		
 		projection: =>
 			hub.receive 'userGoogleConnected', (event, cb) =>
@@ -73,7 +89,7 @@ define [
 					
 				else if !userid?
 					console.log 'no user exists yet, creating a new id'
-					userid = uuid.v1()
+					userid = uuid.v4()
 					hub.send
 						command: 'startTrackingUser'
 						payload:

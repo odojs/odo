@@ -7,6 +7,7 @@
     db = redis.createClient(config.redis.port, config.redis.host);
     return Auth = (function() {
       function Auth() {
+        this.assigndisplayname = __bind(this.assigndisplayname, this);
         this.emailverified = __bind(this.emailverified, this);
         this.checkemailverificationtoken = __bind(this.checkemailverificationtoken, this);
         this.verifyemail = __bind(this.verifyemail, this);
@@ -30,7 +31,8 @@
         express.get('/odo/auth/forgot', this.forgot);
         express.post('/odo/auth/verifyemail', this.verifyemail);
         express.get('/odo/auth/checkemailverificationtoken', this.checkemailverificationtoken);
-        return express.post('/odo/auth/emailverified', this.emailverified);
+        express.post('/odo/auth/emailverified', this.emailverified);
+        return express.post('/odo/auth/assigndisplayname', this.assigndisplayname);
       };
 
       Auth.prototype.api = function() {
@@ -128,14 +130,14 @@
           res.send(400, 'Email address required');
           return;
         }
-        token = uuid.v1();
+        token = uuid.v4();
         console.log("createVerifyEmailAddressToken " + token);
         hub.send({
           command: 'createVerifyEmailAddressToken',
           payload: {
             id: req.user.id,
             email: req.body.email,
-            token: uuid.v1()
+            token: token
           }
         });
         return res.send('Done');
@@ -230,6 +232,25 @@
             });
           };
         })(this));
+      };
+
+      Auth.prototype.assigndisplayname = function(req, res) {
+        if (req.body.displayName == null) {
+          res.send(400, 'Display name required');
+          return;
+        }
+        if (req.body.id == null) {
+          res.send(400, 'Id required');
+          return;
+        }
+        console.log("Assigning display name " + req.body.displayName + " to " + req.body.id);
+        return hub.send({
+          command: 'assignDisplayNameToUser',
+          payload: {
+            id: req.body.id,
+            displayName: req.body.displayName
+          }
+        });
       };
 
       return Auth;

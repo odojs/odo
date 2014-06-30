@@ -39,6 +39,22 @@ define [
 							return res.redirect config.odo.auth.facebook.successRedirect
 						return res.redirect '/#auth/facebook/success'
 				)(req, res, next)
+				
+			express.post '/odo/auth/facebook/disconnect', (req, res) =>
+				if !req.body.id?
+					res.send 400, 'Id required'
+					return
+					
+				if !req.body.profile?
+					res.send 400, 'Profile required'
+					return
+					
+				console.log "Disconnecting facebook from #{req.body.id}"
+				hub.send
+					command: 'disconnectFacebookFromUser'
+					payload:
+						id: req.body.id
+						profile: req.body.profile
 		
 		projection: =>
 			hub.receive 'userFacebookConnected', (event, cb) =>
@@ -72,7 +88,7 @@ define [
 				
 				else if !userid?
 					console.log 'no user exists yet, creating a new id'
-					userid = uuid.v1()
+					userid = uuid.v4()
 					hub.send
 						command: 'startTrackingUser'
 						payload:

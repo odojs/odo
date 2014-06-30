@@ -20,7 +20,7 @@
           passReqToCallback: true
         }, this.signin));
         express.get('/odo/auth/twitter', passport.authenticate('twitter'));
-        return express.get('/odo/auth/twitter/callback', function(req, res, next) {
+        express.get('/odo/auth/twitter/callback', function(req, res, next) {
           return passport.authenticate('twitter', function(err, user, info) {
             var _ref, _ref1;
             if (err != null) {
@@ -49,6 +49,26 @@
             });
           })(req, res, next);
         });
+        return express.post('/odo/auth/twitter/disconnect', (function(_this) {
+          return function(req, res) {
+            if (req.body.id == null) {
+              res.send(400, 'Id required');
+              return;
+            }
+            if (req.body.profile == null) {
+              res.send(400, 'Profile required');
+              return;
+            }
+            console.log("Disconnecting twitter from " + req.body.id);
+            return hub.send({
+              command: 'disconnectTwitterFromUser',
+              payload: {
+                id: req.body.id,
+                profile: req.body.profile
+              }
+            });
+          };
+        })(this));
       };
 
       TwitterAuthentication.prototype.projection = function() {
@@ -96,7 +116,7 @@
               });
             } else if (userid == null) {
               console.log('no user exists yet, creating a new id');
-              userid = uuid.v1();
+              userid = uuid.v4();
               hub.send({
                 command: 'startTrackingUser',
                 payload: {

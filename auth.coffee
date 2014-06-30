@@ -28,6 +28,8 @@ define [
 			express.post '/odo/auth/verifyemail', @verifyemail
 			express.get '/odo/auth/checkemailverificationtoken', @checkemailverificationtoken
 			express.post '/odo/auth/emailverified', @emailverified
+			
+			express.post '/odo/auth/assigndisplayname', @assigndisplayname
 		
 		api: =>
 			restify.use passport.initialize()
@@ -106,14 +108,14 @@ define [
 				res.send 400, 'Email address required'
 				return
 				
-			token = uuid.v1()
+			token = uuid.v4()
 			console.log "createVerifyEmailAddressToken #{token}"
 			hub.send
 				command: 'createVerifyEmailAddressToken'
 				payload:
 					id: req.user.id
 					email: req.body.email
-					token: uuid.v1()
+					token: token
 			
 			res.send 'Done'
 			
@@ -195,3 +197,20 @@ define [
 						return
 						
 					res.send 'Done'
+					
+		assigndisplayname: (req, res) =>
+			if !req.body.displayName?
+				res.send 400, 'Display name required'
+				return
+				
+			if !req.body.id?
+				res.send 400, 'Id required'
+				return
+				
+			console.log "Assigning display name #{req.body.displayName} to #{req.body.id}"
+			hub.send
+				command: 'assignDisplayNameToUser'
+				payload:
+					id: req.body.id
+					displayName: req.body.displayName
+			

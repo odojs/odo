@@ -26,15 +26,23 @@
       })(this),
       assignUsernameToUser: (function(_this) {
         return function(id, username) {
-          return Q($.post('/sendcommand/assignUsernameToUser', {
+          return Q($.post('/odo/auth/local/assignusername', {
             id: id,
             username: username
           }));
         };
       })(this),
+      assignPasswordToUser: (function(_this) {
+        return function(id, password) {
+          return Q($.post('/odo/auth/local/assignpassword', {
+            id: id,
+            password: password
+          }));
+        };
+      })(this),
       assignDisplayNameToUser: (function(_this) {
         return function(id, displayName) {
-          return Q($.post('/sendcommand/assignDisplayNameToUser', {
+          return Q($.post('/odo/auth/assigndisplayname', {
             id: id,
             displayName: displayName
           }));
@@ -78,17 +86,9 @@
           }));
         };
       })(this),
-      assignPasswordToUser: (function(_this) {
-        return function(id, password) {
-          return Q($.post('/sendcommand/assignPasswordToUser', {
-            id: id,
-            password: password
-          }));
-        };
-      })(this),
       disconnectTwitterFromUser: (function(_this) {
         return function(id, profile) {
-          return Q($.post('/sendcommand/disconnectTwitterFromUser', {
+          return Q($.post('/odo/auth/twitter/disconnect', {
             id: id,
             profile: profile
           }));
@@ -96,7 +96,7 @@
       })(this),
       disconnectFacebookFromUser: (function(_this) {
         return function(id, profile) {
-          return Q($.post('/sendcommand/disconnectFacebookFromUser', {
+          return Q($.post('/odo/auth/facebook/disconnect', {
             id: id,
             profile: profile
           }));
@@ -104,7 +104,7 @@
       })(this),
       disconnectGoogleFromUser: (function(_this) {
         return function(id, profile) {
-          return Q($.post('/sendcommand/disconnectGoogleFromUser', {
+          return Q($.post('/odo/auth/google/disconnect', {
             id: id,
             profile: profile
           }));
@@ -112,7 +112,7 @@
       })(this),
       removeLocalSigninForUser: (function(_this) {
         return function(id, profile) {
-          return Q($.post('/sendcommand/removeLocalSigninForUser', {
+          return Q($.post('/odo/auth/local/remove', {
             id: id,
             profile: profile
           }));

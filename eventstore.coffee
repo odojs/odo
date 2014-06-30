@@ -39,7 +39,7 @@ define ['node-uuid', 'eventstore', 'eventstore.redis', 'odo/hub', 'odo/config'],
 			# create a new event and apply
 			new: (event, payload) ->
 				@apply
-					id: uuid.v1()
+					id: uuid.v4()
 					time: new Date()
 					payload: payload
 					event: event

@@ -7,6 +7,9 @@
     db = redis.createClient(config.redis.port, config.redis.host);
     return LocalAuthentication = (function() {
       function LocalAuthentication() {
+        this.remove = __bind(this.remove, this);
+        this.assignpassword = __bind(this.assignpassword, this);
+        this.assignusername = __bind(this.assignusername, this);
         this.signup = __bind(this.signup, this);
         this.reset = __bind(this.reset, this);
         this.generateresettoken = __bind(this.generateresettoken, this);
@@ -54,7 +57,10 @@
         express.get('/odo/auth/local/resettoken', this.getresettoken);
         express.post('/odo/auth/local/resettoken', this.generateresettoken);
         express.post('/odo/auth/local/reset', this.reset);
-        return express.post('/odo/auth/local/signup', this.signup);
+        express.post('/odo/auth/local/signup', this.signup);
+        express.post('/odo/auth/local/assignusername', this.assignusername);
+        express.post('/odo/auth/local/assignpassword', this.assignpassword);
+        return express.post('/odo/auth/local/remove', this.remove);
       };
 
       LocalAuthentication.prototype.projection = function() {
@@ -279,13 +285,13 @@
               res.send(400, 'Incorrect email address');
               return;
             }
-            token = uuid.v1();
+            token = uuid.v4();
             console.log("createPasswordResetToken " + token);
             hub.send({
               command: 'createPasswordResetToken',
               payload: {
                 id: userid,
-                token: uuid.v1()
+                token: token
               }
             });
             return res.send('Token generated');
@@ -369,7 +375,7 @@
           profile.id = req.user.id;
         } else {
           console.log('no user exists yet, creating a new id');
-          userid = uuid.v1();
+          userid = uuid.v4();
           profile.id = userid;
           hub.send({
             command: 'startTrackingUser',
@@ -426,6 +432,63 @@
             });
           };
         })(this));
+      };
+
+      LocalAuthentication.prototype.assignusername = function(req, res) {
+        if (req.body.username == null) {
+          res.send(400, 'Username required');
+          return;
+        }
+        if (req.body.id == null) {
+          res.send(400, 'Id required');
+          return;
+        }
+        console.log("Assigning username " + req.body.username + " to " + req.body.id);
+        return hub.send({
+          command: 'assignUsernameToUser',
+          payload: {
+            id: req.body.id,
+            username: req.body.username
+          }
+        });
+      };
+
+      LocalAuthentication.prototype.assignpassword = function(req, res) {
+        if (req.body.password == null) {
+          res.send(400, 'Password required');
+          return;
+        }
+        if (req.body.id == null) {
+          res.send(400, 'Id required');
+          return;
+        }
+        console.log("Assigning a password to " + req.body.id);
+        return hub.send({
+          command: 'assignPasswordToUser',
+          payload: {
+            id: req.body.id,
+            password: req.body.password
+          }
+        });
+      };
+
+      LocalAuthentication.prototype.remove = function(req, res) {
+        if (req.body.id == null) {
+          res.send(400, 'Id required');
+          return;
+        }
+        if (req.body.profile == null) {
+          res.send(400, 'Profile required');
+          return;
+        }
+        console.log("Removing local signin for " + req.body.id);
+        return hub.send({
+          command: 'removeLocalSigninForUser',
+          payload: {
+            id: req.body.id,
+            profile: req.body.profile
+          }
+        });
       };
 
       LocalAuthentication.prototype.get = function(username, callback) {
