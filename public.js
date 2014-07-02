@@ -10,7 +10,7 @@
       }
 
       Public.prototype.web = function() {
-        express.route('/', express.modulepath(module.uri) + '/../../public');
+        express.route('/public', express.modulepath(module.uri) + '/../../public');
         return express.route('/odo', express.modulepath(module.uri) + '/public');
       };
 
