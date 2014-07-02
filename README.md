@@ -30,7 +30,40 @@ Odo hopefully follows these goals and also makes it easy to write applications t
 ---
 
 # Get started
-Fork [odo example](https://github.com/tcoats/odo-example)
+Fork [odo example](https://github.com/tcoats/odo-example) (out of date at the moment - contact me to update)
+
+# Technologies
+## Developed alongside Odo
+- [Tapinto](https://github.com/tcoats/tapinto) (tap into classes and methods)
+- [Injectinto](https://github.com/tcoats/injectinto) (dependency injection)
+- [Peekinto](https://github.com/tcoats/peekinto) (ui composition for express)
+- [Fetching](https://github.com/tcoats/fetching) (fetching strategies)
+
+## Backend and front end
+- [Requirejs](http://requirejs.org/) (dependency injection)
+- [Q](https://github.com/kriskowal/q) (promises)
+- [node-uuid](https://github.com/broofa/node-uuid) (guids)
+- [humanize](https://github.com/hubspot/humanize) (string formatting)
+
+## Back end
+- [Express](http://expressjs.com/) (http server)
+- [Restify](http://mcavage.me/node-restify/) (rest api)
+- [Redis](http://redis.io/) (storage)
+- [Passport](http://passportjs.org/) (authentication)
+- [js-md5](https://github.com/emn178/js-md5) (md5 hash)
+- [eventstore](https://github.com/jamuhl/nodeEventStore) (event sourcing)
+- [debug](https://github.com/visionmedia/debug) (tracing)
+- [cson](https://github.com/bevry/cson) (coffeescript object notation)
+- [multer](https://github.com/expressjs/multer) (file uploads)
+
+## Front end
+- [Durandaljs](http://durandaljs.com/) (single page app)
+- [Knockoutjs](http://knockoutjs.com/) (mvvm in browser)
+- [Knockoutjs Validation](https://github.com/Knockout-Contrib/Knockout-Validation) (validation)
+- [jQuery](http://jquery.com/) (dom manipulation)
+- [Bootstrap](http://getbootstrap.com/) (scaffolding)
+- [Animate.css](https://daneden.me/animate/) (css animations)
+- [Mousetrap](http://craig.is/killing/mice) (keyboard shortcuts)
 
 # Overview
 There are two types of code in Odo: infrastructure and plugins.
@@ -169,6 +202,8 @@ Recorder and sequencer are classes used internally, you're welcome to use them t
 
 # Backend plugins
 ## [Express](http://expressjs.com/)
+Express is a web application framework. It provides structure for url handling, request parsing, templating and more.
+
 The web context is based around express. Plugins exposed in the web context are given an opportunity to register against different parts of express to define routes and extend the express system.
 
 ```coffee
@@ -179,9 +214,11 @@ define ['odo/express'], (express) ->
 
 ```
 
-'odo/express' needs to be included in the systems array after any plugins wanting web context.
+`'odo/express'` needs to be included in the systems array after any plugins wanting web context.
 
 ## [Restify](http://mcavage.me/node-restify/)
+Restify is a framework to build REST web services. It's very similar to express and provides accept header parsing, throttling, jsonp and more.
+
 The api context is based around restify. Plugins exposed in the api context are given the opportunity to register against different parts of restify to define routes and extend the restify system.
 
 ```coffee
@@ -194,12 +231,16 @@ define ['odo/restify'], (restify) ->
 
 'odo/restify' needs to be included in the systems array after any plugins wanting api context.
 
-## Bower
-The bower plugin hosts the /bower_components directory so anything you've installed with bower is available to the web.
+## [Bower](http://bower.io/)
+Bower is a package manager for the web. Installed components will be available in a local `bower_components` directory.
 
-E.g. `bower install --save jquery` will result in `http://localhost:1234/jquery/dist/jquery.min.js` being available, depending on your express port.
+The odo bower plugin hosts the `/bower_components` directory so anything you've installed with bower is available to the web.
 
-## Durandal
+E.g. `bower install --save jquery` will result in `http://localhost:1234/bower_components/jquery/dist/jquery.min.js` being available, depending on your express port.
+
+## [Durandal](http://durandaljs.com/)
+Durandal is a single page application library. It uses [requirejs](http://requirejs.org/), [knockoutjs](http://knockoutjs.com/) and [jQuery](http://jquery.com/) to stitch together views and widgets that respond to anchor tags as urls.
+
 The durandal plugin allows other plugins to register components to be used in the Front End.
 
 ```coffee
@@ -235,7 +276,11 @@ define ['knockout', 'plugins/router'], (ko, router) ->
 </div>
 ```
 
-## Handlebars
+See the [durandal front end folder](https://github.com/tcoats/odo/tree/master/public/durandal) for more information.
+
+## [Handlebars](http://handlebarsjs.com/)
+Handlebars is a templating engine available in Nodejs and in the browser. In odo we're using it in Nodejs for rendering static files, if needed. When writing a single page app this is often not needed.
+
 Handlebars is a plugin in the web context to register handlebars as the view engine for express and add additional functionality for handlebars including a custom render method.
 
 ```coffee
@@ -284,40 +329,9 @@ test.html:
 ## Public
 The public plugin hosts the odo public directory through express which includes durandal components and identity and authentication code. Also hosts a public directory available in your application for static assets and durandal models and views.
 
-## Passport authentication - local, google, facebook, twitter and metocean
+See the [public README.md](https://github.com/tcoats/odo/tree/master/public) for more information.
+
+## [Passport authentication](http://passportjs.org/) - local, google, facebook, twitter and metocean
+Passport is a framework and a collection of plugins to provide authentication for Nodejs applications. It has support for most common providers such as google, facebook, twitter, and linkedin.
+
 The passport authentication plugins provide urls and methods to authenticate a user with passport and passport plugins. Custom local, twitter, facebook, google and metocean passport plugins have been provided.
-
----
-
-# Technologies
-## Developed alongside Odo
-- [Tapinto](https://github.com/tcoats/tapinto) (tap into classes and methods)
-- [Injectinto](https://github.com/tcoats/injectinto) (dependency injection)
-- [Peekinto](https://github.com/tcoats/peekinto) (ui composition for express)
-- [Fetching](https://github.com/tcoats/fetching) (fetching strategies)
-
-## Backend and front end
-- [Requirejs](http://requirejs.org/) (dependency injection)
-- [Q](https://github.com/kriskowal/q) (promises)
-- [node-uuid](https://github.com/broofa/node-uuid) (guids)
-- [humanize](https://github.com/hubspot/humanize) (string formatting)
-
-## Back end
-- [Express](http://expressjs.com/) (http server)
-- [Restify](http://mcavage.me/node-restify/) (rest api)
-- [Redis](http://redis.io/) (storage)
-- [Passport](http://passportjs.org/) (authentication)
-- [js-md5](https://github.com/emn178/js-md5) (md5 hash)
-- [eventstore](https://github.com/jamuhl/nodeEventStore) (event sourcing)
-- [debug](https://github.com/visionmedia/debug) (tracing)
-- [cson](https://github.com/bevry/cson) (coffeescript object notation)
-- [multer](https://github.com/expressjs/multer) (file uploads)
-
-## Front end
-- [Durandaljs](http://durandaljs.com/) (single page app)
-- [Knockoutjs](http://knockoutjs.com/) (mvvm in browser)
-- [Knockoutjs Validation](https://github.com/Knockout-Contrib/Knockout-Validation) (validation)
-- [jQuery](http://jquery.com/) (dom manipulation)
-- [Bootstrap](http://getbootstrap.com/) (scaffolding)
-- [Animate.css](https://daneden.me/animate/) (css animations)
-- [Mousetrap](http://craig.is/killing/mice) (keyboard shortcuts)
