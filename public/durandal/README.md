@@ -52,6 +52,11 @@ define ['knockout'], (ko) ->
             @wizard.forward(options)()
 ```
 
+There is a special case when a wizard is within a dialog. Both components can be accessed
+
+```coffee
+{ @wizard, @dialog, activationData } = options
+```
 
 # Plugins
 Each plugin, when included, will extend or register itself to the right place in the system. Plugins aren't interacted with directy.
