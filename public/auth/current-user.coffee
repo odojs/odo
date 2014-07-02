@@ -1,4 +1,4 @@
-﻿defineQ ['q', 'odo/auth'], (Q, auth) ->
+﻿define ['q', 'odo/auth'], (Q, auth) ->
 	dfd = Q.defer()
 	auth
 		.getUser()

@@ -17,40 +17,48 @@ define ['durandal/system', 'q'], (system, Q) ->
 	
 	originalDefine = window.define
 	# a version of define that waits until all deps have been required, and if they are promises waits for those as well
-	window.defineQ = (name, deps, callback) ->
+	window.define = (name, deps, callback) ->
 		
 		method = (cb) ->
 			->
-				that = @
-				dfd = Q.defer()
 				args = Array::slice.call arguments, 0
 				
+				foundPromise = no
+				for arg in args
+					foundPromise = foundPromise or arg and arg.then?
+				
+				return cb if typeof cb isnt 'function'
+				return cb.apply @, args if not foundPromise
+				
+				dfd = Q.defer()
+				that = @
 				Q
 					.all(args)
 					.then (resolved) ->
 						dfd.resolve cb.apply that, resolved
-				
 				dfd.promise
 		
 		# magical argument detection, needed so we know which argument is the callback, otherwise we would just .apply arguments
 		
 		if typeof name isnt 'string'
 			if system.isArray name
-				# defineQ(deps, callback)
+				# define(deps, callback)
 				args = [name, method(deps)]
 			else
-				# defineQ(callback)
+				# define(callback)
 				args = [method(name)]
 		
 		else if !system.isArray deps
-			# defineQ(name, callback)
+			# define(name, callback)
 			args = [name, method(deps)]
 		
 		else
-			# defineQ(name, deps, callback)
+			# define(name, deps, callback)
 			args = [name, deps, method(callback)]
 		
 		originalDefine.apply @, args
+	
+	window.define.amd = jQuery: yes
 	
 	# when durandal is looking for deps, make sure we are okay if they return promises instead of the actual module
 	system.acquire = ->

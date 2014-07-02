@@ -21,14 +21,25 @@
       return dfd.promise;
     };
     originalDefine = window.define;
-    window.defineQ = function(name, deps, callback) {
+    window.define = function(name, deps, callback) {
       var args, method;
       method = function(cb) {
         return function() {
-          var args, dfd, that;
-          that = this;
-          dfd = Q.defer();
+          var arg, args, dfd, foundPromise, that, _i, _len;
           args = Array.prototype.slice.call(arguments, 0);
+          foundPromise = false;
+          for (_i = 0, _len = args.length; _i < _len; _i++) {
+            arg = args[_i];
+            foundPromise = foundPromise || arg && (arg.then != null);
+          }
+          if (typeof cb !== 'function') {
+            return cb;
+          }
+          if (!foundPromise) {
+            return cb.apply(this, args);
+          }
+          dfd = Q.defer();
+          that = this;
           Q.all(args).then(function(resolved) {
             return dfd.resolve(cb.apply(that, resolved));
           });
@@ -47,6 +58,9 @@
         args = [name, deps, method(callback)];
       }
       return originalDefine.apply(this, args);
+    };
+    window.define.amd = {
+      jQuery: true
     };
     system.acquire = function() {
       var arrayRequest, deps, dfd, first;
