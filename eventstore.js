@@ -2,6 +2,11 @@
 (function() {
   define(['node-uuid', 'eventstore', 'eventstore.redis', 'odo/hub', 'odo/config'], function(uuid, eventstore, storage, hub, config) {
     var es, getclassname;
+    if (['projection', 'domain'].filter(function(n) {
+      return config.contexts.indexOf(n) !== -1;
+    }).length === 0) {
+      return;
+    }
     es = eventstore.createStore({
       host: config.redis.host,
       port: config.redis.port

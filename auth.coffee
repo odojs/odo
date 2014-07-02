@@ -9,9 +9,11 @@ define [
 	'odo/express'
 	'odo/restify'
 ], (module, passport, config, redis, User, hub, uuid, express, restify) ->
-	db = redis.createClient config.redis.port, config.redis.host
-	
 	class Auth
+		db: =>
+			return @_db if @_db?
+			return @_db = redis.createClient config.redis.port, config.redis.host
+		
 		web: =>
 			express.use passport.initialize()
 			express.use passport.session()
@@ -43,12 +45,12 @@ define [
 		
 		projection: =>
 			hub.receive 'userHasEmailAddress', (event, cb) =>
-				db.hset "#{config.odo.domain}:useremail", event.payload.email, event.payload.id, ->
+				@db().hset "#{config.odo.domain}:useremail", event.payload.email, event.payload.id, ->
 					cb()
 			
 			hub.receive 'userHasVerifyEmailAddressToken', (event, cb) =>
 				key = "#{config.odo.domain}:emailverificationtoken:#{event.payload.email}:#{event.payload.token}"
-				db
+				@db()
 					.multi()
 					.set(key, event.payload.id)
 					.expire(key, 60 * 60 * 24)
@@ -73,7 +75,7 @@ define [
 				res.send 400, 'Email address required'
 				return
 			
-			db.hget "#{config.odo.domain}:useremail", req.query.email, (err, userid) =>
+			@db().hget "#{config.odo.domain}:useremail", req.query.email, (err, userid) =>
 				if err?
 					console.log err
 					res.send 500, 'Woops'
@@ -134,7 +136,7 @@ define [
 			
 			key = "#{config.odo.domain}:emailverificationtoken:#{req.query.email}:#{req.query.token}"
 			
-			db.get key, (err, userid) =>
+			@db().get key, (err, userid) =>
 				if err?
 					console.log err
 					res.send 500, 'Woops'
@@ -169,7 +171,7 @@ define [
 			
 			key = "#{config.odo.domain}:emailverificationtoken:#{req.body.email}:#{req.body.token}"
 			
-			db.get key, (err, userid) =>
+			@db().get key, (err, userid) =>
 				if err?
 					console.log err
 					res.send 500, 'Woops'
@@ -190,7 +192,7 @@ define [
 						email: req.body.email
 						token: req.body.token
 				
-				db.del key, (err, reply) =>
+				@db().del key, (err, reply) =>
 					if err?
 						console.log err
 						res.send 500, 'Woops'

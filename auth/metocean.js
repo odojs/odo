@@ -3,14 +3,21 @@
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   define(['passport', 'passport-metocean', 'odo/config', 'odo/hub', 'node-uuid', 'redis', 'odo/express'], function(passport, passportmetocean, config, hub, uuid, redis, express) {
-    var MetOceanAuthentication, db;
-    db = redis.createClient(config.redis.port, config.redis.host);
+    var MetOceanAuthentication;
     return MetOceanAuthentication = (function() {
       function MetOceanAuthentication() {
         this.signin = __bind(this.signin, this);
         this.projection = __bind(this.projection, this);
         this.web = __bind(this.web, this);
+        this.db = __bind(this.db, this);
       }
+
+      MetOceanAuthentication.prototype.db = function() {
+        if (this._db != null) {
+          return this._db;
+        }
+        return this._db = redis.createClient(config.redis.port, config.redis.host);
+      };
 
       MetOceanAuthentication.prototype.web = function() {
         passport.use(new passportmetocean.Strategy({
@@ -55,14 +62,14 @@
       MetOceanAuthentication.prototype.projection = function() {
         hub.receive('userMetOceanConnected', (function(_this) {
           return function(event, cb) {
-            return db.hset("" + config.odo.domain + ":usermetocean", event.payload.profile.id, event.payload.id, function() {
+            return _this.db().hset("" + config.odo.domain + ":usermetocean", event.payload.profile.id, event.payload.id, function() {
               return cb();
             });
           };
         })(this));
         return hub.receive('userMetOceanDisconnected', (function(_this) {
           return function(event, cb) {
-            return db.hdel("" + config.odo.domain + ":usermetocean", event.payload.profile.id, function() {
+            return _this.db().hdel("" + config.odo.domain + ":usermetocean", event.payload.profile.id, function() {
               return cb();
             });
           };
@@ -138,7 +145,7 @@
       };
 
       MetOceanAuthentication.prototype.get = function(id, callback) {
-        return db.hget("" + config.odo.domain + ":usermetocean", id, (function(_this) {
+        return this.db().hget("" + config.odo.domain + ":usermetocean", id, (function(_this) {
           return function(err, data) {
             if (err != null) {
               callback(err);
@@ -148,7 +155,7 @@
               callback(null, data);
               return;
             }
-            return db.hget("" + config.odo.domain + ":usermetocean", id, function(err, data) {
+            return _this.db().hget("" + config.odo.domain + ":usermetocean", id, function(err, data) {
               if (err != null) {
                 callback(err);
                 return;

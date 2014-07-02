@@ -3,14 +3,21 @@
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   define(['passport', 'passport-facebook', 'odo/config', 'odo/hub', 'node-uuid', 'redis', 'odo/express'], function(passport, passportfacebook, config, hub, uuid, redis, express) {
-    var FacebookAuthentication, db;
-    db = redis.createClient(config.redis.port, config.redis.host);
+    var FacebookAuthentication;
     return FacebookAuthentication = (function() {
       function FacebookAuthentication() {
         this.signin = __bind(this.signin, this);
         this.projection = __bind(this.projection, this);
         this.web = __bind(this.web, this);
+        this.db = __bind(this.db, this);
       }
+
+      FacebookAuthentication.prototype.db = function() {
+        if (this._db != null) {
+          return this._db;
+        }
+        return this._db = redis.createClient(config.redis.port, config.redis.host);
+      };
 
       FacebookAuthentication.prototype.web = function() {
         passport.use(new passportfacebook.Strategy({
@@ -74,14 +81,14 @@
       FacebookAuthentication.prototype.projection = function() {
         hub.receive('userFacebookConnected', (function(_this) {
           return function(event, cb) {
-            return db.hset("" + config.odo.domain + ":userfacebook", event.payload.profile.id, event.payload.id, function() {
+            return _this.db().hset("" + config.odo.domain + ":userfacebook", event.payload.profile.id, event.payload.id, function() {
               return cb();
             });
           };
         })(this));
         return hub.receive('userFacebookDisconnected', (function(_this) {
           return function(event, cb) {
-            return db.hdel("" + config.odo.domain + ":userfacebook", event.payload.profile.id, function() {
+            return _this.db().hdel("" + config.odo.domain + ":userfacebook", event.payload.profile.id, function() {
               return cb();
             });
           };
@@ -157,7 +164,7 @@
       };
 
       FacebookAuthentication.prototype.get = function(id, callback) {
-        return db.hget("" + config.odo.domain + ":userfacebook", id, (function(_this) {
+        return this.db().hget("" + config.odo.domain + ":userfacebook", id, (function(_this) {
           return function(err, data) {
             if (err != null) {
               callback(err);
@@ -167,7 +174,7 @@
               callback(null, data);
               return;
             }
-            return db.hget("" + config.odo.domain + ":userfacebook", id, function(err, data) {
+            return _this.db().hget("" + config.odo.domain + ":userfacebook", id, function(err, data) {
               if (err != null) {
                 callback(err);
                 return;

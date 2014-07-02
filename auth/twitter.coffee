@@ -7,9 +7,11 @@ define [
 	'redis'
 	'odo/express'
 ], (passport, passporttwitter, config, hub, uuid, redis, express) ->
-	db = redis.createClient config.redis.port, config.redis.host
-	
 	class TwitterAuthentication
+		db: =>
+			return @_db if @_db?
+			return @_db = redis.createClient config.redis.port, config.redis.host
+			
 		web: =>
 			passport.use new passporttwitter.Strategy(
 				consumerKey: config.passport.twitter['consumer key']
@@ -58,11 +60,11 @@ define [
 		
 		projection: =>
 			hub.receive 'userTwitterConnected', (event, cb) =>
-				db.hset "#{config.odo.domain}:usertwitter", event.payload.profile.id, event.payload.id, ->
+				@db().hset "#{config.odo.domain}:usertwitter", event.payload.profile.id, event.payload.id, ->
 					cb()
 					
 			hub.receive 'userTwitterDisconnected', (event, cb) =>
-				db.hdel "#{config.odo.domain}:usertwitter", event.payload.profile.id, ->
+				@db().hdel "#{config.odo.domain}:usertwitter", event.payload.profile.id, ->
 					cb()
 		
 		signin: (req, token, tokenSecret, profile, done) =>
@@ -122,7 +124,7 @@ define [
 				done null, user
 		
 		get: (id, callback) ->
-			db.hget "#{config.odo.domain}:usertwitter", id, (err, data) =>
+			@db().hget "#{config.odo.domain}:usertwitter", id, (err, data) =>
 				if err?
 					callback err
 					return
@@ -132,7 +134,7 @@ define [
 					return
 				
 				# retry once for possible slowness
-				db.hget "#{config.odo.domain}:usertwitter", id, (err, data) =>
+				@db().hget "#{config.odo.domain}:usertwitter", id, (err, data) =>
 					if err?
 						callback err
 						return

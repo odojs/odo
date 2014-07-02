@@ -3,8 +3,7 @@
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   define(['module', 'passport', 'odo/config', 'redis', 'odo/user', 'odo/hub', 'node-uuid', 'odo/express', 'odo/restify'], function(module, passport, config, redis, User, hub, uuid, express, restify) {
-    var Auth, db;
-    db = redis.createClient(config.redis.port, config.redis.host);
+    var Auth;
     return Auth = (function() {
       function Auth() {
         this.assigndisplayname = __bind(this.assigndisplayname, this);
@@ -15,7 +14,15 @@
         this.projection = __bind(this.projection, this);
         this.api = __bind(this.api, this);
         this.web = __bind(this.web, this);
+        this.db = __bind(this.db, this);
       }
+
+      Auth.prototype.db = function() {
+        if (this._db != null) {
+          return this._db;
+        }
+        return this._db = redis.createClient(config.redis.port, config.redis.host);
+      };
 
       Auth.prototype.web = function() {
         express.use(passport.initialize());
@@ -49,7 +56,7 @@
       Auth.prototype.projection = function() {
         hub.receive('userHasEmailAddress', (function(_this) {
           return function(event, cb) {
-            return db.hset("" + config.odo.domain + ":useremail", event.payload.email, event.payload.id, function() {
+            return _this.db().hset("" + config.odo.domain + ":useremail", event.payload.email, event.payload.id, function() {
               return cb();
             });
           };
@@ -58,7 +65,7 @@
           return function(event, cb) {
             var key;
             key = "" + config.odo.domain + ":emailverificationtoken:" + event.payload.email + ":" + event.payload.token;
-            return db.multi().set(key, event.payload.id).expire(key, 60 * 60 * 24).exec(function(err, replies) {
+            return _this.db().multi().set(key, event.payload.id).expire(key, 60 * 60 * 24).exec(function(err, replies) {
               if (err != null) {
                 console.log(err);
                 cb();
@@ -87,7 +94,7 @@
           res.send(400, 'Email address required');
           return;
         }
-        return db.hget("" + config.odo.domain + ":useremail", req.query.email, (function(_this) {
+        return this.db().hget("" + config.odo.domain + ":useremail", req.query.email, (function(_this) {
           return function(err, userid) {
             if (err != null) {
               console.log(err);
@@ -158,7 +165,7 @@
           return;
         }
         key = "" + config.odo.domain + ":emailverificationtoken:" + req.query.email + ":" + req.query.token;
-        return db.get(key, (function(_this) {
+        return this.db().get(key, (function(_this) {
           return function(err, userid) {
             if (err != null) {
               console.log(err);
@@ -199,7 +206,7 @@
           return;
         }
         key = "" + config.odo.domain + ":emailverificationtoken:" + req.body.email + ":" + req.body.token;
-        return db.get(key, (function(_this) {
+        return this.db().get(key, (function(_this) {
           return function(err, userid) {
             if (err != null) {
               console.log(err);
@@ -222,7 +229,7 @@
                 token: req.body.token
               }
             });
-            return db.del(key, function(err, reply) {
+            return _this.db().del(key, function(err, reply) {
               if (err != null) {
                 console.log(err);
                 res.send(500, 'Woops');

@@ -1,4 +1,7 @@
 define ['redis', 'odo/config', 'odo/sequencer'], (redis, config, Sequencer) ->
+	return if ['web', 'projection', 'domain']
+		.filter (n) -> config.contexts.indexOf(n) isnt -1
+		.length is 0
 
 	commandsender = redis.createClient config.redis.port, config.redis.host
 	eventpublisher = redis.createClient config.redis.port, config.redis.host

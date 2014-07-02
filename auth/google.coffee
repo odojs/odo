@@ -7,9 +7,11 @@ define [
 	'redis'
 	'odo/express'
 ], (passport, passportgoogle, config, hub, uuid, redis, express) ->
-	db = redis.createClient config.redis.port, config.redis.host
-	
 	class GoogleAuthentication
+		db: =>
+			return @_db if @_db?
+			return @_db = redis.createClient config.redis.port, config.redis.host
+			
 		web: =>
 			passport.use new passportgoogle.Strategy(
 				realm: config.passport.google['realm']
@@ -57,11 +59,11 @@ define [
 		
 		projection: =>
 			hub.receive 'userGoogleConnected', (event, cb) =>
-				db.hset "#{config.odo.domain}:usergoogle", event.payload.profile.id, event.payload.id, ->
+				@db().hset "#{config.odo.domain}:usergoogle", event.payload.profile.id, event.payload.id, ->
 					cb()
 					
 			hub.receive 'userGoogleDisconnected', (event, cb) =>
-				db.hdel "#{config.odo.domain}:usergoogle", event.payload.profile.id, ->
+				@db().hdel "#{config.odo.domain}:usergoogle", event.payload.profile.id, ->
 					cb()
 		
 		signin: (req, identifier, profile, done) =>
@@ -117,7 +119,7 @@ define [
 				done null, user
 		
 		get: (id, callback) ->
-			db.hget "#{config.odo.domain}:usergoogle", id, (err, data) =>
+			@db().hget "#{config.odo.domain}:usergoogle", id, (err, data) =>
 				if err?
 					callback err
 					return
@@ -127,7 +129,7 @@ define [
 					return
 				
 				# retry once for possible slowness
-				db.hget "#{config.odo.domain}:usergoogle", id, (err, data) =>
+				@db().hget "#{config.odo.domain}:usergoogle", id, (err, data) =>
 					if err?
 						callback err
 						return

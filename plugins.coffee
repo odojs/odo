@@ -5,6 +5,8 @@ define [], () ->
 			'domain'
 			'projection'
 			'api'
+			'build'
+			'cmd'
 		]
 		
 		constructor: (plugins) ->
@@ -15,6 +17,8 @@ define [], () ->
 			
 			@[context] = @context context for context in @contexts
 		
-		context: (name) => =>
+		run: (name) =>
 			for plugin in @plugins
 				plugin[name]() if plugin[name]?
+		
+		context: (name) => => @run name

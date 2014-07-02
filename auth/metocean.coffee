@@ -7,9 +7,11 @@ define [
 	'redis'
 	'odo/express'
 ], (passport, passportmetocean, config, hub, uuid, redis, express) ->
-	db = redis.createClient config.redis.port, config.redis.host
-	
 	class MetOceanAuthentication
+		db: =>
+			return @_db if @_db?
+			return @_db = redis.createClient config.redis.port, config.redis.host
+			
 		web: =>
 			passport.use new passportmetocean.Strategy(
 				clientID: config.passport.metocean['client id']
@@ -43,11 +45,11 @@ define [
 
 		projection: =>
 			hub.receive 'userMetOceanConnected', (event, cb) =>
-				db.hset "#{config.odo.domain}:usermetocean", event.payload.profile.id, event.payload.id, ->
+				@db().hset "#{config.odo.domain}:usermetocean", event.payload.profile.id, event.payload.id, ->
 					cb()
 			
 			hub.receive 'userMetOceanDisconnected', (event, cb) =>
-				db.hdel "#{config.odo.domain}:usermetocean", event.payload.profile.id, ->
+				@db().hdel "#{config.odo.domain}:usermetocean", event.payload.profile.id, ->
 					cb()
 				
 		signin: (req, accessToken, refreshToken, profile, done) =>
@@ -108,7 +110,7 @@ define [
 				done null, user
 		
 		get: (id, callback) ->
-			db.hget "#{config.odo.domain}:usermetocean", id, (err, data) =>
+			@db().hget "#{config.odo.domain}:usermetocean", id, (err, data) =>
 				if err?
 					callback err
 					return
@@ -118,7 +120,7 @@ define [
 					return
 				
 				# retry once for possible slowness
-				db.hget "#{config.odo.domain}:usermetocean", id, (err, data) =>
+				@db().hget "#{config.odo.domain}:usermetocean", id, (err, data) =>
 					if err?
 						callback err
 						return

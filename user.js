@@ -3,8 +3,7 @@
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   define(['odo/config', 'odo/hub', 'odo/eventstore', 'redis', 'js-md5'], function(config, hub, es, redis, md5) {
-    var User, UserApi, db;
-    db = redis.createClient(config.redis.port, config.redis.host);
+    var User, UserApi;
     User = (function() {
       function User(id) {
         this.removeLocalSigninForUser = __bind(this.removeLocalSigninForUser, this);
@@ -187,11 +186,20 @@
     })();
     return UserApi = (function() {
       function UserApi() {
+        this.get = __bind(this.get, this);
         this.addOrRemoveValues = __bind(this.addOrRemoveValues, this);
         this.projection = __bind(this.projection, this);
         this.domain = __bind(this.domain, this);
         this.defaultHandler = __bind(this.defaultHandler, this);
+        this.db = __bind(this.db, this);
       }
+
+      UserApi.prototype.db = function() {
+        if (this._db != null) {
+          return this._db;
+        }
+        return this._db = redis.createClient(config.redis.port, config.redis.host);
+      };
 
       UserApi.prototype.commands = ['startTrackingUser', 'assignEmailAddressToUser', 'createVerifyEmailAddressToken', 'assignDisplayNameToUser', 'assignUsernameToUser', 'connectTwitterToUser', 'disconnectTwitterFromUser', 'connectFacebookToUser', 'disconnectFacebookFromUser', 'connectGoogleToUser', 'disconnectGoogleFromUser', 'connectOAuth2ToUser', 'disconnectOAuth2FromUser', 'connectMetOceanToUser', 'disconnectMetOceanFromUser', 'createLocalSigninForUser', 'assignPasswordToUser', 'createPasswordResetToken', 'removeLocalSigninForUser'];
 
@@ -221,7 +229,7 @@
               id: event.payload.id,
               displayName: event.payload.profile.displayName
             };
-            return db.hset("" + config.odo.domain + ":users", event.payload.id, JSON.stringify(user), cb);
+            return _this.db().hset("" + config.odo.domain + ":users", event.payload.id, JSON.stringify(user), cb);
           };
         })(this));
         hub.receive('userHasEmailAddress', (function(_this) {
@@ -356,7 +364,7 @@
       };
 
       UserApi.prototype.addOrRemoveValues = function(event, callback, cb) {
-        return db.hget("" + config.odo.domain + ":users", event.payload.id, (function(_this) {
+        return this.db().hget("" + config.odo.domain + ":users", event.payload.id, (function(_this) {
           return function(err, user) {
             if (err != null) {
               cb();
@@ -365,7 +373,7 @@
             user = JSON.parse(user);
             user = callback(user);
             user = JSON.stringify(user, null, 4);
-            return db.hset("" + config.odo.domain + ":users", event.payload.id, user, function() {
+            return _this.db().hset("" + config.odo.domain + ":users", event.payload.id, user, function() {
               return cb();
             });
           };
@@ -373,7 +381,7 @@
       };
 
       UserApi.prototype.get = function(id, callback) {
-        return db.hget("" + config.odo.domain + ":users", id, (function(_this) {
+        return this.db().hget("" + config.odo.domain + ":users", id, (function(_this) {
           return function(err, data) {
             if (err != null) {
               callback(err);
@@ -385,7 +393,7 @@
               return;
             }
             return setTimeout(function() {
-              return db.hget("" + config.odo.domain + ":users", id, function(err, data) {
+              return _this.db().hget("" + config.odo.domain + ":users", id, function(err, data) {
                 if (err != null) {
                   callback(err);
                   return;

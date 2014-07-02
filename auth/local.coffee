@@ -8,9 +8,11 @@ define [
 	'odo/user'
 	'odo/express'
 ], (passport, passportlocal, config, hub, uuid, redis, User, express) ->
-	db = redis.createClient config.redis.port, config.redis.host
-	
 	class LocalAuthentication
+		db: =>
+			return @_db if @_db?
+			return @_db = redis.createClient config.redis.port, config.redis.host
+			
 		web: =>
 			passport.use new passportlocal.Strategy @signin
 			
@@ -47,7 +49,7 @@ define [
 		
 		projection: =>
 			hub.receive 'userHasLocalSignin', (event, cb) =>
-				db.hset "#{config.odo.domain}:localusers", event.payload.profile.username, event.payload.id, ->
+				@db().hset "#{config.odo.domain}:localusers", event.payload.profile.username, event.payload.id, ->
 					cb()
 			
 			# if they have a local sign in we should update the sign in check
@@ -62,17 +64,17 @@ define [
 						cb()
 						return
 				
-					db.hset "#{config.odo.domain}:localusers", event.payload.username, event.payload.id, ->
+					@db().hset "#{config.odo.domain}:localusers", event.payload.username, event.payload.id, ->
 						cb()
 			
 			hub.receive 'userLocalSigninRemoved', (event, cb) =>
-				db.hdel "#{config.odo.domain}:localusers", event.payload.profile.username, ->
+				@db().hdel "#{config.odo.domain}:localusers", event.payload.profile.username, ->
 					cb()
 			
 			hub.receive 'userHasPasswordResetToken', (event, cb) =>
 				key = "#{config.odo.domain}:passwordresettoken:#{event.payload.token}"
 				console.log key
-				db
+				@db()
 					.multi()
 					.set(key, event.payload.id)
 					.expire(key, 60 * 60 * 24)
@@ -178,7 +180,7 @@ define [
 				res.send 400, 'Token required'
 				return
 			
-			db.get "#{config.odo.domain}:passwordresettoken:#{req.query.token}", (err, userid) =>
+			@db().get "#{config.odo.domain}:passwordresettoken:#{req.query.token}", (err, userid) =>
 				if err?
 					console.log err
 					res.send 500, 'Woops'
@@ -212,7 +214,7 @@ define [
 				res.send 400, 'Email address required'
 				return
 			
-			db.hget "#{config.odo.domain}:useremail", req.body.email, (err, userid) =>
+			@db().hget "#{config.odo.domain}:useremail", req.body.email, (err, userid) =>
 				if err?
 					console.log err
 					res.send 500, 'Woops'
@@ -246,7 +248,7 @@ define [
 				return
 			
 			key = "#{config.odo.domain}:passwordresettoken:#{req.body.token}"
-			db.get key, (err, userid) =>
+			@db().get key, (err, userid) =>
 				if err?
 					console.log err
 					res.send 500, 'Woops'
@@ -263,7 +265,7 @@ define [
 						id: userid
 						password: req.body.password
 				
-				db.del key, (err, reply) =>
+				@db().del key, (err, reply) =>
 					if err?
 						console.log err
 						res.send 500, 'Woops'
@@ -401,7 +403,7 @@ define [
 					profile: req.body.profile
 		
 		get: (username, callback) ->
-			db.hget "#{config.odo.domain}:localusers", username, (err, data) =>
+			@db().hget "#{config.odo.domain}:localusers", username, (err, data) =>
 				if err?
 					callback err
 					return

@@ -5,8 +5,6 @@ define [
 	'redis'
 	'js-md5'
 ], (config, hub, es, redis, md5) ->
-	db = redis.createClient config.redis.port, config.redis.host
-	
 	class User
 		constructor: (id) ->
 			@id = id
@@ -134,6 +132,10 @@ define [
 			callback null
 	
 	class UserApi
+		db: =>
+			return @_db if @_db?
+			return @_db = redis.createClient config.redis.port, config.redis.host
+			
 		commands: [
 			'startTrackingUser'
 			'assignEmailAddressToUser'
@@ -179,7 +181,7 @@ define [
 					displayName: event.payload.profile.displayName
 				}
 				
-				db.hset "#{config.odo.domain}:users", event.payload.id, JSON.stringify(user), cb
+				@db().hset "#{config.odo.domain}:users", event.payload.id, JSON.stringify(user), cb
 			
 			
 			hub.receive 'userHasEmailAddress', (event, cb) =>
@@ -284,7 +286,7 @@ define [
 				, cb
 		
 		addOrRemoveValues: (event, callback, cb) =>
-			db.hget "#{config.odo.domain}:users", event.payload.id, (err, user) =>
+			@db().hget "#{config.odo.domain}:users", event.payload.id, (err, user) =>
 				if err?
 					cb()
 					return
@@ -294,11 +296,11 @@ define [
 				user = callback user
 				user = JSON.stringify user, null, 4
 				
-				db.hset "#{config.odo.domain}:users", event.payload.id, user, ->
+				@db().hset "#{config.odo.domain}:users", event.payload.id, user, ->
 					cb()
 		
-		get: (id, callback) ->
-			db.hget "#{config.odo.domain}:users", id, (err, data) =>
+		get: (id, callback) =>
+			@db().hget "#{config.odo.domain}:users", id, (err, data) =>
 				if err?
 					callback err
 					return
@@ -309,7 +311,7 @@ define [
 					return
 				
 				setTimeout(() =>
-					db.hget "#{config.odo.domain}:users", id, (err, data) =>
+					@db().hget "#{config.odo.domain}:users", id, (err, data) =>
 						if err?
 							callback err
 							return

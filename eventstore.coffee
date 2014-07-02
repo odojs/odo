@@ -1,4 +1,7 @@
 define ['node-uuid', 'eventstore', 'eventstore.redis', 'odo/hub', 'odo/config'], (uuid, eventstore, storage, hub, config) ->
+	return if ['projection', 'domain']
+		.filter (n) -> config.contexts.indexOf(n) isnt -1
+		.length is 0
 
 	# Setup the event store to publish to redis
 	es = eventstore.createStore

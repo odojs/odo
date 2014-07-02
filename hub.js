@@ -2,6 +2,11 @@
 (function() {
   define(['redis', 'odo/config', 'odo/sequencer'], function(redis, config, Sequencer) {
     var commandreceiver, commandsender, ensequence, eventlistener, eventpublisher, eventsequencer, getfilename, handlers, listeners, result, subscriptions;
+    if (['web', 'projection', 'domain'].filter(function(n) {
+      return config.contexts.indexOf(n) !== -1;
+    }).length === 0) {
+      return;
+    }
     commandsender = redis.createClient(config.redis.port, config.redis.host);
     eventpublisher = redis.createClient(config.redis.port, config.redis.host);
     subscriptions = [];

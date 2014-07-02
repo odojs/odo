@@ -3,8 +3,7 @@
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   define(['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'redis', 'odo/user', 'odo/express'], function(passport, passportlocal, config, hub, uuid, redis, User, express) {
-    var LocalAuthentication, db;
-    db = redis.createClient(config.redis.port, config.redis.host);
+    var LocalAuthentication;
     return LocalAuthentication = (function() {
       function LocalAuthentication() {
         this.remove = __bind(this.remove, this);
@@ -19,7 +18,15 @@
         this.signin = __bind(this.signin, this);
         this.projection = __bind(this.projection, this);
         this.web = __bind(this.web, this);
+        this.db = __bind(this.db, this);
       }
+
+      LocalAuthentication.prototype.db = function() {
+        if (this._db != null) {
+          return this._db;
+        }
+        return this._db = redis.createClient(config.redis.port, config.redis.host);
+      };
 
       LocalAuthentication.prototype.web = function() {
         passport.use(new passportlocal.Strategy(this.signin));
@@ -66,7 +73,7 @@
       LocalAuthentication.prototype.projection = function() {
         hub.receive('userHasLocalSignin', (function(_this) {
           return function(event, cb) {
-            return db.hset("" + config.odo.domain + ":localusers", event.payload.profile.username, event.payload.id, function() {
+            return _this.db().hset("" + config.odo.domain + ":localusers", event.payload.profile.username, event.payload.id, function() {
               return cb();
             });
           };
@@ -83,7 +90,7 @@
                 cb();
                 return;
               }
-              return db.hset("" + config.odo.domain + ":localusers", event.payload.username, event.payload.id, function() {
+              return _this.db().hset("" + config.odo.domain + ":localusers", event.payload.username, event.payload.id, function() {
                 return cb();
               });
             });
@@ -91,7 +98,7 @@
         })(this));
         hub.receive('userLocalSigninRemoved', (function(_this) {
           return function(event, cb) {
-            return db.hdel("" + config.odo.domain + ":localusers", event.payload.profile.username, function() {
+            return _this.db().hdel("" + config.odo.domain + ":localusers", event.payload.profile.username, function() {
               return cb();
             });
           };
@@ -101,7 +108,7 @@
             var key;
             key = "" + config.odo.domain + ":passwordresettoken:" + event.payload.token;
             console.log(key);
-            return db.multi().set(key, event.payload.id).expire(key, 60 * 60 * 24).exec(function(err, replies) {
+            return _this.db().multi().set(key, event.payload.id).expire(key, 60 * 60 * 24).exec(function(err, replies) {
               if (err != null) {
                 console.log(err);
                 cb();
@@ -231,7 +238,7 @@
           res.send(400, 'Token required');
           return;
         }
-        return db.get("" + config.odo.domain + ":passwordresettoken:" + req.query.token, (function(_this) {
+        return this.db().get("" + config.odo.domain + ":passwordresettoken:" + req.query.token, (function(_this) {
           return function(err, userid) {
             if (err != null) {
               console.log(err);
@@ -273,7 +280,7 @@
           res.send(400, 'Email address required');
           return;
         }
-        return db.hget("" + config.odo.domain + ":useremail", req.body.email, (function(_this) {
+        return this.db().hget("" + config.odo.domain + ":useremail", req.body.email, (function(_this) {
           return function(err, userid) {
             var token;
             if (err != null) {
@@ -314,7 +321,7 @@
           return;
         }
         key = "" + config.odo.domain + ":passwordresettoken:" + req.body.token;
-        return db.get(key, (function(_this) {
+        return this.db().get(key, (function(_this) {
           return function(err, userid) {
             if (err != null) {
               console.log(err);
@@ -333,7 +340,7 @@
                 password: req.body.password
               }
             });
-            return db.del(key, function(err, reply) {
+            return _this.db().del(key, function(err, reply) {
               if (err != null) {
                 console.log(err);
                 res.send(500, 'Woops');
@@ -492,7 +499,7 @@
       };
 
       LocalAuthentication.prototype.get = function(username, callback) {
-        return db.hget("" + config.odo.domain + ":localusers", username, (function(_this) {
+        return this.db().hget("" + config.odo.domain + ":localusers", username, (function(_this) {
           return function(err, data) {
             if (err != null) {
               callback(err);

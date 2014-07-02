@@ -5,10 +5,11 @@
   define([], function() {
     var Plugins;
     return Plugins = (function() {
-      Plugins.prototype.contexts = ['web', 'domain', 'projection', 'api'];
+      Plugins.prototype.contexts = ['web', 'domain', 'projection', 'api', 'build', 'cmd'];
 
       function Plugins(plugins) {
         this.context = __bind(this.context, this);
+        this.run = __bind(this.run, this);
         var context, _i, _len, _ref;
         this.plugins = plugins;
         this.plugins = this.plugins.map(function(plugin) {
@@ -24,21 +25,25 @@
         }
       }
 
+      Plugins.prototype.run = function(name) {
+        var plugin, _i, _len, _ref, _results;
+        _ref = this.plugins;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          plugin = _ref[_i];
+          if (plugin[name] != null) {
+            _results.push(plugin[name]());
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      };
+
       Plugins.prototype.context = function(name) {
         return (function(_this) {
           return function() {
-            var plugin, _i, _len, _ref, _results;
-            _ref = _this.plugins;
-            _results = [];
-            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-              plugin = _ref[_i];
-              if (plugin[name] != null) {
-                _results.push(plugin[name]());
-              } else {
-                _results.push(void 0);
-              }
-            }
-            return _results;
+            return _this.run(name);
           };
         })(this);
       };
