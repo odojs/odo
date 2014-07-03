@@ -22,11 +22,14 @@
     };
     originalDefine = window.define;
     window.define = function(name, deps, callback) {
-      var args, method;
+      var args, d, method;
       method = function(cb) {
         return function() {
           var arg, args, dfd, foundPromise, that, _i, _len;
           args = Array.prototype.slice.call(arguments, 0);
+          if (name === 'moment') {
+            console.log(args);
+          }
           foundPromise = false;
           for (_i = 0, _len = args.length; _i < _len; _i++) {
             arg = args[_i];
@@ -53,7 +56,11 @@
           args = [method(name)];
         }
       } else if (!system.isArray(deps)) {
-        args = [name, method(deps)];
+        d = ['require', 'exports', 'module'];
+        if (deps.length === 1) {
+          d = ['require'];
+        }
+        args = [name, d, method(deps)];
       } else {
         args = [name, deps, method(callback)];
       }

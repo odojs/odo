@@ -23,6 +23,9 @@ define ['durandal/system', 'q'], (system, Q) ->
 			->
 				args = Array::slice.call arguments, 0
 				
+				if name is 'moment'
+					console.log args
+				
 				foundPromise = no
 				for arg in args
 					foundPromise = foundPromise or arg and arg.then?
@@ -50,7 +53,10 @@ define ['durandal/system', 'q'], (system, Q) ->
 		
 		else if !system.isArray deps
 			# define(name, callback)
-			args = [name, method(deps)]
+			d = ['require', 'exports', 'module']
+			d = ['require'] if deps.length is 1
+				
+			args = [name, d, method(deps)]
 		
 		else
 			# define(name, deps, callback)
