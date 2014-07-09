@@ -1,5 +1,5 @@
 define ['redis', 'odo/config', 'odo/sequencer'], (redis, config, Sequencer) ->
-	return if ['web', 'projection', 'domain']
+	return if ['api', 'web', 'projection', 'domain']
 		.filter (n) -> config.contexts.indexOf(n) isnt -1
 		.length is 0
 
