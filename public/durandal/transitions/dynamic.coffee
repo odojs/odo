@@ -3,7 +3,7 @@ define ['plugins/router', 'q'], (router, Q) ->
 		dfd = Q.defer()
 		if router.currentTransition?
 			requirejs ['transitions/' + router.currentTransition], (transition) ->
-				transition(context).then dfd.resolve()
+				transition(context).then -> dfd.resolve()
 		else
 			context.scrolltop = yes if !context.scrolltop?
 			$(context.activeView).hide() if context.activeView?
