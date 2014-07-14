@@ -57,7 +57,10 @@ define [
 				alloweddomains = @app.get('allowed cross domains').split(' ')
 
 				@app.use (req, res, next) =>
-					referrer = req.header('referrer').slice(0,-1)
+					referrer = "#{req.protocol}://#{req.hostname}"
+					if req.header('referrer')?
+						referrer = req.header('referrer').slice(0,-1)
+					
 					return next() if not referrer in alloweddomains
 					res.header 'Access-Control-Allow-Origin', referrer
 					res.header 'Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE'

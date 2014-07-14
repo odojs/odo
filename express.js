@@ -68,7 +68,10 @@ define(['odo/config', 'odo/recorder'], function(config, Recorder) {
         this.app.use((function(_this) {
           return function(req, res, next) {
             var referrer, _ref1;
-            referrer = req.header('referrer').slice(0, -1);
+            referrer = "" + req.protocol + "://" + req.hostname;
+            if (req.header('referrer') != null) {
+              referrer = req.header('referrer').slice(0, -1);
+            }
             if (_ref1 = !referrer, __indexOf.call(alloweddomains, _ref1) >= 0) {
               return next();
             }
