@@ -54,8 +54,12 @@ define [
 				key: @app.get 'session key'
 				secret: @app.get 'session secret'
 			if @app.get('allowed cross domains')?
+				alloweddomains = @app.get('allowed cross domains').split(' ')
+
 				@app.use (req, res, next) =>
-					res.header 'Access-Control-Allow-Origin', @app.get('allowed cross domains')
+					referrer = req.header('referrer').slice(0,-1)
+					return next() if not referrer in alloweddomains
+					res.header 'Access-Control-Allow-Origin', referrer
 					res.header 'Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE'
 					res.header 'Access-Control-Allow-Headers', 'Content-Type'
 					next()
