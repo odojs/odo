@@ -23,9 +23,6 @@ define ['durandal/system', 'q'], (system, Q) ->
 			->
 				args = Array::slice.call arguments, 0
 				
-				if name is 'moment'
-					console.log args
-				
 				foundPromise = no
 				for arg in args
 					foundPromise = foundPromise or arg and arg.then?
