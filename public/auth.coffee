@@ -1,4 +1,4 @@
-﻿define ['jquery', 'q'], ($, Q) ->
+﻿define 'odo/auth', ['jquery', 'q'], ($, Q) ->
 	cache = null
 	
 	getUser: () =>

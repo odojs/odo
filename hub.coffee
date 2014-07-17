@@ -42,7 +42,7 @@ define ['redis', 'odo/config', 'odo/sequencer'], (redis, config, Sequencer) ->
 			
 		handle: (command, callback) ->
 			filename = getfilename()
-			console.log "#{filename} subscribing handler for #{command}"
+			# console.log "#{filename} subscribing handler for #{command}"
 			if handlers[command]?
 				console.log "Error, handler already set for #{command}"
 				return
@@ -61,7 +61,7 @@ define ['redis', 'odo/config', 'odo/sequencer'], (redis, config, Sequencer) ->
 
 		receive: (event, callback) ->
 			filename = getfilename()
-			console.log "#{filename} listening to #{event}"
+			# console.log "#{filename} listening to #{event}"
 			if !listeners[event]?
 				listeners[event] = []
 			listeners[event].push {

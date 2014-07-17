@@ -56,15 +56,6 @@ Fork [odo example](https://github.com/tcoats/odo-example) (out of date at the mo
 - [cson](https://github.com/bevry/cson) (coffeescript object notation)
 - [multer](https://github.com/expressjs/multer) (file uploads)
 
-## Front end
-- [Durandaljs](http://durandaljs.com/) (single page app)
-- [Knockoutjs](http://knockoutjs.com/) (mvvm in browser)
-- [Knockoutjs Validation](https://github.com/Knockout-Contrib/Knockout-Validation) (validation)
-- [jQuery](http://jquery.com/) (dom manipulation)
-- [Bootstrap](http://getbootstrap.com/) (scaffolding)
-- [Animate.css](https://daneden.me/animate/) (css animations)
-- [Mousetrap](http://craig.is/killing/mice) (keyboard shortcuts)
-
 # Overview
 There are two types of code in Odo: infrastructure and plugins.
 
@@ -327,9 +318,7 @@ test.html:
 ```
 
 ## Public
-The public plugin hosts the odo public directory through express which includes durandal components and identity and authentication code. Also hosts a public directory available in your application for static assets and durandal models and views.
-
-See the [public README.md](https://github.com/tcoats/odo/tree/master/public) for more information.
+The public plugin hosts a public directory available in your application for static assets and durandal models and views.
 
 ## [Passport authentication](http://passportjs.org/) - local, google, facebook, twitter and metocean
 Passport is a framework and a collection of plugins to provide authentication for Nodejs applications. It has support for most common providers such as google, facebook, twitter, and linkedin.
