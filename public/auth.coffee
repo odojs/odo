@@ -50,7 +50,12 @@
 	getUsernameAvailability: (username) =>
 		Q $.get '/odo/auth/local/usernameavailability',
 			username: username
-	
+
+
+	getEmailAvailability: (email) =>
+		Q $.get '/odo/auth/local/emailavailability',
+			email: email
+
 	testAuthentication: (username, password) =>
 		Q $.get '/odo/auth/local/test', 
 			username: username

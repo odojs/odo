@@ -39,6 +39,7 @@ define [
 			
 			express.get '/odo/auth/local/test', @test
 			express.get '/odo/auth/local/usernameavailability', @usernameavailability
+			express.get '/odo/auth/local/emailavailability', @emailavailability
 			express.get '/odo/auth/local/resettoken', @getresettoken
 			express.post '/odo/auth/local/resettoken', @generateresettoken
 			express.post '/odo/auth/local/reset', @reset
@@ -50,7 +51,8 @@ define [
 		projection: =>
 			hub.receive 'userHasLocalSignin', (event, cb) =>
 				@db().hset "#{config.odo.domain}:localusers", event.payload.profile.username, event.payload.id, ->
-					cb()
+					@db().hset "#{config.odo.domain}:localusers", event.payload.profile.email, event.payload.id, ->
+						cb()
 			
 			# if they have a local sign in we should update the sign in check
 			hub.receive 'userHasUsername', (event, cb) =>
@@ -151,6 +153,37 @@ define [
 						message: 'Correct username and password'
 					return
 		
+		emailavailability: (req, res) =>
+			#console.log req.query
+			#
+			#setTimeout(->
+			#	res.send(
+			#		isValid: no
+			#		message: 'Not implemented yet')
+			#, 1000)	
+			if !req.query.email?
+				res.send
+					isAvailable: no
+					message: 'Required'
+				return
+			
+			@get req.query.email, (err, userid) =>
+				if err?
+					console.log err
+					res.send 500, 'Woops'
+					return
+				
+				if !email?
+					res.send
+						isAvailable: yes
+						message: 'Available'
+					return
+				
+				res.send
+					isAvailable: no
+					message: 'Taken'
+				return
+
 		usernameavailability: (req, res) =>
 			if !req.query.username?
 				res.send
