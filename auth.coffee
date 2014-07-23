@@ -190,6 +190,7 @@ define [
 					payload:
 						id: userid
 						email: req.body.email
+						oldemail: req.user.email
 						token: req.body.token
 				
 				@db().del key, (err, reply) =>

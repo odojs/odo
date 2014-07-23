@@ -49,30 +49,31 @@ define [
 			express.post '/odo/auth/local/remove', @remove
 		
 		updateemail: (event, cb) =>
-			@db().hset "#{config.odo.domain}:localemails", event.payload.email, event.payload.id, -> cb()
+			@db().hset "#{config.odo.domain}:localemails", event.payload.email, event.payload.id, =>
+				if event.payload.oldemail?
+					@db().hdel "#{config.odo.domain}:localemails", event.payload.oldemail, -> cb()
+				else
+					cb()
 
 		projection: =>
 			hub.receive 'userHasLocalSignin', (event, cb) =>
 				@db().hset "#{config.odo.domain}:localusers", event.payload.profile.username, event.payload.id, -> cb()
-			
+				
 			hub.receive 'userHasLocalSignin', (event, cb) =>
 				@db().hset "#{config.odo.domain}:localemails", event.payload.profile.email, event.payload.id, -> cb()
-
+				
 			hub.receive 'userInvited', @updateemail
 			hub.receive 'userHasVerifyEmailAddressToken', @updateemail
-			hub.receive 'assignEmailAddressToUser', @updateemail
+			hub.receive 'userHasEmailAddress', @updateemail
 
 			# if they have a local sign in we should update the sign in check
 			hub.receive 'userHasUsername', (event, cb) =>
 				@get event.payload.username, (err, userid) =>
 					if err?
 						console.log err
-						cb()
-						return
-					
-					if !userid?
-						cb()
-						return
+						return cb()
+						
+					return cb() if !userid?
 				
 					@db().hset "#{config.odo.domain}:localusers", event.payload.username, event.payload.id, ->
 						cb()

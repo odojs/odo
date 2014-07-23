@@ -20,6 +20,7 @@ define [
 			@new 'userHasEmailAddress',
 				id: @id,
 				email: command.email
+				oldemail: command.oldemail
 			callback null
 			
 		createVerifyEmailAddressToken: (command, callback) =>

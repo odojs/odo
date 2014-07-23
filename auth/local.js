@@ -73,9 +73,17 @@ define(['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'red
     };
 
     LocalAuthentication.prototype.updateemail = function(event, cb) {
-      return this.db().hset("" + config.odo.domain + ":localemails", event.payload.email, event.payload.id, function() {
-        return cb();
-      });
+      return this.db().hset("" + config.odo.domain + ":localemails", event.payload.email, event.payload.id, (function(_this) {
+        return function() {
+          if (event.payload.oldemail != null) {
+            return _this.db().hdel("" + config.odo.domain + ":localemails", event.payload.oldemail, function() {
+              return cb();
+            });
+          } else {
+            return cb();
+          }
+        };
+      })(this));
     };
 
     LocalAuthentication.prototype.projection = function() {
@@ -95,18 +103,16 @@ define(['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'red
       })(this));
       hub.receive('userInvited', this.updateemail);
       hub.receive('userHasVerifyEmailAddressToken', this.updateemail);
-      hub.receive('assignEmailAddressToUser', this.updateemail);
+      hub.receive('userHasEmailAddress', this.updateemail);
       hub.receive('userHasUsername', (function(_this) {
         return function(event, cb) {
           return _this.get(event.payload.username, function(err, userid) {
             if (err != null) {
               console.log(err);
-              cb();
-              return;
+              return cb();
             }
             if (userid == null) {
-              cb();
-              return;
+              return cb();
             }
             return _this.db().hset("" + config.odo.domain + ":localusers", event.payload.username, event.payload.id, function() {
               return cb();
