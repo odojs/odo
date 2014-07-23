@@ -55,10 +55,10 @@ define ['node-uuid', 'eventstore', 'eventstore.redis', 'odo/hub', 'odo/config'],
 						classname = getclassname @.constructor
 						identifier = "#{classname} #{identifier}"
 					
-					console.log "#{identifier} applying #{stream.events.length} events"
+					#console.log "#{identifier} applying #{stream.events.length} events"
 						
 					@loadFromHistory stream.events
-					console.log "#{identifier} calling #{command.command}"
+					#console.log "#{identifier} calling #{command.command}"
 					@[command.command] command.payload, (err) =>
 						if err
 							console.log err

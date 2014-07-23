@@ -35,8 +35,8 @@ define ['redis', 'odo/config', 'odo/sequencer'], (redis, config, Sequencer) ->
 		# send commands to redis __commands channel__
 		send: (command) ->
 			filename = getfilename()
-			console.log "#{filename} sending command #{command.command}"
-			console.log JSON.stringify command.payload, null, 2
+			#console.log "#{filename} sending command #{command.command}"
+			#console.log JSON.stringify command.payload, null, 2
 			command = JSON.stringify command, null, 4
 			commandsender.publish "#{config.odo.domain}.commands", command
 			
@@ -55,8 +55,8 @@ define ['redis', 'odo/config', 'odo/sequencer'], (redis, config, Sequencer) ->
 		# Don't use this - it's used internally by the event store
 		publish: (event) ->
 			filename = getfilename()
-			console.log "#{filename} publishing event #{event.event}"
-			console.log JSON.stringify event.payload, null, 2
+			#console.log "#{filename} publishing event #{event.event}"
+			#console.log JSON.stringify event.payload, null, 2
 			eventpublisher.publish "#{config.odo.domain}.events", JSON.stringify event, null, 4
 
 		receive: (event, callback) ->
@@ -80,8 +80,8 @@ define ['redis', 'odo/config', 'odo/sequencer'], (redis, config, Sequencer) ->
 					
 		if handlers[command.command]?
 			binding = handlers[command.command]
-			console.log "#{binding.filename} handling command #{command.command}"
-			console.log JSON.stringify command.payload, null, 2
+			#console.log "#{binding.filename} handling command #{command.command}"
+			#console.log JSON.stringify command.payload, null, 2
 			binding.callback command
 	
 	console.log "Subscribing to #{config.odo.domain}.commands redis channel for commands"
@@ -102,8 +102,8 @@ define ['redis', 'odo/config', 'odo/sequencer'], (redis, config, Sequencer) ->
 		if listeners[event.event]?
 			for listener in listeners[event.event]
 				binding = listener
-				console.log "#{binding.filename} hearing event #{event.event}"
-				console.log JSON.stringify event.payload, null, 2
+				#console.log "#{binding.filename} hearing event #{event.event}"
+				#console.log JSON.stringify event.payload, null, 2
 				ensequence event, binding.callback
 
 	# subscribe to __events channel__
