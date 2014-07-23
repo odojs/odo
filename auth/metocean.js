@@ -23,7 +23,7 @@
         passport.use(new passportmetocean.Strategy({
           clientID: config.passport.metocean['client id'],
           clientSecret: config.passport.metocean['client secret'],
-          host: "" + config.metocean.protocol + "://mov." + config.metocean.rootdomain,
+          host: "" + config.metocean.protocol + "://" + config.metocean.rootdomain,
           callbackURL: config.passport.metocean['host'] + 'odo/auth/metocean/callback',
           passReqToCallback: true
         }, this.signin));
