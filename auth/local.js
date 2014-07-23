@@ -17,6 +17,7 @@ define(['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'red
       this.test = __bind(this.test, this);
       this.signin = __bind(this.signin, this);
       this.projection = __bind(this.projection, this);
+      this.updateemail = __bind(this.updateemail, this);
       this.web = __bind(this.web, this);
       this.db = __bind(this.db, this);
     }
@@ -71,16 +72,30 @@ define(['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'red
       return express.post('/odo/auth/local/remove', this.remove);
     };
 
+    LocalAuthentication.prototype.updateemail = function(event, cb) {
+      return this.db().hset("" + config.odo.domain + ":localemails", event.payload.email, event.payload.id, function() {
+        return cb();
+      });
+    };
+
     LocalAuthentication.prototype.projection = function() {
       hub.receive('userHasLocalSignin', (function(_this) {
         return function(event, cb) {
           return _this.db().hset("" + config.odo.domain + ":localusers", event.payload.profile.username, event.payload.id, function() {
-            return this.db().hset("" + config.odo.domain + ":localusers", event.payload.profile.email, event.payload.id, function() {
-              return cb();
-            });
+            return cb();
           });
         };
       })(this));
+      hub.receive('userHasLocalSignin', (function(_this) {
+        return function(event, cb) {
+          return _this.db().hset("" + config.odo.domain + ":localemails", event.payload.profile.email, event.payload.id, function() {
+            return cb();
+          });
+        };
+      })(this));
+      hub.receive('userInvited', this.updateemail);
+      hub.receive('userHasVerifyEmailAddressToken', this.updateemail);
+      hub.receive('assignEmailAddressToUser', this.updateemail);
       hub.receive('userHasUsername', (function(_this) {
         return function(event, cb) {
           return _this.get(event.payload.username, function(err, userid) {
@@ -214,14 +229,14 @@ define(['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'red
         });
         return;
       }
-      return this.get(req.query.email, (function(_this) {
+      return this.db().hget("" + config.odo.domain + ":localemails", req.query.email, (function(_this) {
         return function(err, userid) {
           if (err != null) {
             console.log(err);
             res.send(500, 'Woops');
             return;
           }
-          if (typeof email === "undefined" || email === null) {
+          if (userid == null) {
             res.send({
               isAvailable: true,
               message: 'Available'

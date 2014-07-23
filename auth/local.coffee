@@ -48,12 +48,20 @@ define [
 			express.post '/odo/auth/local/assignpassword', @assignpassword
 			express.post '/odo/auth/local/remove', @remove
 		
+		updateemail: (event, cb) =>
+			@db().hset "#{config.odo.domain}:localemails", event.payload.email, event.payload.id, -> cb()
+
 		projection: =>
 			hub.receive 'userHasLocalSignin', (event, cb) =>
-				@db().hset "#{config.odo.domain}:localusers", event.payload.profile.username, event.payload.id, ->
-					@db().hset "#{config.odo.domain}:localusers", event.payload.profile.email, event.payload.id, ->
-						cb()
+				@db().hset "#{config.odo.domain}:localusers", event.payload.profile.username, event.payload.id, -> cb()
 			
+			hub.receive 'userHasLocalSignin', (event, cb) =>
+				@db().hset "#{config.odo.domain}:localemails", event.payload.profile.email, event.payload.id, -> cb()
+
+			hub.receive 'userInvited', @updateemail
+			hub.receive 'userHasVerifyEmailAddressToken', @updateemail
+			hub.receive 'assignEmailAddressToUser', @updateemail
+
 			# if they have a local sign in we should update the sign in check
 			hub.receive 'userHasUsername', (event, cb) =>
 				@get event.payload.username, (err, userid) =>
@@ -153,27 +161,20 @@ define [
 						message: 'Correct username and password'
 					return
 		
-		emailavailability: (req, res) =>
-			#console.log req.query
-			#
-			#setTimeout(->
-			#	res.send(
-			#		isValid: no
-			#		message: 'Not implemented yet')
-			#, 1000)	
+		emailavailability: (req, res) =>	
 			if !req.query.email?
 				res.send
 					isAvailable: no
 					message: 'Required'
 				return
 			
-			@get req.query.email, (err, userid) =>
+			@db().hget "#{config.odo.domain}:localemails", req.query.email, (err, userid) =>
 				if err?
 					console.log err
 					res.send 500, 'Woops'
 					return
 				
-				if !email?
+				if !userid?
 					res.send
 						isAvailable: yes
 						message: 'Available'

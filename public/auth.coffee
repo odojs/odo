@@ -51,7 +51,6 @@
 		Q $.get '/odo/auth/local/usernameavailability',
 			username: username
 
-
 	getEmailAvailability: (email) =>
 		Q $.get '/odo/auth/local/emailavailability',
 			email: email
