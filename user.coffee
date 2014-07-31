@@ -1,323 +1,101 @@
 define [
 	'odo/config'
 	'odo/hub'
-	'odo/eventstore'
 	'redis'
 	'js-md5'
-], (config, hub, es, redis, md5) ->
-	class User
-		constructor: (id) ->
-			@id = id
-		
-		startTrackingUser: (command, callback) =>
-			@new 'userTrackingStarted',
-				id: @id,
-				profile: command.profile
-			callback null
-			
-			
-		assignEmailAddressToUser: (command, callback) =>
-			@new 'userHasEmailAddress',
-				id: @id,
-				email: command.email
-				oldemail: command.oldemail
-			callback null
-			
-		createVerifyEmailAddressToken: (command, callback) =>
-			@new 'userHasVerifyEmailAddressToken',
-				id: @id,
-				email: command.email
-				token: command.token
-			callback null
-		
-		assignDisplayNameToUser: (command, callback) =>
-			@new 'userHasDisplayName',
-				id: @id,
-				displayName: command.displayName
-			callback null
-		
-		assignUsernameToUser: (command, callback) =>
-			@new 'userHasUsername',
-				id: @id,
-				username: command.username
-			callback null
-			
-		
-		connectTwitterToUser: (command, callback) =>
-			@new 'userTwitterConnected',
-				id: @id,
-				profile: command.profile
-			callback null
-			
-		disconnectTwitterFromUser: (command, callback) =>
-			@new 'userTwitterDisconnected',
-				id: @id
-				profile: command.profile
-			callback null
-		
-		
-		connectFacebookToUser: (command, callback) =>
-			@new 'userFacebookConnected',
-				id: @id,
-				profile: command.profile
-			callback null
-			
-		disconnectFacebookFromUser: (command, callback) =>
-			@new 'userFacebookDisconnected',
-				id: @id
-				profile: command.profile
-			callback null
-			
-			
-		connectGoogleToUser: (command, callback) =>
-			@new 'userGoogleConnected',
-				id: @id,
-				profile: command.profile
-			callback null
-			
-		disconnectGoogleFromUser: (command, callback) =>
-			@new 'userGoogleDisconnected',
-				id: @id
-				profile: command.profile
-			callback null
-			
-			
-		connectOAuth2ToUser: (command, callback) =>
-			@new 'userOAuth2Connected',
-				id: @id,
-				profile: command.profile
-			callback null
-			
-		disconnectOAuth2FromUser: (command, callback) =>
-			@new 'userOAuth2Disconnected',
-				id: @id
-				profile: command.profile
-			callback null
-			
-			
-		connectMetOceanToUser: (command, callback) =>
-			@new 'userMetOceanConnected',
-				id: @id,
-				profile: command.profile
-			callback null
-			
-		disconnectMetOceanFromUser: (command, callback) =>
-			@new 'userMetOceanDisconnected',
-				id: @id
-				profile: command.profile
-			callback null
-			
-		
-		createLocalSigninForUser: (command, callback) =>
-			@new 'userHasLocalSignin',
-				id: @id,
-				profile: command.profile
-			callback null
-		
-		assignPasswordToUser: (command, callback) =>
-			@new 'userHasPassword',
-				id: @id,
-				password: command.password
-			callback null
-		
-		createPasswordResetToken: (command, callback) =>
-			@new 'userHasPasswordResetToken',
-				id: @id,
-				token: command.token
-			callback null
-			
-		removeLocalSigninForUser: (command, callback) =>
-			@new 'userLocalSigninRemoved',
-				id: @id
-				profile: command.profile
-			callback null
-	
+], (config, hub, redis, md5) ->
 	class UserApi
 		db: =>
 			return @_db if @_db?
 			return @_db = redis.createClient config.redis.port, config.redis.host
-			
-		commands: [
-			'startTrackingUser'
-			'assignEmailAddressToUser'
-			'createVerifyEmailAddressToken'
-			'assignDisplayNameToUser'
-			'assignUsernameToUser'
-			
-			'connectTwitterToUser'
-			'disconnectTwitterFromUser'
-			
-			'connectFacebookToUser'
-			'disconnectFacebookFromUser'
-			
-			'connectGoogleToUser'
-			'disconnectGoogleFromUser'
-			
-			'connectOAuth2ToUser'
-			'disconnectOAuth2FromUser'
-			
-			'connectMetOceanToUser'
-			'disconnectMetOceanFromUser'
-			
-			'createLocalSigninForUser'
-			'assignPasswordToUser'
-			'createPasswordResetToken'
-			'removeLocalSigninForUser'
-		]
-		
-		defaultHandler: (command) =>
-			user = new User command.payload.id
-			es.extend user
-			user.applyHistoryThenCommand command
-		
-		domain: =>
-			for command in @commands
-				hub.handle command, @defaultHandler
 		
 		projection: =>
-			hub.receive 'userTrackingStarted', (event, cb) =>
-				user = {
-					id: event.payload.id
-					# just in case we don't get another opportunity to grab the displayName
-					displayName: event.payload.profile.displayName
-				}
+			hub.every 'start tracking user {id}', (m, cb) =>
+				# just in case we don't get another opportunity to grab the displayName
+				user =
+					id: m.id
+					displayName: m.profile.displayName
 				
-				@db().hset "#{config.odo.domain}:users", event.payload.id, JSON.stringify(user), cb
+				@db().hset "#{config.odo.domain}:users", m.id, JSON.stringify(user, null, 2), cb
 			
+			hub.every 'assign email address {email} to user {id}', @mutate (m, user) ->
+				user.email = m.email
+				user.emailHash = md5 m.email.trim().toLowerCase()
+				user
 			
-			hub.receive 'userHasEmailAddress', (event, cb) =>
-				@addOrRemoveValues event, (user) =>
-					user.email = event.payload.email
-					user.emailHash = md5 event.payload.email.trim().toLowerCase()
-					user
-				, cb
+			hub.every 'assign displayName {displayName} to user {id}', @mutate (m, user) ->
+				user.displayName = m.displayName
+				user
 			
-			hub.receive 'userHasDisplayName', (event, cb) =>
-				@addOrRemoveValues event, (user) =>
-					user.displayName = event.payload.displayName
-					user
-				, cb
-			
-			hub.receive 'userHasUsername', (event, cb) =>
-				@addOrRemoveValues event, (user) =>
-					console.log "giving user a username #{event.payload.username}"
-					user.username = event.payload.username
-					user
-				, cb
+			hub.every 'assign username {username} to user {id}', @mutate (m, user) ->
+				user.username = m.username
+				user
 					
-
-			hub.receive 'userTwitterConnected', (event, cb) =>
-				@addOrRemoveValues event, (user) =>
-					user.twitter =
-						id: event.payload.profile.id
-						profile: event.payload.profile
-					user
-				, cb
+			hub.every 'connect twitter to user {id}', @mutate (m, user) ->
+				user.twitter =
+					id: m.profile.id
+					profile: m.profile
+				user
 				
-			hub.receive 'userTwitterDisconnected', (event, cb) =>
-				@addOrRemoveValues event, (user) =>
-					user.twitter = null
-					user
-				, cb
+			hub.every 'disconnect twitter from user {id}', @mutate (m, user) ->
+				user.twitter = null
+				user
 			
+			hub.every 'connect facebook to user {id}', @mutate (m, user) ->
+				user.facebook =
+					id: m.profile.id
+					profile: m.profile
+				user
+				
+			hub.every 'disconnect facebook from user {id}', @mutate (m, user) ->
+				user.facebook = null
+				user
 			
-			hub.receive 'userFacebookConnected', (event, cb) =>
-				@addOrRemoveValues event, (user) =>
-					user.facebook =
-						id: event.payload.profile.id
-						profile: event.payload.profile
-					user
-				, cb
+			hub.every 'connect google to user {id}', @mutate (m, user) ->
+				user.google =
+					id: m.profile.id
+					profile: m.profile
+				user
 				
-			hub.receive 'userFacebookDisconnected', (event, cb) =>
-				@addOrRemoveValues event, (user) =>
-					user.facebook = null
-					user
-				, cb
+			hub.every 'disconnect google from user {id}', @mutate (m, user) ->
+				user.google = null
+				user
 				
+			hub.every 'connect metocean to user {id}', @mutate (m, user) ->
+				user.metocean =
+					id: m.profile.id
+					profile: m.profile
+				user
+				
+			hub.every 'disconnect metocean from user {id}', @mutate (m, user) ->
+				user.metocean = null
+				user
+				
+			hub.every 'create local signin for user {id}', @mutate (m, user) ->
+				user.local =
+					id: m.id
+					profile: m.profile
+				user
 			
-			hub.receive 'userGoogleConnected', (event, cb) =>
-				@addOrRemoveValues event, (user) =>
-					user.google =
-						id: event.payload.profile.id
-						profile: event.payload.profile
-					user
-				, cb
-				
-			hub.receive 'userGoogleDisconnected', (event, cb) =>
-				@addOrRemoveValues event, (user) =>
-					user.google = null
-					user
-				, cb
-				
+			hub.every 'set password of user {id}', @mutate (m, user) ->
+				user.local.profile.password = m.password
+				user
 			
-			hub.receive 'userMetOceanConnected', (event, cb) =>
-				@addOrRemoveValues event, (user) =>
-					user.metocean =
-						id: event.payload.profile.id
-						profile: event.payload.profile
-					user
-				, cb
-				
-			hub.receive 'userMetOceanDisconnected', (event, cb) =>
-				@addOrRemoveValues event, (user) =>
-					user.metocean = null
-					user
-				, cb
-				
-				
-			hub.receive 'userHasLocalSignin', (event, cb) =>
-				@addOrRemoveValues event, (user) =>
-					user.local =
-						id: event.payload.id
-						profile: event.payload.profile
-					user
-				, cb
-			
-			hub.receive 'userHasPassword', (event, cb) =>
-				@addOrRemoveValues event, (user) =>
-					user.local.profile.password = event.payload.password
-					user
-				, cb
-			
-			hub.receive 'userLocalSigninRemoved', (event, cb) =>
-				@addOrRemoveValues event, (user) =>
-					user.local = null
-					user
-				, cb
+			hub.every 'remove local signin from user {id}', @mutate (m, user) ->
+				user.local = null
+				user
 		
-		addOrRemoveValues: (event, callback, cb) =>
-			@db().hget "#{config.odo.domain}:users", event.payload.id, (err, user) =>
-				if err?
-					cb()
-					return
-					
-				
-				user = JSON.parse user
-				user = callback user
-				user = JSON.stringify user, null, 4
-				
-				@db().hset "#{config.odo.domain}:users", event.payload.id, user, ->
-					cb()
+		mutate: (mutate) =>
+			(m, cb) =>
+				@db().hget "#{config.odo.domain}:users", m.id, (err, user) =>
+					throw err if err?
+					user = mutate m, JSON.parse user
+					@db().hset "#{config.odo.domain}:users", m.id, JSON.stringify(user, null, 2), => cb()
 		
-		get: (id, callback) =>
+		get: (id, cb) =>
 			@db().hget "#{config.odo.domain}:users", id, (err, data) =>
-				if err?
-					callback err
-					return
+				throw err if err?
 				data = JSON.parse data
 				
-				if data?
-					callback null, data
-					return
-				
-				setTimeout(() =>
-					@db().hget "#{config.odo.domain}:users", id, (err, data) =>
-						if err?
-							callback err
-							return
-						
-						data = JSON.parse data
-						callback null, data
-				, 1000)
+				cb null, data
 		

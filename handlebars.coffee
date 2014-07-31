@@ -59,17 +59,14 @@ define [
 			express.set('views', path.dirname(module.uri) + '/../../')
 			
 			# 'hello' -> 'HELLO'
-			handlebars.registerHelper 'uppercase', (string) ->
-				string.toUpperCase()
+			handlebars.registerHelper 'uppercase', (string) -> string.toUpperCase()
 
 			# 'Hello' -> 'hello'
-			handlebars.registerHelper 'lowercase', (string) ->
-				string.toLowerCase()
+			handlebars.registerHelper 'lowercase', (string) -> string.toLowerCase()
 
 			# 'hello my name is' -> 'Hello My Name Is'
 			if String::toTitleCase?
-				handlebars.registerHelper 'titlecase', (string) ->
-					string.toTitleCase()
+				handlebars.registerHelper 'titlecase', (string) -> string.toTitleCase()
 
 			# Support rendering the string value in a variable
 			# adjective = 'great'
@@ -77,15 +74,12 @@ define [
 			# {{render item}}
 			# = this is a great template
 			handlebars.registerHelper 'render', (content, options) ->
-				if content?
-					return new handlebars.SafeString handlebars.compile(content)(@)
-				''
+				return '' if !content?
+				new handlebars.SafeString handlebars.compile(content)(@)
 
 			# Provide an extension point that anyone can attach content to
 			# Will look for partials first, then variables
 			# Variables will be rendered as templates
 			handlebars.registerHelper 'hook', (partial, options) ->
-				if !@.partials[partial]?
-					return new handlebars.SafeString handlebars.compile('{{render ' + partial + '}}')(@)
-				
+				return new handlebars.SafeString handlebars.compile('{{render ' + partial + '}}')(@) if !@.partials[partial]?
 				new handlebars.SafeString handlebars.compile('{{> ' + partial + '}}')(@)

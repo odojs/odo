@@ -2,7 +2,7 @@
 (function() {
   var __slice = [].slice;
 
-  define(['odo/plugins', 'odo/config'], function(Plugins, config) {
+  define(['odo/plugins', 'odo/config', 'odo/async'], function(Plugins, config, async) {
     return function(contexts) {
       config.contexts = contexts;
       return requirejs(config.systems, function() {
@@ -17,38 +17,37 @@
           plugins.run(context);
         }
         return requirejs(['odo/hub'], function(hub) {
-          var e, _j, _len1, _results;
-          _results = [];
+          var event, item, payload, tasks, _fn, _j, _k, _len1, _len2, _ref;
+          tasks = [];
           for (_j = 0, _len1 = contexts.length; _j < _len1; _j++) {
             context = contexts[_j];
             if (config[context] == null) {
               continue;
             }
-            _results.push((function() {
-              var _k, _len2, _ref, _results1;
-              _ref = config[context];
-              _results1 = [];
-              for (_k = 0, _len2 = _ref.length; _k < _len2; _k++) {
-                e = _ref[_k];
-                if (e.e != null) {
-                  hub.publish({
-                    event: e.e,
-                    payload: e.p
+            _ref = config[context];
+            for (_k = 0, _len2 = _ref.length; _k < _len2; _k++) {
+              item = _ref[_k];
+              _fn = function(event, payload) {
+                return tasks.push(function(tcb) {
+                  return hub.ready(function(rcb) {
+                    rcb();
+                    return hub.emit(event, payload, function() {
+                      return tcb();
+                    });
                   });
-                }
-                if (e.c != null) {
-                  _results1.push(hub.send({
-                    command: e.c,
-                    payload: e.p
-                  }));
-                } else {
-                  _results1.push(void 0);
-                }
+                });
+              };
+              for (event in item) {
+                payload = item[event];
+                _fn(event, payload);
               }
-              return _results1;
-            })());
+            }
           }
-          return _results;
+          if (tasks.length > 0) {
+            return async.series(tasks, function() {
+              return console.log('Finished playback of events');
+            });
+          }
         });
       });
     };

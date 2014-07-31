@@ -1,4 +1,4 @@
-define ['odo/plugins', 'odo/config'], (Plugins, config) ->
+define ['odo/plugins', 'odo/config', 'odo/async'], (Plugins, config, async) ->
 	(contexts) ->
 		config.contexts = contexts
 		
@@ -6,13 +6,21 @@ define ['odo/plugins', 'odo/config'], (Plugins, config) ->
 			plugins = new Plugins plugins
 			
 			contexts = [contexts] if typeof contexts is 'string'
-			
-			for context in contexts
-				plugins.run context
+			plugins.run context for context in contexts
 			
 			requirejs ['odo/hub'], (hub) ->
+				tasks = []
 				for context in contexts
 					continue if !config[context]?
-					for e in config[context]
-						hub.publish event: e.e, payload: e.p if e.e?
-						hub.send command: e.c, payload: e.p if e.c?
+					for item in config[context]
+						for event, payload of item
+							do (event, payload) ->
+								tasks.push (tcb) ->
+									hub.ready (rcb) ->
+										rcb()
+										hub.emit event, payload, ->
+											tcb()
+				
+				if tasks.length > 0
+					async.series tasks, ->
+						console.log 'Finished playback of events'

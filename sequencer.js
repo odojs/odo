@@ -2,45 +2,68 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define([], function() {
+  define(['odo/colours'], function() {
     var Sequencer;
     return Sequencer = (function() {
       function Sequencer() {
-        this.push = __bind(this.push, this);
+        this.ready = __bind(this.ready, this);
+        this.exec = __bind(this.exec, this);
         this._next = __bind(this._next, this);
         this._queue = [];
         this._inprogress = false;
-        this._last = null;
-        setInterval((function(_this) {
-          return function() {
-            if (_this._inprogress) {
-              console.log("Waiting for");
-              return console.log(_this._last);
-            }
-          };
-        })(this), 1000);
+        this._timeout = 1000;
+        this._ready = [];
       }
 
       Sequencer.prototype._next = function() {
-        var item;
+        var duration, item;
         this._inprogress = true;
+        if (this._interval != null) {
+          clearInterval(this._interval);
+        }
         if (this._queue.length === 0) {
-          this._inprogress = false;
-          return;
+          if (this._ready.length === 0) {
+            return this._inprogress = false;
+          }
+          this._queue.push({
+            description: 'ready',
+            action: this._ready.shift()
+          });
         }
         item = this._queue.shift();
-        this._last = item.event;
-        return item.action(this._next);
+        duration = 0;
+        this._interval = setInterval((function(_this) {
+          return function() {
+            duration += _this._timeout;
+            return console.log(" " + '?'.red + " " + item.description.green + " has been running for " + ("" + (duration / 1000) + " seconds").blue);
+          };
+        })(this), this._timeout);
+        return item.action((function(_this) {
+          return function() {
+            if (item.callback != null) {
+              item.callback();
+            }
+            return _this._next();
+          };
+        })(this));
       };
 
-      Sequencer.prototype.push = function(event, action) {
+      Sequencer.prototype.exec = function(description, action, cb) {
         this._queue.push({
-          event: event,
-          action: action
+          description: description,
+          action: action,
+          callback: cb
         });
         if (!this._inprogress) {
           return this._next();
         }
+      };
+
+      Sequencer.prototype.ready = function(callback) {
+        if (!this._inprogress) {
+          return callback(function() {});
+        }
+        return this._ready.push(callback);
       };
 
       return Sequencer;

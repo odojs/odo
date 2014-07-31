@@ -7,15 +7,11 @@ define [], ->
 					@[method] = @_record method
 		
 		_record: (method) =>
-			=>
-				@_calls.push
-					method: method
-					params: arguments
+			=> @_calls.push method: method, params: arguments
 		
 		play: (target, methods) =>
 			if !methods?
-				for call in @_calls
-					target[call.method].apply target, call.params
+				target[call.method].apply target, call.params for call in @_calls
 				return
 			
 			for call in @_calls

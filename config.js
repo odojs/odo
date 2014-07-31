@@ -83,14 +83,12 @@
     globalenvvar = 'ODO_CONFIG';
     globalenvblob = {};
     if (process.env[globalenvvar] != null) {
-      console.log("Reading " + globalenvvar);
       globalenvblob = CSON.parseSync(process.env[globalenvvar]);
     }
     globalenv = parse('', template);
     domainenvvar = "" + envdomain + "_ODO_CONFIG";
     domainenvblob = {};
     if (process.env[domainenvvar] != null) {
-      console.log("Reading " + domainenvvar);
       domainenvblob = CSON.parseSync(process.env[domainenvvar]);
     }
     domainenv = parse("" + envdomain + "_", template);

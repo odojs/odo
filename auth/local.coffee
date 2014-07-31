@@ -48,286 +48,140 @@ define [
 			express.post '/odo/auth/local/assignpassword', @assignpassword
 			express.post '/odo/auth/local/remove', @remove
 		
-		updateemail: (event, cb) =>
-			@db().hset "#{config.odo.domain}:localemails", event.payload.email, event.payload.id, =>
-				if event.payload.oldemail?
-					@db().hdel "#{config.odo.domain}:localemails", event.payload.oldemail, -> cb()
+		updateemail: (m, cb) =>
+			@db().hset "#{config.odo.domain}:localemails", m.email, m.id, =>
+				if m.oldemail?
+					@db().hdel "#{config.odo.domain}:localemails", m.oldemail, -> cb()
 				else
 					cb()
 
 		projection: =>
-			hub.receive 'userHasLocalSignin', (event, cb) =>
-				@db().hset "#{config.odo.domain}:localusers", event.payload.profile.username, event.payload.id, -> cb()
+			hub.every 'create local signin for user {id}', (m, cb) =>
+				@db().hset "#{config.odo.domain}:localusers", m.profile.username, m.id, -> cb()
 				
-			hub.receive 'userHasLocalSignin', (event, cb) =>
-				@db().hset "#{config.odo.domain}:localemails", event.payload.profile.email, event.payload.id, -> cb()
+			hub.every 'create local signin for user {id}', (m, cb) =>
+				@db().hset "#{config.odo.domain}:localemails", m.profile.email, m.id, -> cb()
 				
-			hub.receive 'userInvited', @updateemail
-			hub.receive 'userHasVerifyEmailAddressToken', @updateemail
-			hub.receive 'userHasEmailAddress', @updateemail
+			hub.every 'create invitation {id}', @updateemail
+			hub.every 'create verify email token for email {email} of user {id}', @updateemail
+			hub.every 'assign email address {email} to user {id}', @updateemail
 
 			# if they have a local sign in we should update the sign in check
-			hub.receive 'userHasUsername', (event, cb) =>
-				@get event.payload.username, (err, userid) =>
-					if err?
-						console.log err
-						return cb()
-						
+			hub.every 'assign username {username} to user {id}', (m, cb) =>
+				@get m.username, (err, userid) =>
+					throw err if err?
 					return cb() if !userid?
-				
-					@db().hset "#{config.odo.domain}:localusers", event.payload.username, event.payload.id, ->
-						cb()
+					@db().hset "#{config.odo.domain}:localusers", m.username, m.id, -> cb()
 			
-			hub.receive 'userLocalSigninRemoved', (event, cb) =>
-				@db().hdel "#{config.odo.domain}:localusers", event.payload.profile.username, ->
-					cb()
+			hub.every 'remove local signin from user {id}', (m, cb) =>
+				@db().hdel "#{config.odo.domain}:localusers", m.profile.username, -> cb()
 			
-			hub.receive 'userHasPasswordResetToken', (event, cb) =>
-				key = "#{config.odo.domain}:passwordresettoken:#{event.payload.token}"
-				console.log key
+			hub.every 'create password reset token for user {id}', (m, cb) =>
+				key = "#{config.odo.domain}:passwordresettoken:#{m.token}"
 				@db()
 					.multi()
-					.set(key, event.payload.id)
+					.set(key, m.id)
 					.expire(key, 60 * 60 * 24)
 					.exec (err, replies) =>
-						if err?
-							console.log err
-							cb()
-							return
-						
+						throw err if err?
 						cb()
 						
 		signin: (username, password, done) =>
 			userid = null
 			
 			@get username, (err, userid) =>
-				if err?
-					done err
-					return
-				
-				if !userid?
-					done null, false, { message: 'Incorrect username or password.' }
-					return
+				throw err if err?
+				return done null, false, { message: 'Incorrect username or password.' } if !userid?
 				
 				new User().get userid, (err, user) =>
-					if err?
-						done err
-						return
-				
+					throw err if err?
 					if user.local.profile.password isnt password
-						done null, false, { message: 'Incorrect username or password.' }
-						return
-					
+						return done null, false, { message: 'Incorrect username or password.' }
 					done null, user
 		
 		test: (req, res) =>
-			if !req.query.username?
-				res.send
-					isValid: no
-					message: 'Username required'
-				return
-			
-			if !req.query.password?
-				res.send
-					isValid: no
-					message: 'Password required'
-				return
+			return res.send isValid: no, message: 'Username required' if !req.query.username?
+			return res.send isValid: no, message: 'Password required' if !req.query.password?
 			
 			@get req.query.username, (err, userid) =>
-				if err?
-					console.log err
-					res.send 500, 'Woops'
-					return
-				
-				if !userid?
-					res.send
-						isValid: no
-						message: 'Incorrect username or password'
-					return
+				throw err if err?
+				return res.send isValid: no, message: 'Incorrect username or password' if !userid?
 				
 				new User().get userid, (err, user) =>
-					if err?
-						console.log err
-						res.send 500, 'Woops'
-						return
+					throw err if err?
 					
 					if user.local.profile.password isnt req.query.password
-						res.send
-							isValid: no
-							message: 'Incorrect username or password'
-						return
+						return res.send isValid: no, message: 'Incorrect username or password'
 					
-					res.send
-						isValid: yes
-						message: 'Correct username and password'
-					return
+					res.send isValid: yes, message: 'Correct username and password'
 		
 		emailavailability: (req, res) =>	
-			if !req.query.email?
-				res.send
-					isAvailable: no
-					message: 'Required'
-				return
+			return res.send isAvailable: no, message: 'Required' if !req.query.email?
 			
 			@db().hget "#{config.odo.domain}:localemails", req.query.email, (err, userid) =>
-				if err?
-					console.log err
-					res.send 500, 'Woops'
-					return
-				
-				if !userid?
-					res.send
-						isAvailable: yes
-						message: 'Available'
-					return
-				
-				res.send
-					isAvailable: no
-					message: 'Taken'
-				return
+				throw err if err?
+				return res.send isAvailable: yes, message: 'Available'if !userid?
+				res.send isAvailable: no, message: 'Taken'
 
 		usernameavailability: (req, res) =>
-			if !req.query.username?
-				res.send
-					isAvailable: no
-					message: 'Required'
-				return
+			return res.send isAvailable: no, message: 'Required' if !req.query.username?
 			
 			@get req.query.username, (err, userid) =>
-				if err?
-					console.log err
-					res.send 500, 'Woops'
-					return
-				
-				if !userid?
-					res.send
-						isAvailable: yes
-						message: 'Available'
-					return
-				
-				res.send
-					isAvailable: no
-					message: 'Taken'
-				return
+				throw err if err?
+				return res.send isAvailable: yes, message: 'Available' if !userid?
+				res.send isAvailable: no ,message: 'Taken'
 		
 		getresettoken: (req, res) =>
-			if !req.query.token?
-				res.send 400, 'Token required'
-				return
+			return res.send 400, 'Token required' if !req.query.token?
 			
 			@db().get "#{config.odo.domain}:passwordresettoken:#{req.query.token}", (err, userid) =>
-				if err?
-					console.log err
-					res.send 500, 'Woops'
-					return
-				
-				if !userid?
-					res.send
-						isValid: no
-						message: 'Token not valid'
-					return
+				throw err if err?
+				return res.send isValid: no, message: 'Token not valid' if !userid?
 				
 				new User().get userid, (err, user) =>
-					if err?
-						console.log err
-						res.send 500, 'Woops'
-						return
-					
-					if !userid?
-						res.send
-							isValid: no
-							message: 'Token not valid'
-						return
-					
-					res.send
-						isValid: yes
-						username: user.username
-						message: 'Token valid'
+					throw err if err?
+					return res.send isValid: no, message: 'Token not valid' if !userid?
+					res.send isValid: yes, username: user.username, message: 'Token valid'
 		
 		generateresettoken: (req, res) =>
-			if !req.body.email?
-				res.send 400, 'Email address required'
-				return
-			
+			return res.send 400, 'Email address required' if !req.body.email?
 			@db().hget "#{config.odo.domain}:useremail", req.body.email, (err, userid) =>
-				if err?
-					console.log err
-					res.send 500, 'Woops'
-					return
-				
-				if !userid?
-					res.send 400, 'Incorrect email address'
-					return
-				
+				throw err if err?
+				return res.send 400, 'Incorrect email address' if !userid?
 				token = uuid.v4()
-				console.log "createPasswordResetToken #{token}"
-				hub.send
-					command: 'createPasswordResetToken'
-					payload:
-						id: userid
-						token: token
+				
+				hub.emit 'create password reset token for user {id}',
+					id: userid
+					token: token
 					
 				res.send 'Token generated'
 		
 		reset: (req, res) =>
-			if !req.body.token?
-				res.send 400, 'Token required'
-				return
-				
-			if !req.body.password?
-				res.send 400, 'Password required'
-				return
-				
+			return res.send 400, 'Token required' if !req.body.token?
+			return res.send 400, 'Password required' if !req.body.password?
 			if req.body.password.length < 8
-				res.send 400, 'Password needs to be at least eight letters long'
-				return
-			
+				return res.send 400, 'Password needs to be at least eight letters long'
 			key = "#{config.odo.domain}:passwordresettoken:#{req.body.token}"
 			@db().get key, (err, userid) =>
-				if err?
-					console.log err
-					res.send 500, 'Woops'
-					return
-					
-				if !userid?
-					res.send 400, 'Token not valid'
-					return
+				throw err if err?
+				return res.send 400, 'Token not valid' if !userid?
 				
-				console.log 'assigning a username for user'
-				hub.send
-					command: 'assignPasswordToUser'
-					payload:
-						id: userid
-						password: req.body.password
+				hub.emit 'set password of user {id}',
+					id: userid
+					password: req.body.password
 				
 				@db().del key, (err, reply) =>
-					if err?
-						console.log err
-						res.send 500, 'Woops'
-						return
-					
+					throw err if err?
 					res.send 'Done'
 		
 		signup: (req, res) =>
-			if !req.body.displayName?
-				res.send 400, 'Full name required'
-				return
-				
-			if !req.body.username?
-				res.send 400, 'Username required'
-				return
-				
-			if !req.body.password?
-				res.send 400, 'Password required'
-				return
-				
+			return res.send 400, 'Full name required' if !req.body.displayName?
+			return res.send 400, 'Username required' if !req.body.username?
+			return res.send 400, 'Password required' if !req.body.password?
 			if req.body.password.length < 8
-				res.send 400, 'Password needs to be at least eight letters long'
-				return
-				
+				return res.send 400, 'Password needs to be at least eight letters long'
 			if req.body.password isnt req.body.passwordconfirm
-				res.send 400, 'Passwords must match'
-				return
+				return res.send 400, 'Passwords must match'
 			
 			userid = null
 			
@@ -343,104 +197,58 @@ define [
 				console.log 'no user exists yet, creating a new id'
 				userid = uuid.v4()
 				profile.id = userid
-				hub.send
-					command: 'startTrackingUser'
-					payload:
-						id: userid
-						profile: profile
-				
-			console.log 'creating a local signin for user'
-			hub.send
-				command: 'createLocalSigninForUser'
-				payload:
+				hub.emit 'start tracking user {id}',
 					id: userid
 					profile: profile
+					
+			hub.emit 'create local signin for user {id}',
+				id: userid
+				profile: profile
 			
-			console.log 'assigning a username for user'
-			hub.send
-				command: 'assignUsernameToUser'
-				payload:
-					id: userid
-					username: profile.username
+			hub.emit 'assign username {username} to user {id}',
+				id: userid
+				username: profile.username
 			
-			console.log 'assigning a displayName for user'
-			hub.send
-				command: 'assignDisplayNameToUser'
-				payload:
-					id: userid
-					displayName: profile.displayName
+			hub.emit 'assign displayName {displayName} to user {id}',
+				id: userid
+				displayName: profile.displayName
 			
-			console.log 'assigning a username for user'
-			hub.send
-				command: 'assignPasswordToUser'
-				payload:
-					id: userid
-					password: profile.password
+			hub.emit 'set password of user {id}',
+				id: userid
+				password: profile.password
 			
 			new User().get userid, (err, user) =>
-				if err?
-					res.send 500, 'Couldn\'t find user'
-					return
-					
+				return res.send 500, 'Couldn\'t find user' if err?
+				
 				req.login user, (err) =>
-					if err?
-						res.send 500, 'Couldn\'t login user'
-						return
-					
+					return res.send 500, 'Couldn\'t login user' if err?
 					res.redirect '/'
 		
 		assignusername: (req, res) =>
-			if !req.body.username?
-				res.send 400, 'Username required'
-				return
-				
-			if !req.body.id?
-				res.send 400, 'Id required'
-				return
-				
-			console.log "Assigning username #{req.body.username} to #{req.body.id}"
-			hub.send
-				command: 'assignUsernameToUser'
-				payload:
-					id: req.body.id
-					username: req.body.username
+			return res.send 400, 'Username required' if !req.body.username?
+			return res.send 400, 'Id required' if !req.body.id?
+			
+			hub.emit 'assign username {username} to user {id}',
+				id: req.body.id
+				username: req.body.username
 		
 		assignpassword: (req, res) =>
-			if !req.body.password?
-				res.send 400, 'Password required'
-				return
-				
-			if !req.body.id?
-				res.send 400, 'Id required'
-				return
-				
-			console.log "Assigning a password to #{req.body.id}"
-			hub.send
-				command: 'assignPasswordToUser'
-				payload:
-					id: req.body.id
-					password: req.body.password
+			return res.send 400, 'Password required' if !req.body.password?
+			return res.send 400, 'Id required' if !req.body.id?
+			
+			hub.emit 'set password of user {id}',
+				id: req.body.id
+				password: req.body.password
 		
 		remove: (req, res) =>
-			if !req.body.id?
-				res.send 400, 'Id required'
-				return
-				
-			if !req.body.profile?
-				res.send 400, 'Profile required'
-				return
-				
-			console.log "Removing local signin for #{req.body.id}"
-			hub.send
-				command: 'removeLocalSigninForUser'
-				payload:
-					id: req.body.id
-					profile: req.body.profile
+			return res.send 400, 'Id required' if !req.body.id?
+			return res.send 400, 'Profile required' if !req.body.profile?
+			
+			hub.emit 'remove local signin from user {id}',
+				id: req.body.id
+				profile: req.body.profile
 		
 		get: (username, callback) ->
 			@db().hget "#{config.odo.domain}:localusers", username, (err, data) =>
-				if err?
-					callback err
-					return
-					
+				return callback err if err?
 				callback null, data

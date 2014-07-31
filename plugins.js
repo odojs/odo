@@ -27,15 +27,13 @@
 
       Plugins.prototype.run = function(name) {
         var plugin, _i, _len, _ref, _results;
-        _ref = this.plugins;
+        _ref = this.plugins.filter(function(p) {
+          return p[name] != null;
+        });
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           plugin = _ref[_i];
-          if (plugin[name] != null) {
-            _results.push(plugin[name]());
-          } else {
-            _results.push(void 0);
-          }
+          _results.push(plugin[name]());
         }
         return _results;
       };

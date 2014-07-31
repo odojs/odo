@@ -18,7 +18,6 @@ define [], () ->
 			@[context] = @context context for context in @contexts
 		
 		run: (name) =>
-			for plugin in @plugins
-				plugin[name]() if plugin[name]?
+			plugin[name]() for plugin in @plugins.filter (p) -> p[name]?
 		
 		context: (name) => => @run name

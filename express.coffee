@@ -18,12 +18,8 @@ define [
 		]
 		
 		constructor: ->
-			for method in @configMethods
-				@[method] = @_record method
-				
-			for method in @appMethods
-				@[method] = @_record method
-			
+			@[method] = @_record method for method in @configMethods
+			@[method] = @_record method for method in @appMethods
 			super()
 		
 		modulepath: (uri) ->
@@ -43,8 +39,7 @@ define [
 				
 			@app.use require('compression')()
 			bodyParser = require 'body-parser'
-			@app.use bodyParser.urlencoded
-				extended: yes
+			@app.use bodyParser.urlencoded extended: yes
 			@app.use bodyParser.json()
 			if @app.get('upload directory')?
 				@app.use require('multer')({ dest: @app.get('upload directory') })

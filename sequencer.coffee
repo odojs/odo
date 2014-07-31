@@ -1,35 +1,44 @@
-define [], ->
+define ['odo/colours'], ->
 	class Sequencer
 		constructor: ->
 			@_queue = []
 			@_inprogress = no
-			@_last = null
-			
-			setInterval(=>
-				if @_inprogress
-					console.log "Waiting for"
-					console.log @_last
-			, 1000)
-			
+			@_timeout = 1000
+			@_ready = []
+
 		_next: =>
 			@_inprogress = yes
+			clearInterval @_interval if @_interval?
 			
 			# if we've finished the queue we are done
 			if @_queue.length is 0
-				@_inprogress = no
-				return
+				return @_inprogress = no if @_ready.length is 0
+				@_queue.push
+					description: 'ready'
+					action: @_ready.shift()
 			
 			# pull off the next item and give it a callback
 			item = @_queue.shift()
-			@_last = item.event
-			item.action @_next
+			duration = 0
+			@_interval = setInterval =>
+				duration += @_timeout
+				console.log " #{'?'.red} #{item.description.green} has been running for #{"#{duration / 1000} seconds".blue}"
+			, @_timeout
+			
+			item.action =>
+				item.callback() if item.callback?
+				@_next()
 		
-		push: (event, action) =>
+		exec: (description, action, cb) =>
 			# add another item to the queue
 			@_queue.push
-				event: event
+				description: description
 				action: action
+				callback: cb
 			
 			# if we aren't running, start running
-			if !@_inprogress
-				@_next()
+			@_next() if !@_inprogress
+		
+		ready: (callback) =>
+			return callback(->) if !@_inprogress
+			@_ready.push callback

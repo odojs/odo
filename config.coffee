@@ -75,7 +75,7 @@ define ['module', 'fs', 'path', 'cson'], (module, fs, path, CSON) ->
 	globalenvvar = 'ODO_CONFIG'
 	globalenvblob = {}
 	if process.env[globalenvvar]?
-		console.log "Reading #{globalenvvar}"
+		#console.log "Reading #{globalenvvar}"
 		globalenvblob = CSON.parseSync process.env[globalenvvar]
 	
 	# Look for global configurations
@@ -85,7 +85,7 @@ define ['module', 'fs', 'path', 'cson'], (module, fs, path, CSON) ->
 	domainenvvar = "#{envdomain}_ODO_CONFIG"
 	domainenvblob = {}
 	if process.env[domainenvvar]?
-		console.log "Reading #{domainenvvar}"
+		#console.log "Reading #{domainenvvar}"
 		domainenvblob = CSON.parseSync process.env[domainenvvar]
 	
 	# Also look for domain specific overrides

@@ -67,10 +67,10 @@
           });
         }
         handlebars.registerHelper('render', function(content, options) {
-          if (content != null) {
-            return new handlebars.SafeString(handlebars.compile(content)(this));
+          if (content == null) {
+            return '';
           }
-          return '';
+          return new handlebars.SafeString(handlebars.compile(content)(this));
         });
         return handlebars.registerHelper('hook', function(partial, options) {
           if (this.partials[partial] == null) {
