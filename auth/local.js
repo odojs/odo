@@ -17,6 +17,7 @@
         this.emailavailability = __bind(this.emailavailability, this);
         this.test = __bind(this.test, this);
         this.signin = __bind(this.signin, this);
+        this.auth = __bind(this.auth, this);
         this.projection = __bind(this.projection, this);
         this.updateemail = __bind(this.updateemail, this);
         this.web = __bind(this.web, this);
@@ -32,35 +33,7 @@
 
       LocalAuthentication.prototype.web = function() {
         passport.use(new passportlocal.Strategy(this.signin));
-        express.post('/odo/auth/local', function(req, res, next) {
-          return passport.authenticate('local', function(err, user, info) {
-            var _ref, _ref1;
-            if (err != null) {
-              return next(err);
-            }
-            if (!user) {
-              if (((_ref = config.odo.auth) != null ? (_ref1 = _ref.local) != null ? _ref1.failureRedirect : void 0 : void 0) != null) {
-                return res.redirect(config.odo.auth.local.failureRedirect);
-              }
-              return res.redirect('/#auth/local/failure');
-            }
-            return req.logIn(user, function(err) {
-              var returnTo, _ref2, _ref3, _ref4;
-              if (err != null) {
-                return next(err);
-              }
-              if (((_ref2 = req.session) != null ? _ref2.returnTo : void 0) != null) {
-                returnTo = req.session.returnTo;
-                delete req.session.returnTo;
-                return res.redirect(returnTo);
-              }
-              if (((_ref3 = config.odo.auth) != null ? (_ref4 = _ref3.local) != null ? _ref4.successRedirect : void 0 : void 0) != null) {
-                return res.redirect(config.odo.auth.local.successRedirect);
-              }
-              return res.redirect('/#auth/local/success');
-            });
-          })(req, res, next);
-        });
+        express.post('/odo/auth/local', this.auth);
         express.get('/odo/auth/local/test', this.test);
         express.get('/odo/auth/local/usernameavailability', this.usernameavailability);
         express.get('/odo/auth/local/emailavailability', this.emailavailability);
@@ -141,6 +114,36 @@
         })(this));
       };
 
+      LocalAuthentication.prototype.auth = function(req, res, next) {
+        return passport.authenticate('local', function(err, user, info) {
+          var _ref, _ref1;
+          if (err != null) {
+            return next(err);
+          }
+          if (!user) {
+            if (((_ref = config.odo.auth) != null ? (_ref1 = _ref.local) != null ? _ref1.failureRedirect : void 0 : void 0) != null) {
+              return res.redirect(config.odo.auth.local.failureRedirect);
+            }
+            return res.redirect('/#auth/local/failure');
+          }
+          return req.logIn(user, function(err) {
+            var returnTo, _ref2, _ref3, _ref4;
+            if (err != null) {
+              return next(err);
+            }
+            if (((_ref2 = req.session) != null ? _ref2.returnTo : void 0) != null) {
+              returnTo = req.session.returnTo;
+              delete req.session.returnTo;
+              return res.redirect(returnTo);
+            }
+            if (((_ref3 = config.odo.auth) != null ? (_ref4 = _ref3.local) != null ? _ref4.successRedirect : void 0 : void 0) != null) {
+              return res.redirect(config.odo.auth.local.successRedirect);
+            }
+            return res.redirect('/#auth/local/success');
+          });
+        })(req, res, next);
+      };
+
       LocalAuthentication.prototype.signin = function(username, password, done) {
         var userid;
         userid = null;
@@ -151,7 +154,8 @@
             }
             if (userid == null) {
               return done(null, false, {
-                message: 'Incorrect username or password.'
+                message: 'Incorrect username or password.',
+                userid: null
               });
             }
             return new User().get(userid, function(err, user) {
@@ -160,7 +164,8 @@
               }
               if (user.local.profile.password !== password) {
                 return done(null, false, {
-                  message: 'Incorrect username or password.'
+                  message: 'Incorrect username or password.',
+                  userid: userid
                 });
               }
               return done(null, user);

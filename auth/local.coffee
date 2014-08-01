@@ -16,27 +16,7 @@ define [
 		web: =>
 			passport.use new passportlocal.Strategy @signin
 			
-			express.post '/odo/auth/local', (req, res, next) ->
-				passport.authenticate('local', (err, user, info) ->
-					return next err if err?
-					
-					if !user
-						if config.odo.auth?.local?.failureRedirect?
-							return res.redirect config.odo.auth.local.failureRedirect
-						return res.redirect '/#auth/local/failure'
-						
-					req.logIn user, (err) ->
-						return next err if err?
-						
-						if req.session?.returnTo?
-							returnTo = req.session.returnTo
-							delete req.session.returnTo
-							return res.redirect returnTo
-						if config.odo.auth?.local?.successRedirect?
-							return res.redirect config.odo.auth.local.successRedirect
-						return res.redirect '/#auth/local/success'
-				)(req, res, next)
-			
+			express.post '/odo/auth/local', @auth
 			express.get '/odo/auth/local/test', @test
 			express.get '/odo/auth/local/usernameavailability', @usernameavailability
 			express.get '/odo/auth/local/emailavailability', @emailavailability
@@ -85,18 +65,39 @@ define [
 					.exec (err, replies) =>
 						throw err if err?
 						cb()
-						
+		
+		auth: (req, res, next) =>
+			passport.authenticate('local', (err, user, info) ->
+				return next err if err?
+				
+				if !user
+					if config.odo.auth?.local?.failureRedirect?
+						return res.redirect config.odo.auth.local.failureRedirect
+					return res.redirect '/#auth/local/failure'
+					
+				req.logIn user, (err) ->
+					return next err if err?
+					
+					if req.session?.returnTo?
+						returnTo = req.session.returnTo
+						delete req.session.returnTo
+						return res.redirect returnTo
+					if config.odo.auth?.local?.successRedirect?
+						return res.redirect config.odo.auth.local.successRedirect
+					return res.redirect '/#auth/local/success'
+			)(req, res, next)
+		
 		signin: (username, password, done) =>
 			userid = null
 			
 			@get username, (err, userid) =>
 				throw err if err?
-				return done null, false, { message: 'Incorrect username or password.' } if !userid?
+				return done null, false, { message: 'Incorrect username or password.', userid: null } if !userid?
 				
 				new User().get userid, (err, user) =>
 					throw err if err?
 					if user.local.profile.password isnt password
-						return done null, false, { message: 'Incorrect username or password.' }
+						return done null, false, { message: 'Incorrect username or password.', userid: userid }
 					done null, user
 		
 		test: (req, res) =>
@@ -129,7 +130,7 @@ define [
 			@get req.query.username, (err, userid) =>
 				throw err if err?
 				return res.send isAvailable: yes, message: 'Available' if !userid?
-				res.send isAvailable: no ,message: 'Taken'
+				res.send isAvailable: no, message: 'Taken'
 		
 		getresettoken: (req, res) =>
 			return res.send 400, 'Token required' if !req.query.token?
