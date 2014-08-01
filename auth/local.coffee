@@ -1,13 +1,14 @@
 define [
 	'passport'
 	'passport-local'
-	'odo/config'
-	'odo/hub'
 	'node-uuid'
 	'redis'
+	'bcryptjs'
+	'odo/config'
+	'odo/hub'
 	'odo/user'
 	'odo/express'
-], (passport, passportlocal, config, hub, uuid, redis, User, express) ->
+], (passport, passportlocal, uuid, redis, bcrypt, config, hub, User, express) ->
 	class LocalAuthentication
 		db: =>
 			return @_db if @_db?
@@ -96,7 +97,7 @@ define [
 				
 				new User().get userid, (err, user) =>
 					throw err if err?
-					if user.local.profile.password isnt password
+					if !bcrypt.compareSync password, user.local.profile.password
 						return done null, false, { message: 'Incorrect username or password.', userid: userid }
 					done null, user
 		
@@ -108,10 +109,12 @@ define [
 				throw err if err?
 				return res.send isValid: no, message: 'Incorrect username or password' if !userid?
 				
+				password = req.query.password
+				
 				new User().get userid, (err, user) =>
 					throw err if err?
 					
-					if user.local.profile.password isnt req.query.password
+					if !bcrypt.compareSync password, user.local.profile.password
 						return res.send isValid: no, message: 'Incorrect username or password'
 					
 					res.send isValid: yes, message: 'Correct username and password'
@@ -169,7 +172,7 @@ define [
 				
 				hub.emit 'set password of user {id}',
 					id: userid
-					password: req.body.password
+					password: bcrypt.hashSync req.body.password, 12
 				
 				@db().del key, (err, reply) =>
 					throw err if err?
@@ -188,6 +191,8 @@ define [
 			
 			# this is so applications can add their own parameters to the local profile
 			profile = req.body
+			profile.password = bcrypt.hashSync profile.password, 12
+			delete req.body.passwordconfirm
 			
 			if req.user?
 				console.log 'user already exists, creating local signin'
@@ -239,7 +244,7 @@ define [
 			
 			hub.emit 'set password of user {id}',
 				id: req.body.id
-				password: req.body.password
+				password: bcrypt.hashSync req.body.password, 12
 		
 		remove: (req, res) =>
 			return res.send 400, 'Id required' if !req.body.id?

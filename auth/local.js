@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['passport', 'passport-local', 'odo/config', 'odo/hub', 'node-uuid', 'redis', 'odo/user', 'odo/express'], function(passport, passportlocal, config, hub, uuid, redis, User, express) {
+  define(['passport', 'passport-local', 'node-uuid', 'redis', 'bcryptjs', 'odo/config', 'odo/hub', 'odo/user', 'odo/express'], function(passport, passportlocal, uuid, redis, bcrypt, config, hub, User, express) {
     var LocalAuthentication;
     return LocalAuthentication = (function() {
       function LocalAuthentication() {
@@ -162,7 +162,7 @@
               if (err != null) {
                 throw err;
               }
-              if (user.local.profile.password !== password) {
+              if (!bcrypt.compareSync(password, user.local.profile.password)) {
                 return done(null, false, {
                   message: 'Incorrect username or password.',
                   userid: userid
@@ -189,6 +189,7 @@
         }
         return this.get(req.query.username, (function(_this) {
           return function(err, userid) {
+            var password;
             if (err != null) {
               throw err;
             }
@@ -198,11 +199,12 @@
                 message: 'Incorrect username or password'
               });
             }
+            password = req.query.password;
             return new User().get(userid, function(err, user) {
               if (err != null) {
                 throw err;
               }
-              if (user.local.profile.password !== req.query.password) {
+              if (!bcrypt.compareSync(password, user.local.profile.password)) {
                 return res.send({
                   isValid: false,
                   message: 'Incorrect username or password'
@@ -349,7 +351,7 @@
             }
             hub.emit('set password of user {id}', {
               id: userid,
-              password: req.body.password
+              password: bcrypt.hashSync(req.body.password, 12)
             });
             return _this.db().del(key, function(err, reply) {
               if (err != null) {
@@ -380,6 +382,8 @@
         }
         userid = null;
         profile = req.body;
+        profile.password = bcrypt.hashSync(profile.password, 12);
+        delete req.body.passwordconfirm;
         if (req.user != null) {
           console.log('user already exists, creating local signin');
           userid = req.user.id;
@@ -446,7 +450,7 @@
         }
         return hub.emit('set password of user {id}', {
           id: req.body.id,
-          password: req.body.password
+          password: bcrypt.hashSync(req.body.password, 12)
         });
       };
 
