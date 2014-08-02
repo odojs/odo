@@ -2,52 +2,60 @@
 (function() {
   var __slice = [].slice;
 
-  define(['odo/plugins', 'odo/config', 'odo/async'], function(Plugins, config, async) {
+  define(['domain', 'odo/plugins', 'odo/config', 'odo/async'], function(domain, Plugins, config, async) {
     return function(contexts) {
-      config.contexts = contexts;
-      return requirejs(config.systems, function() {
-        var context, plugins, _i, _len;
-        plugins = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-        plugins = new Plugins(plugins);
-        if (typeof contexts === 'string') {
-          contexts = [contexts];
-        }
-        for (_i = 0, _len = contexts.length; _i < _len; _i++) {
-          context = contexts[_i];
-          plugins.run(context);
-        }
-        return requirejs(['odo/hub'], function(hub) {
-          var event, item, payload, tasks, _fn, _j, _k, _len1, _len2, _ref;
-          tasks = [];
-          for (_j = 0, _len1 = contexts.length; _j < _len1; _j++) {
-            context = contexts[_j];
-            if (config[context] == null) {
-              continue;
-            }
-            _ref = config[context];
-            for (_k = 0, _len2 = _ref.length; _k < _len2; _k++) {
-              item = _ref[_k];
-              _fn = function(event, payload) {
-                return tasks.push(function(tcb) {
-                  return hub.ready(function(rcb) {
-                    rcb();
-                    return hub.emit(event, payload, function() {
-                      return tcb();
+      var d;
+      d = domain.create();
+      d.on('error', function(err) {
+        console.error(err);
+        return process.exit(1);
+      });
+      return d.run(function() {
+        config.contexts = contexts;
+        return requirejs(config.systems, function() {
+          var context, plugins, _i, _len;
+          plugins = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+          plugins = new Plugins(plugins);
+          if (typeof contexts === 'string') {
+            contexts = [contexts];
+          }
+          for (_i = 0, _len = contexts.length; _i < _len; _i++) {
+            context = contexts[_i];
+            plugins.run(context);
+          }
+          return requirejs(['odo/hub'], function(hub) {
+            var event, item, payload, tasks, _fn, _j, _k, _len1, _len2, _ref;
+            tasks = [];
+            for (_j = 0, _len1 = contexts.length; _j < _len1; _j++) {
+              context = contexts[_j];
+              if (config[context] == null) {
+                continue;
+              }
+              _ref = config[context];
+              for (_k = 0, _len2 = _ref.length; _k < _len2; _k++) {
+                item = _ref[_k];
+                _fn = function(event, payload) {
+                  return tasks.push(function(tcb) {
+                    return hub.ready(function(rcb) {
+                      rcb();
+                      return hub.emit(event, payload, function() {
+                        return tcb();
+                      });
                     });
                   });
-                });
-              };
-              for (event in item) {
-                payload = item[event];
-                _fn(event, payload);
+                };
+                for (event in item) {
+                  payload = item[event];
+                  _fn(event, payload);
+                }
               }
             }
-          }
-          if (tasks.length > 0) {
-            return async.series(tasks, function() {
-              return console.log('Finished playback of events');
-            });
-          }
+            if (tasks.length > 0) {
+              return async.series(tasks, function() {
+                return console.log('Finished playback of events');
+              });
+            }
+          });
         });
       });
     };
