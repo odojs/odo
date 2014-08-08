@@ -22,12 +22,17 @@ define [
 			express.get '/odo/auth/local/usernameavailability', @usernameavailability
 			express.get '/odo/auth/local/emailavailability', @emailavailability
 			express.get '/odo/auth/local/resettoken', @getresettoken
-			express.post '/odo/auth/local/resettoken', @generateresettoken
 			express.post '/odo/auth/local/reset', @reset
 			express.post '/odo/auth/local/signup', @signup
 			express.post '/odo/auth/local/assignusername', @assignusername
 			express.post '/odo/auth/local/assignpassword', @assignpassword
 			express.post '/odo/auth/local/remove', @remove
+			
+			express.post '/odo/auth/local/resettoken', (req, res) =>
+				return res.send 400, 'Email address required' if !req.body.email?
+				@generateresettoken req.body.email, (err, result) =>
+					throw err if err?
+					res.send result
 		
 		updateemail: (m, cb) =>
 			@db().hset "#{config.odo.domain}:localemails", m.email, m.id, =>
@@ -147,18 +152,18 @@ define [
 					return res.send isValid: no, message: 'Token not valid' if !userid?
 					res.send isValid: yes, username: user.username, message: 'Token valid'
 		
-		generateresettoken: (req, res) =>
-			return res.send 400, 'Email address required' if !req.body.email?
-			@db().hget "#{config.odo.domain}:useremail", req.body.email, (err, userid) =>
-				throw err if err?
-				return res.send 400, 'Incorrect email address' if !userid?
-				token = uuid.v4()
+		generateresettoken: (email, cb) =>
+			@db().hget "#{config.odo.domain}:useremail", email, (err, userid) =>
+				return cb err, null if err?
+				return cb 'Incorrect email address', null if !userid?
 				
-				hub.emit 'create password reset token for user {id}',
+				result =
 					id: userid
-					token: token
-					
-				res.send 'Token generated'
+					token: uuid.v4()
+				
+				hub.emit 'create password reset token for user {id}', result, ->
+					hub.emit 'send password reset token to user {id}', result, ->
+						cb null, result
 		
 		reset: (req, res) =>
 			return res.send 400, 'Token required' if !req.body.token?

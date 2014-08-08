@@ -38,12 +38,24 @@
         express.get('/odo/auth/local/usernameavailability', this.usernameavailability);
         express.get('/odo/auth/local/emailavailability', this.emailavailability);
         express.get('/odo/auth/local/resettoken', this.getresettoken);
-        express.post('/odo/auth/local/resettoken', this.generateresettoken);
         express.post('/odo/auth/local/reset', this.reset);
         express.post('/odo/auth/local/signup', this.signup);
         express.post('/odo/auth/local/assignusername', this.assignusername);
         express.post('/odo/auth/local/assignpassword', this.assignpassword);
-        return express.post('/odo/auth/local/remove', this.remove);
+        express.post('/odo/auth/local/remove', this.remove);
+        return express.post('/odo/auth/local/resettoken', (function(_this) {
+          return function(req, res) {
+            if (req.body.email == null) {
+              return res.send(400, 'Email address required');
+            }
+            return _this.generateresettoken(req.body.email, function(err, result) {
+              if (err != null) {
+                throw err;
+              }
+              return res.send(result);
+            });
+          };
+        })(this));
       };
 
       LocalAuthentication.prototype.updateemail = function(m, cb) {
@@ -306,25 +318,25 @@
         })(this));
       };
 
-      LocalAuthentication.prototype.generateresettoken = function(req, res) {
-        if (req.body.email == null) {
-          return res.send(400, 'Email address required');
-        }
-        return this.db().hget("" + config.odo.domain + ":useremail", req.body.email, (function(_this) {
+      LocalAuthentication.prototype.generateresettoken = function(email, cb) {
+        return this.db().hget("" + config.odo.domain + ":useremail", email, (function(_this) {
           return function(err, userid) {
-            var token;
+            var result;
             if (err != null) {
-              throw err;
+              return cb(err, null);
             }
             if (userid == null) {
-              return res.send(400, 'Incorrect email address');
+              return cb('Incorrect email address', null);
             }
-            token = uuid.v4();
-            hub.emit('create password reset token for user {id}', {
+            result = {
               id: userid,
-              token: token
+              token: uuid.v4()
+            };
+            return hub.emit('create password reset token for user {id}', result, function() {
+              return hub.emit('send password reset token to user {id}', result, function() {
+                return cb(null, result);
+              });
             });
-            return res.send('Token generated');
           };
         })(this));
       };
