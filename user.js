@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['odo/config', 'odo/hub', 'redis', 'js-md5'], function(config, hub, redis, md5) {
+  define(['odo/config', 'odo/hub', 'odo/inject', 'redis', 'js-md5'], function(config, hub, inject, redis, md5) {
     var UserApi;
     return UserApi = (function() {
       function UserApi() {
@@ -10,6 +10,7 @@
         this.mutate = __bind(this.mutate, this);
         this.projection = __bind(this.projection, this);
         this.db = __bind(this.db, this);
+        inject.bind('odo user by id', this.get);
       }
 
       UserApi.prototype.db = function() {

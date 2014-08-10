@@ -7,7 +7,10 @@ define [
 	(contexts) ->
 		d = domain.create();
 		d.on 'error', (err) ->
-			console.error err
+			if err.stack?
+				console.error err.stack
+			else
+				console.error err
 			process.exit 1
 
 		d.run ->

@@ -7,7 +7,11 @@
       var d;
       d = domain.create();
       d.on('error', function(err) {
-        console.error(err);
+        if (err.stack != null) {
+          console.error(err.stack);
+        } else {
+          console.error(err);
+        }
         return process.exit(1);
       });
       return d.run(function() {

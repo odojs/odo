@@ -6,9 +6,9 @@ define [
 	'bcryptjs'
 	'odo/config'
 	'odo/hub'
-	'odo/user'
 	'odo/express'
-], (passport, passportlocal, uuid, redis, bcrypt, config, hub, User, express) ->
+	'odo/inject'
+], (passport, passportlocal, uuid, redis, bcrypt, config, hub, express, inject) ->
 	class LocalAuthentication
 		db: =>
 			return @_db if @_db?
@@ -100,7 +100,7 @@ define [
 				throw err if err?
 				return done null, false, { message: 'Incorrect username or password.', userid: null } if !userid?
 				
-				new User().get userid, (err, user) =>
+				inject.one('odo user by id') userid, (err, user) =>
 					throw err if err?
 					if !bcrypt.compareSync password, user.local.profile.password
 						return done null, false, { message: 'Incorrect username or password.', userid: userid }
@@ -116,7 +116,7 @@ define [
 				
 				password = req.query.password
 				
-				new User().get userid, (err, user) =>
+				inject.one('odo user by id') userid, (err, user) =>
 					throw err if err?
 					
 					if !bcrypt.compareSync password, user.local.profile.password
@@ -147,7 +147,7 @@ define [
 				throw err if err?
 				return res.send isValid: no, message: 'Token not valid' if !userid?
 				
-				new User().get userid, (err, user) =>
+				inject.one('odo user by id') userid, (err, user) =>
 					throw err if err?
 					return res.send isValid: no, message: 'Token not valid' if !userid?
 					res.send isValid: yes, username: user.username, message: 'Token valid'
@@ -228,7 +228,7 @@ define [
 				id: userid
 				password: profile.password
 			
-			new User().get userid, (err, user) =>
+			inject.one('odo user by id') userid, (err, user) =>
 				return res.send 500, 'Couldn\'t find user' if err?
 				
 				req.login user, (err) =>

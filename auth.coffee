@@ -3,12 +3,12 @@ define [
 	'passport'
 	'odo/config'
 	'redis'
-	'odo/user'
 	'odo/hub'
 	'node-uuid'
 	'odo/express'
 	'odo/restify'
-], (module, passport, config, redis, User, hub, uuid, express, restify) ->
+	'odo/inject'
+], (module, passport, config, redis, hub, uuid, express, restify, inject) ->
 	class Auth
 		db: =>
 			return @_db if @_db?
@@ -19,7 +19,7 @@ define [
 			express.use passport.session()
 			
 			passport.serializeUser (user, done) -> done null, user.id
-			passport.deserializeUser (id, done) -> new User().get id, done
+			passport.deserializeUser (id, done) -> inject.one('odo user by id') id, done
 			
 			express.get '/odo/auth/signout', @signout
 			express.get '/odo/auth/user', @user
@@ -34,7 +34,7 @@ define [
 			restify.use passport.session()
 			
 			passport.serializeUser (user, done) -> done null, user.id
-			passport.deserializeUser (id, done) -> new User().get id, done
+			passport.deserializeUser (id, done) -> inject.one('odo user by id') id, done
 		
 		projection: =>
 			hub.every 'assign email address {email} to user {id}', (m, cb) =>
@@ -70,7 +70,7 @@ define [
 						message: 'No account found for this email address'
 					return
 					
-				new User().get userid, (err, user) =>
+				inject.one('odo user by id') userid, (err, user) =>
 					return res.send 500, 'Couldn\'t find user' if err?
 					
 					res.send

@@ -2,7 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['passport', 'passport-local', 'node-uuid', 'redis', 'bcryptjs', 'odo/config', 'odo/hub', 'odo/user', 'odo/express'], function(passport, passportlocal, uuid, redis, bcrypt, config, hub, User, express) {
+  define(['passport', 'passport-local', 'node-uuid', 'redis', 'bcryptjs', 'odo/config', 'odo/hub', 'odo/express', 'odo/inject'], function(passport, passportlocal, uuid, redis, bcrypt, config, hub, express, inject) {
     var LocalAuthentication;
     return LocalAuthentication = (function() {
       function LocalAuthentication() {
@@ -170,7 +170,7 @@
                 userid: null
               });
             }
-            return new User().get(userid, function(err, user) {
+            return inject.one('odo user by id')(userid, function(err, user) {
               if (err != null) {
                 throw err;
               }
@@ -212,7 +212,7 @@
               });
             }
             password = req.query.password;
-            return new User().get(userid, function(err, user) {
+            return inject.one('odo user by id')(userid, function(err, user) {
               if (err != null) {
                 throw err;
               }
@@ -298,7 +298,7 @@
                 message: 'Token not valid'
               });
             }
-            return new User().get(userid, function(err, user) {
+            return inject.one('odo user by id')(userid, function(err, user) {
               if (err != null) {
                 throw err;
               }
@@ -425,7 +425,7 @@
           id: userid,
           password: profile.password
         });
-        return new User().get(userid, (function(_this) {
+        return inject.one('odo user by id')(userid, (function(_this) {
           return function(err, user) {
             if (err != null) {
               return res.send(500, 'Couldn\'t find user');

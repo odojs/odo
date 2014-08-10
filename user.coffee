@@ -1,10 +1,14 @@
 define [
 	'odo/config'
 	'odo/hub'
+	'odo/inject'
 	'redis'
 	'js-md5'
-], (config, hub, redis, md5) ->
+], (config, hub, inject, redis, md5) ->
 	class UserApi
+		constructor: ->
+			inject.bind 'odo user by id', @get
+		
 		db: =>
 			return @_db if @_db?
 			return @_db = redis.createClient config.redis.port, config.redis.host
