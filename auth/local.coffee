@@ -228,12 +228,17 @@ define [
 				id: userid
 				password: profile.password
 			
-			inject.one('odo user by id') userid, (err, user) =>
-				return res.send 500, 'Couldn\'t find user' if err?
-				
-				req.login user, (err) =>
-					return res.send 500, 'Couldn\'t login user' if err?
-					res.redirect '/'
+			hub.ready (cb) ->
+				cb()
+				inject.one('odo user by id') userid, (err, user) =>
+					return res.send 500, 'Couldn\'t find user' if err?
+					
+					req.login user, (err) =>
+						return res.send 500, 'Couldn\'t login user' if err?
+						
+						if config.odo.local.signupRedirect?
+							return res.redirect config.odo.local.signupRedirect
+						res.redirect '/'
 		
 		assignusername: (req, res) =>
 			return res.send 400, 'Username required' if !req.body.username?

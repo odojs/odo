@@ -425,19 +425,25 @@
           id: userid,
           password: profile.password
         });
-        return inject.one('odo user by id')(userid, (function(_this) {
-          return function(err, user) {
-            if (err != null) {
-              return res.send(500, 'Couldn\'t find user');
-            }
-            return req.login(user, function(err) {
+        return hub.ready(function(cb) {
+          cb();
+          return inject.one('odo user by id')(userid, (function(_this) {
+            return function(err, user) {
               if (err != null) {
-                return res.send(500, 'Couldn\'t login user');
+                return res.send(500, 'Couldn\'t find user');
               }
-              return res.redirect('/');
-            });
-          };
-        })(this));
+              return req.login(user, function(err) {
+                if (err != null) {
+                  return res.send(500, 'Couldn\'t login user');
+                }
+                if (config.odo.local.signupRedirect != null) {
+                  return res.redirect(config.odo.local.signupRedirect);
+                }
+                return res.redirect('/');
+              });
+            };
+          })(this));
+        });
       };
 
       LocalAuthentication.prototype.assignusername = function(req, res) {
