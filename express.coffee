@@ -45,9 +45,21 @@ define [
 				@app.use require('multer')({ dest: @app.get('upload directory') })
 			@app.use require('method-override')()
 			@app.use require('cookie-parser') @app.get 'cookie secret'
-			@app.use require('cookie-session')
-				key: @app.get 'session key'
-				secret: @app.get 'session secret'
+			if @app.get('use redis sessions')? and @app.get('use redis sessions')
+				session = require 'express-session'
+				RedisStore = require('connect-redis') session
+				@app.use session
+					store: new RedisStore
+						host: config.redis.host
+						port: config.redis.port
+						prefix: "#{config.odo.domain}:sess:"
+					secret: @app.get 'session secret'
+					saveUninitialized: yes
+					resave: yes
+			else
+				@app.use require('cookie-session')
+					key: @app.get 'session key'
+					secret: @app.get 'session secret'
 			if @app.get('allowed cross domains')?
 				alloweddomains = @app.get('allowed cross domains').split(' ')
 

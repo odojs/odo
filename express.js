@@ -38,7 +38,7 @@
       };
 
       Express.prototype.web = function() {
-        var alloweddomains, bodyParser, express, http, key, port, value, _ref;
+        var RedisStore, alloweddomains, bodyParser, express, http, key, port, session, value, _ref;
         http = require('http');
         express = require('express');
         this.app = express();
@@ -60,10 +60,25 @@
         }
         this.app.use(require('method-override')());
         this.app.use(require('cookie-parser')(this.app.get('cookie secret')));
-        this.app.use(require('cookie-session')({
-          key: this.app.get('session key'),
-          secret: this.app.get('session secret')
-        }));
+        if ((this.app.get('use redis sessions') != null) && this.app.get('use redis sessions')) {
+          session = require('express-session');
+          RedisStore = require('connect-redis')(session);
+          this.app.use(session({
+            store: new RedisStore({
+              host: config.redis.host,
+              port: config.redis.port,
+              prefix: "" + config.odo.domain + ":sess:"
+            }),
+            secret: this.app.get('session secret'),
+            saveUninitialized: true,
+            resave: true
+          }));
+        } else {
+          this.app.use(require('cookie-session')({
+            key: this.app.get('session key'),
+            secret: this.app.get('session secret')
+          }));
+        }
         if (this.app.get('allowed cross domains') != null) {
           alloweddomains = this.app.get('allowed cross domains').split(' ');
           this.app.use((function(_this) {
