@@ -234,10 +234,16 @@ define [
 					return res.send 500, 'Couldn\'t find user' if err?
 					
 					req.login user, (err) =>
-						return res.send 500, 'Couldn\'t login user' if err?
+						if err?
+							console.log err
+							return res.send 500, 'Couldn\'t login user'
 						
-						if config.odo.local.signupRedirect?
-							return res.redirect config.odo.local.signupRedirect
+						if req.session?.returnTo?
+							returnTo = req.session.returnTo
+							delete req.session.returnTo
+							return res.redirect returnTo
+						if config.odo.auth.local.signupRedirect?
+							return res.redirect config.odo.auth.local.signupRedirect
 						res.redirect '/'
 		
 		assignusername: (req, res) =>

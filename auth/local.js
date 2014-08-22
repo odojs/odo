@@ -433,11 +433,18 @@
                 return res.send(500, 'Couldn\'t find user');
               }
               return req.login(user, function(err) {
+                var returnTo, _ref;
                 if (err != null) {
+                  console.log(err);
                   return res.send(500, 'Couldn\'t login user');
                 }
-                if (config.odo.local.signupRedirect != null) {
-                  return res.redirect(config.odo.local.signupRedirect);
+                if (((_ref = req.session) != null ? _ref.returnTo : void 0) != null) {
+                  returnTo = req.session.returnTo;
+                  delete req.session.returnTo;
+                  return res.redirect(returnTo);
+                }
+                if (config.odo.auth.local.signupRedirect != null) {
+                  return res.redirect(config.odo.auth.local.signupRedirect);
                 }
                 return res.redirect('/');
               });
