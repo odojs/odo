@@ -20,6 +20,8 @@
           clientSecret: config.passport.metocean['client secret'],
           host: "" + config.metocean.protocol + "://" + config.metocean.rootdomain,
           callbackURL: config.passport.metocean['host'] + 'odo/auth/metocean/callback',
+          tokenURL: config.passport.metocean['directhost'] + 'odo/auth/oauth2/token',
+          profileURL: config.passport.metocean['directhost'] + 'odo/auth/oauth2/profile',
           passReqToCallback: true
         }, (function(_this) {
           return function(req, accessToken, refreshToken, profile, done) {
