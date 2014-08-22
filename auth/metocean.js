@@ -15,15 +15,19 @@
       }
 
       MetOceanAuthentication.prototype.web = function() {
-        passport.use(new passportmetocean.Strategy({
+        var parameters;
+        parameters = {
           clientID: config.passport.metocean['client id'],
           clientSecret: config.passport.metocean['client secret'],
           host: "" + config.metocean.protocol + "://" + config.metocean.rootdomain,
           callbackURL: config.passport.metocean['host'] + 'odo/auth/metocean/callback',
-          tokenURL: config.passport.metocean['directhost'] + 'odo/auth/oauth2/token',
-          profileURL: config.passport.metocean['directhost'] + 'odo/auth/oauth2/profile',
           passReqToCallback: true
-        }, (function(_this) {
+        };
+        if (config.passport.metocean['directhost'] != null) {
+          parameters.tokenURL = config.passport.metocean['directhost'] + 'odo/auth/oauth2/token';
+          parameters.profileURL = config.passport.metocean['directhost'] + 'odo/auth/oauth2/profile';
+        }
+        passport.use(new passportmetocean.Strategy(parameters, (function(_this) {
           return function(req, accessToken, refreshToken, profile, done) {
             return _this.signin(req, accessToken, refreshToken, profile, done);
           };
