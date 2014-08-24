@@ -32,9 +32,9 @@ define [
 			off: => e.binding.off() for e in bindings
 		
 		_once: (e, cb) =>
-			binding = @every e, (payload) =>
+			binding = @every e, (payload, callback) =>
 				binding.off()
-				cb payload
+				cb payload, callback
 			off: -> binding.off()
 		
 		once: (events, cb) =>
@@ -47,10 +47,13 @@ define [
 				complete: no
 			
 			for e in bindings
-				e.binding = @_once e.event, ->
+				e.binding = @_once e.event, (m, callback) ->
 					count--
 					e.complete = yes
-					cb() if count is 0
+					if count is 0
+						cb(m, callback)
+					else
+						callback()
 			
 			off: -> e.binding.off() for e in bindings
 		

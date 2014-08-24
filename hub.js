@@ -73,9 +73,9 @@
       Hub.prototype._once = function(e, cb) {
         var binding;
         binding = this.every(e, (function(_this) {
-          return function(payload) {
+          return function(payload, callback) {
             binding.off();
-            return cb(payload);
+            return cb(payload, callback);
           };
         })(this));
         return {
@@ -106,11 +106,13 @@
         })();
         for (_i = 0, _len = bindings.length; _i < _len; _i++) {
           e = bindings[_i];
-          e.binding = this._once(e.event, function() {
+          e.binding = this._once(e.event, function(m, callback) {
             count--;
             e.complete = true;
             if (count === 0) {
-              return cb();
+              return cb(m, callback);
+            } else {
+              return callback();
             }
           });
         }
