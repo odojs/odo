@@ -87,7 +87,6 @@
             });
           };
         })(this));
-        hub.every('create invitation {id}', this.updateemail);
         hub.every('create verify email token for email {email} of user {id}', this.updateemail);
         hub.every('assign email address {email} to user {id}', this.updateemail);
         hub.every('assign username {username} to user {id}', (function(_this) {

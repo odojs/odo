@@ -48,7 +48,6 @@ define [
 			hub.every 'create local signin for user {id}', (m, cb) =>
 				@db().hset "#{config.odo.domain}:localemails", m.profile.email, m.id, -> cb()
 				
-			hub.every 'create invitation {id}', @updateemail
 			hub.every 'create verify email token for email {email} of user {id}', @updateemail
 			hub.every 'assign email address {email} to user {id}', @updateemail
 
