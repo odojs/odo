@@ -37,6 +37,9 @@ define ['module', 'fs', 'path', 'cson'], (module, fs, path, CSON) ->
 		odo:
 			auth:
 				signout: yes
+				metocean:
+					successRedirect: yes
+					failureRedirect: yes
 	
 	# Copy all of the properties on source to target, recurse if an object
 	copy = (source, target) ->

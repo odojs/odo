@@ -38,7 +38,11 @@
       },
       odo: {
         auth: {
-          signout: true
+          signout: true,
+          metocean: {
+            successRedirect: true,
+            failureRedirect: true
+          }
         }
       }
     };
