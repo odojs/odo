@@ -23,8 +23,23 @@ define [
 			server.use restify.gzipResponse()
 			server.use restify.bodyParser()
 			if config.restify?['allowed cross domains']
-				server.use restify.CORS
-					origins: config.restify['allowed cross domains'].split ' '
+				alloweddomains = config.restify?['allowed cross domains'].split ' '
+
+				server.use (req, res, next) =>
+					referrer = "#{req.protocol}://#{req.hostname}"
+					if req.header('referrer')?
+						referrer = req.header('referrer').slice(0,-1)
+					
+					console.log referrer
+					console.log alloweddomains
+					
+					return next() unless referrer in alloweddomains
+					
+					res.header 'Access-Control-Allow-Origin', referrer
+					res.header 'Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE'
+					res.header 'Access-Control-Allow-Headers', 'Content-Type'
+					next()
+					
 			#server.use restify.throttle
 			#	burst: 100
 			#	rate: 50

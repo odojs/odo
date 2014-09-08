@@ -2,7 +2,8 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   define(['odo/config', 'odo/recorder'], function(config, Recorder) {
     var Restify;
@@ -15,7 +16,7 @@
       }
 
       Restify.prototype.api = function() {
-        var port, restify, server, _ref, _ref1;
+        var alloweddomains, port, restify, server, _ref, _ref1, _ref2;
         restify = require('restify');
         server = restify.createServer();
         server.use(restify.acceptParser(server.acceptable));
@@ -26,14 +27,30 @@
         server.use(restify.gzipResponse());
         server.use(restify.bodyParser());
         if ((_ref = config.restify) != null ? _ref['allowed cross domains'] : void 0) {
-          server.use(restify.CORS({
-            origins: config.restify['allowed cross domains'].split(' ')
-          }));
+          alloweddomains = (_ref1 = config.restify) != null ? _ref1['allowed cross domains'].split(' ') : void 0;
+          server.use((function(_this) {
+            return function(req, res, next) {
+              var referrer;
+              referrer = "" + req.protocol + "://" + req.hostname;
+              if (req.header('referrer') != null) {
+                referrer = req.header('referrer').slice(0, -1);
+              }
+              console.log(referrer);
+              console.log(alloweddomains);
+              if (__indexOf.call(alloweddomains, referrer) < 0) {
+                return next();
+              }
+              res.header('Access-Control-Allow-Origin', referrer);
+              res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+              res.header('Access-Control-Allow-Headers', 'Content-Type');
+              return next();
+            };
+          })(this));
         }
         server.use(restify.conditionalRequest());
         server.use(require('morgan')('combined'));
         this.play(server);
-        port = ((_ref1 = config.restify) != null ? _ref1.port : void 0) || process.env.PORT || 8080;
+        port = ((_ref2 = config.restify) != null ? _ref2.port : void 0) || process.env.PORT || 8080;
         return server.listen(port, function() {
           return console.log("Restify is listening on port " + port + "...");
         });

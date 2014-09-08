@@ -83,12 +83,12 @@
           alloweddomains = this.app.get('allowed cross domains').split(' ');
           this.app.use((function(_this) {
             return function(req, res, next) {
-              var referrer, _ref1;
+              var referrer;
               referrer = "" + req.protocol + "://" + req.hostname;
               if (req.header('referrer') != null) {
                 referrer = req.header('referrer').slice(0, -1);
               }
-              if (_ref1 = !referrer, __indexOf.call(alloweddomains, _ref1) >= 0) {
+              if (__indexOf.call(alloweddomains, referrer) < 0) {
                 return next();
               }
               res.header('Access-Control-Allow-Origin', referrer);
