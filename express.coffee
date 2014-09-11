@@ -48,7 +48,7 @@ define [
 			if @app.get('use redis sessions')? and @app.get('use redis sessions')
 				session = require 'express-session'
 				RedisStore = require('connect-redis') session
-				@app.use session
+				sessionOptions =
 					store: new RedisStore
 						host: config.redis.host
 						port: config.redis.port
@@ -56,6 +56,17 @@ define [
 					secret: @app.get 'session secret'
 					saveUninitialized: yes
 					resave: yes
+				
+				sessionConfig = config.express?.session
+				if sessionConfig?
+					if sessionConfig.rolling?
+						sessionOptions.rolling = sessionConfig.rolling
+					if sessionConfig.cookie?
+						sessionOptions.cookie = {}
+						for key, value of sessionConfig.cookie
+							sessionOptions.cookie[key] = value
+				
+				@app.use session sessionOptions
 			else
 				@app.use require('cookie-session')
 					key: @app.get 'session key'

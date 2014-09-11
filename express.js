@@ -38,7 +38,7 @@
       };
 
       Express.prototype.web = function() {
-        var RedisStore, alloweddomains, bodyParser, express, http, key, port, session, value, _ref;
+        var RedisStore, alloweddomains, bodyParser, express, http, key, port, session, sessionConfig, sessionOptions, value, _ref, _ref1, _ref2;
         http = require('http');
         express = require('express');
         this.app = express();
@@ -63,7 +63,7 @@
         if ((this.app.get('use redis sessions') != null) && this.app.get('use redis sessions')) {
           session = require('express-session');
           RedisStore = require('connect-redis')(session);
-          this.app.use(session({
+          sessionOptions = {
             store: new RedisStore({
               host: config.redis.host,
               port: config.redis.port,
@@ -72,7 +72,22 @@
             secret: this.app.get('session secret'),
             saveUninitialized: true,
             resave: true
-          }));
+          };
+          sessionConfig = (_ref1 = config.express) != null ? _ref1.session : void 0;
+          if (sessionConfig != null) {
+            if (sessionConfig.rolling != null) {
+              sessionOptions.rolling = sessionConfig.rolling;
+            }
+            if (sessionConfig.cookie != null) {
+              sessionOptions.cookie = {};
+              _ref2 = sessionConfig.cookie;
+              for (key in _ref2) {
+                value = _ref2[key];
+                sessionOptions.cookie[key] = value;
+              }
+            }
+          }
+          this.app.use(session(sessionOptions));
         } else {
           this.app.use(require('cookie-session')({
             key: this.app.get('session key'),
