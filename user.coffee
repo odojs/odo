@@ -2,7 +2,7 @@ define [
 	'odo/config'
 	'odo/hub'
 	'odo/inject'
-	'redis'
+	'odo/redis'
 	'js-md5'
 ], (config, hub, inject, redis, md5) ->
 	class UserApi
@@ -11,7 +11,7 @@ define [
 		
 		db: =>
 			return @_db if @_db?
-			return @_db = redis.createClient config.redis.port, config.redis.host
+			return @_db = redis()
 		
 		projection: =>
 			hub.every 'start tracking user {id}', (m, cb) =>

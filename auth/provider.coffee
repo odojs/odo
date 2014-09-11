@@ -1,7 +1,7 @@
 define [
 	'passport'
 	'node-uuid'
-	'redis'
+	'odo/redis'
 	'odo/config'
 	'odo/hub'
 	'odo/express'
@@ -9,7 +9,7 @@ define [
 	class ProviderAuthentication
 		db: =>
 			return @_db if @_db?
-			@_db = redis.createClient config.redis.port, config.redis.host
+			return @_db = redis()
 			
 		web: =>
 			settings = config.odo.auth[@provider]

@@ -2,7 +2,7 @@ define [
 	'module'
 	'passport'
 	'odo/config'
-	'redis'
+	'odo/redis'
 	'odo/hub'
 	'node-uuid'
 	'odo/express'
@@ -12,7 +12,7 @@ define [
 	class Auth
 		db: =>
 			return @_db if @_db?
-			return @_db = redis.createClient config.redis.port, config.redis.host
+			return @_db = redis()
 		
 		web: =>
 			express.use passport.initialize()

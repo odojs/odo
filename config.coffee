@@ -2,6 +2,8 @@ define ['module', 'fs', 'path', 'cson'], (module, fs, path, CSON) ->
 	# The configuration structure we are expecting in a config.cson file or as environment variables
 	# The structure is turned into variables like 'EXPRESS_SESSION_KEY', and the domain specific override is also checked 'ODO_EXAMPLE_EXPRESS_SESSION_KEY'
 	template =
+		redis:
+			'use socket':yes
 		express:
 			'session key': yes
 			'cookie secret': yes
