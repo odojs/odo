@@ -37,7 +37,7 @@ define(['odo/config', 'odo/recorder'], function(config, Recorder) {
     };
 
     Express.prototype.web = function() {
-      var RedisStore, alloweddomains, bodyParser, express, http, key, port, session, store, value, _ref;
+      var RedisStore, alloweddomains, bodyParser, express, http, key, port, session, sessionConfig, sessionOptions, value, _ref, _ref1, _ref2;
       http = require('http');
       express = require('express');
       this.app = express();
@@ -62,25 +62,34 @@ define(['odo/config', 'odo/recorder'], function(config, Recorder) {
       if ((this.app.get('use redis sessions') != null) && this.app.get('use redis sessions')) {
         session = require('express-session');
         RedisStore = require('connect-redis')(session);
-        store = null;
+        sessionOptions = {};
         if (config.redis.socket != null) {
-          store = new RedisStore({
+          sessionOptions.store = new RedisStore({
             socket: config.redis.socket,
             prefix: "" + config.odo.domain + ":sess:"
           });
         } else {
-          store = new RedisStore({
+          sessionOptions.store = new RedisStore({
             host: config.redis.host,
             port: config.redis.port,
             prefix: "" + config.odo.domain + ":sess:"
           });
         }
-        this.app.use(session({
-          store: store,
-          secret: this.app.get('session secret'),
-          saveUninitialized: true,
-          resave: true
-        }));
+        sessionConfig = (_ref1 = config.express) != null ? _ref1.session : void 0;
+        if (sessionConfig != null) {
+          if (sessionConfig.rolling != null) {
+            sessionOptions.rolling = sessionConfig.rolling;
+          }
+          if (sessionConfig.cookie != null) {
+            sessionOptions.cookie = {};
+            _ref2 = sessionConfig.cookie;
+            for (key in _ref2) {
+              value = _ref2[key];
+              sessionOptions.cookie[key] = value;
+            }
+          }
+        }
+        this.app.use(session(sessionOptions));
       } else {
         this.app.use(require('cookie-session')({
           key: this.app.get('session key'),
