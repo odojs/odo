@@ -48,7 +48,10 @@ define [
 			if @app.get('use redis sessions')? and @app.get('use redis sessions')
 				session = require 'express-session'
 				RedisStore = require('connect-redis') session
-				sessionOptions = {}
+				sessionOptions =
+					secret: @app.get 'session secret'
+					saveUninitialized: yes
+					resave: yes
 
 				if config.redis.socket?
 					sessionOptions.store = new RedisStore
