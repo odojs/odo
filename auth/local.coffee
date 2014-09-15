@@ -2,7 +2,7 @@ define [
 	'passport'
 	'passport-local'
 	'node-uuid'
-	'odo/redis'
+	'redis'
 	'bcryptjs'
 	'odo/config'
 	'odo/hub'
@@ -12,7 +12,8 @@ define [
 	class LocalAuthentication
 		db: =>
 			return @_db if @_db?
-			return @_db = redis()
+			return @_db = redis.createClient config.redis.port, config.redis.host
+			
 		web: =>
 			passport.use new passportlocal.Strategy @signin
 			
@@ -31,8 +32,8 @@ define [
 				return res.send 400, 'Email address required' if !req.body.email?
 				@generateresettoken req.body.email, (err, result) =>
 					throw err if err?
-					res.send result
-		
+					res.send result	
+
 		updateemail: (m, cb) =>
 			@db().hset "#{config.odo.domain}:localemails", m.email, m.id, =>
 				if m.oldemail?
@@ -41,12 +42,13 @@ define [
 					cb()
 
 		projection: =>
+
 			hub.every 'create local signin for user {id}', (m, cb) =>
 				@db().hset "#{config.odo.domain}:localusers", m.profile.username, m.id, -> cb()
 				
 			hub.every 'create local signin for user {id}', (m, cb) =>
 				@db().hset "#{config.odo.domain}:localemails", m.profile.email, m.id, -> cb()
-				
+
 			hub.every 'create verify email token for email {email} of user {id}', @updateemail
 			hub.every 'assign email address {email} to user {id}', @updateemail
 
@@ -58,8 +60,8 @@ define [
 					@db().hset "#{config.odo.domain}:localusers", m.username, m.id, -> cb()
 			
 			hub.every 'remove local signin from user {id}', (m, cb) =>
-				@db().hdel "#{config.odo.domain}:localusers", m.profile.username, -> cb()
-			
+				@db().hdel "#{config.odo.domain}:localusers", m.username, -> cb()
+
 			hub.every 'create password reset token for user {id}', (m, cb) =>
 				key = "#{config.odo.domain}:passwordresettoken:#{m.token}"
 				@db()
@@ -93,15 +95,16 @@ define [
 		
 		signin: (username, password, done) =>
 			userid = null
-			
+
 			@get username, (err, userid) =>
 				throw err if err?
 				return done null, false, { message: 'Incorrect username or password.', userid: null } if !userid?
-				
+	
 				inject.one('odo user by id') userid, (err, user) =>
 					throw err if err?
+					
 					if !bcrypt.compareSync password, user.local.profile.password
-						return done null, false, { message: 'Incorrect username or password.', userid: userid }
+						return done null, false, { message: 'Incorrect password.', userid: userid }
 					done null, user
 		
 		test: (req, res) =>
@@ -180,7 +183,7 @@ define [
 				@db().del key, (err, reply) =>
 					throw err if err?
 					res.send 'Done'
-		
+	
 		signup: (req, res) =>
 			return res.send 400, 'Full name required' if !req.body.displayName?
 			return res.send 400, 'Username required' if !req.body.username?
@@ -196,6 +199,10 @@ define [
 			profile = req.body
 			profile.password = bcrypt.hashSync profile.password, 12
 			delete req.body.passwordconfirm
+
+			email = profile.email
+			displayName = profile.displayName
+			username = profile.username
 			
 			if req.user?
 				console.log 'user already exists, creating local signin'
@@ -216,11 +223,11 @@ define [
 			
 			hub.emit 'assign username {username} to user {id}',
 				id: userid
-				username: profile.username
+				username: username
 			
 			hub.emit 'assign displayName {displayName} to user {id}',
 				id: userid
-				displayName: profile.displayName
+				displayName: displayName
 			
 			hub.emit 'set password of user {id}',
 				id: userid
@@ -247,19 +254,28 @@ define [
 		assignusername: (req, res) =>
 			return res.send 400, 'Username required' if !req.body.username?
 			return res.send 400, 'Id required' if !req.body.id?
-			
-			hub.emit 'assign username {username} to user {id}',
+
+			@db().hset "#{config.odo.domain}:localusers", req.body.username, req.body.id, (err, reply) =>
+					return res.send 400, "set error on localusers " if err?
+					@db().hdel "#{config.odo.domain}:localusers", req.user.username, (err, reply) =>
+						return res.send 400, "delete error on localusers" if err?
+
+			p = 
 				id: req.body.id
 				username: req.body.username
+
+			hub.emit 'assign username {username} to user {id}', p, -> res.send 'Ok'
 		
 		assignpassword: (req, res) =>
 			return res.send 400, 'Password required' if !req.body.password?
 			return res.send 400, 'Id required' if !req.body.id?
-			
-			hub.emit 'set password of user {id}',
+
+			p = 
 				id: req.body.id
 				password: bcrypt.hashSync req.body.password, 12
-		
+			
+			hub.emit 'set password of user {id}', p, -> res.send 'Ok'
+				
 		remove: (req, res) =>
 			return res.send 400, 'Id required' if !req.body.id?
 			return res.send 400, 'Profile required' if !req.body.profile?
@@ -268,7 +284,12 @@ define [
 				id: req.body.id
 				profile: req.body.profile
 		
-		get: (username, callback) ->
-			@db().hget "#{config.odo.domain}:localusers", username, (err, data) =>
-				return callback err if err?
-				callback null, data
+		get: (username, callback) ->			
+			@db().hget "" + config.odo.domain + ":localusers", username, (err, userdata) =>
+				return callback(err)  if err?
+				if userdata?
+				  return callback null, userdata
+				else					
+				  @db().hget "" + config.odo.domain + ":localemails", username, (err, emaildata) ->
+				    return callback(err)  if err?
+				    callback null, emaildata

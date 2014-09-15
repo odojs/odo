@@ -19,19 +19,31 @@
 		dfd.promise
 		
 	assignUsernameToUser: (id, username) =>
-		Q $.post '/odo/auth/local/assignusername',
+		dfd = Q.defer()
+		Q($.post('/odo/auth/local/assignusername',
 			id: id
-			username: username
+			username: username))
+			.then(-> dfd.resolve yes)
+			.fail(-> dfd.reject())
+		dfd.promise
 	
 	assignPasswordToUser: (id, password) =>
-		Q $.post '/odo/auth/local/assignpassword',
+		dfd = Q.defer()
+		Q($.post('/odo/auth/local/assignpassword',
 			id: id
-			password: password
+			password: password))
+			.then(-> dfd.resolve yes)
+			.fail(-> dfd.reject())
+		dfd.promise
 	
 	assignDisplayNameToUser: (id, displayName) =>
-		Q $.post '/odo/auth/assigndisplayname',
+		dfd = Q.defer()
+		Q($.post('/odo/auth/assigndisplayname',
 			id: id
-			displayName: displayName
+			displayName: displayName))
+			.then(-> dfd.resolve yes)
+			.fail(-> dfd.reject())
+		dfd.promise
 	
 	createVerifyEmailAddressToken: (email) =>
 		Q $.post '/odo/auth/verifyemail',
