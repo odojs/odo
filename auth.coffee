@@ -135,7 +135,9 @@ define [
 			return res.send 400, 'Display name required' if !req.body.displayName?
 			return res.send 400, 'Id required' if !req.body.id?
 			
-			hub.emit 'assign displayName {displayName} to user {id}',
+			p = 
 				id: req.body.id
 				displayName: req.body.displayName
+
+			hub.emit 'assign displayName {displayName} to user {id}', p, -> res.send 'Ok'
 			

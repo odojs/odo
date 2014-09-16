@@ -211,15 +211,19 @@ define(['module', 'passport', 'odo/config', 'odo/redis', 'odo/hub', 'node-uuid',
     };
 
     Auth.prototype.assigndisplayname = function(req, res) {
+      var p;
       if (req.body.displayName == null) {
         return res.send(400, 'Display name required');
       }
       if (req.body.id == null) {
         return res.send(400, 'Id required');
       }
-      return hub.emit('assign displayName {displayName} to user {id}', {
+      p = {
         id: req.body.id,
         displayName: req.body.displayName
+      };
+      return hub.emit('assign displayName {displayName} to user {id}', p, function() {
+        return res.send('Ok');
       });
     };
 
