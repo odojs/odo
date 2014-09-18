@@ -1,3 +1,21 @@
+yeses = [
+	'yep'
+	'yah'
+	'yarr'
+	'yaar'
+	'aye'
+	'ay'
+	'sure'
+	'ok'
+]
+noes = [
+	'nah'
+	'nope'
+	''
+]
+@[i] = yes for i in yeses
+@[i] = no for i in noes
+
 define [
 	'domain'
 	'odo/plugins'

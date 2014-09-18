@@ -73,6 +73,7 @@ define ['module', 'fs', 'path', 'cson'], (module, fs, path, CSON) ->
 		result
 	
 	localfile = CSON.parseFileSync path.join path.dirname(module.uri), '../../config.cson'
+	localfile.package = JSON.parse fs.readFileSync path.join path.dirname(module.uri), '../../package.json'
 	
 	envdomain = localfile.odo.domain.toUpperCase().replace(/[ -]/g, '_')
 	
