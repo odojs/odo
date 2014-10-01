@@ -203,6 +203,9 @@ define [
 			email = profile.email
 			displayName = profile.displayName
 			username = profile.username
+
+			delete profile.fakeusernameremembered
+			delete profile.fakepasswordremembered
 			
 			if req.user?
 				console.log 'user already exists, creating local signin'
@@ -232,6 +235,12 @@ define [
 			hub.emit 'set password of user {id}',
 				id: userid
 				password: profile.password
+
+			#Public General Access
+			hub.emit 'user {userid} is a member of group {groupid}',
+				userid: userid
+				groupid: config.metocean.publicgeneralaccess.groupid
+				organisationid: config.metocean.publicgeneralaccess.organisationid
 			
 			hub.ready (cb) ->
 				cb()
