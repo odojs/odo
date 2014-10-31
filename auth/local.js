@@ -424,15 +424,21 @@ define(['passport', 'passport-local', 'node-uuid', 'odo/redis', 'bcryptjs', 'odo
         id: userid,
         displayName: displayName
       });
+      hub.emit('assign email address {email} to user {id}', {
+        id: userid,
+        email: email
+      });
       hub.emit('set password of user {id}', {
         id: userid,
         password: profile.password
       });
-      hub.emit('user {userid} is a member of group {groupid}', {
-        userid: userid,
-        groupid: config.metocean.publicgeneralaccess.groupid,
-        organisationid: config.metocean.publicgeneralaccess.organisationid
-      });
+
+      /*
+      			hub.emit 'user {userid} is a member of group {groupid}',
+      				userid: userid
+      				groupid: config.metocean.publicgeneralaccess.groupid
+      				organisationid: config.metocean.publicgeneralaccess.organisationid
+       */
       return hub.ready(function(cb) {
         cb();
         return inject.one('odo user by id')(userid, (function(_this) {

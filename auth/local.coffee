@@ -231,16 +231,22 @@ define [
 			hub.emit 'assign displayName {displayName} to user {id}',
 				id: userid
 				displayName: displayName
+
+			hub.emit 'assign email address {email} to user {id}',
+				id: userid
+				email: email
 			
 			hub.emit 'set password of user {id}',
 				id: userid
 				password: profile.password
 
 			#Public General Access
+			###
 			hub.emit 'user {userid} is a member of group {groupid}',
 				userid: userid
 				groupid: config.metocean.publicgeneralaccess.groupid
 				organisationid: config.metocean.publicgeneralaccess.organisationid
+			###
 			
 			hub.ready (cb) ->
 				cb()
