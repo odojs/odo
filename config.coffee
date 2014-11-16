@@ -1,4 +1,13 @@
 define ['module', 'fs', 'path', 'cson'], (module, fs, path, CSON) ->
+	# Copy all of the properties on source to target, recurse if an object
+	copy = (source, target) ->
+		for key, value of source
+			if typeof value is 'object'
+				target[key] = {} if !target[key]?
+				copy value, target[key]
+			else
+				target[key] = value
+	
 	# The configuration structure we are expecting in a config.cson file or as environment variables
 	# The structure is turned into variables like 'EXPRESS_SESSION_KEY', and the domain specific override is also checked 'ODO_EXAMPLE_EXPRESS_SESSION_KEY'
 	template =
@@ -10,7 +19,7 @@ define ['module', 'fs', 'path', 'cson'], (module, fs, path, CSON) ->
 			'session secret': yes
 			'allowed cross domains': yes
 			'port': yes
-			
+		
 		passport:
 			twitter:
 				'consumer key': yes
@@ -43,16 +52,6 @@ define ['module', 'fs', 'path', 'cson'], (module, fs, path, CSON) ->
 					successRedirect: yes
 					failureRedirect: yes
 	
-	# Copy all of the properties on source to target, recurse if an object
-	copy = (source, target) ->
-		for key, value of source
-			if typeof value is 'object'
-				target[key] = {} if !target[key]?
-				copy value, target[key]
-			else
-				target[key] = value
-			
-	
 	# Recurse through an object looking for equivalent named environment variables
 	# e.g if the object is 'passport: google: { realm: yes, host: yes }''
 	# Look for: PASSPORT_GOOGLE_REALM and PASSPORT_GOOGLE_HOST variables in the environment and put them in the right place in 'result'
@@ -72,10 +71,19 @@ define ['module', 'fs', 'path', 'cson'], (module, fs, path, CSON) ->
 		
 		result
 	
-	localfile = CSON.parseFileSync path.join path.dirname(module.uri), '../../config.cson'
-	localfile.package = JSON.parse fs.readFileSync path.join path.dirname(module.uri), '../../package.json'
+	# start with the config.cson file
+	result = CSON.parseFileSync path.join path.dirname(module.uri), '../../config.cson'
+	result.package = JSON.parse fs.readFileSync path.join path.dirname(module.uri), '../../package.json'
+	result.import = (source) ->
+		for key, value of source
+			if typeof value is 'object'
+				result[key] = {} if !result[key]?
+				copy value, result[key]
+			else
+				result[key] = value
 	
-	envdomain = localfile.odo.domain.toUpperCase().replace(/[ -]/g, '_')
+	
+	envdomain = result.odo.domain.toUpperCase().replace(/[ -]/g, '_')
 	
 	# Look for the global configuration blob
 	globalenvvar = 'ODO_CONFIG'
@@ -98,8 +106,7 @@ define ['module', 'fs', 'path', 'cson'], (module, fs, path, CSON) ->
 	domainenv = parse "#{envdomain}_", template
 	
 	# Merge down the configuration objects in order
-	result = localfile
-	copy object, result for object in [
+	result.import configuration for configuration in [
 		globalenvblob
 		globalenv
 		domainenvblob
