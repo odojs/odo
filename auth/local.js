@@ -185,48 +185,50 @@ define(['passport', 'passport-local', 'node-uuid', 'odo/redis', 'bcryptjs', 'odo
     };
 
     LocalAuthentication.prototype.test = function(req, res) {
-      if (req.query.username == null) {
-        return res.send({
-          isValid: false,
-          message: 'Username required'
-        });
-      }
-      if (req.query.password == null) {
-        return res.send({
-          isValid: false,
-          message: 'Password required'
-        });
-      }
-      return this.get(req.query.username, (function(_this) {
-        return function(err, userid) {
-          var password;
-          if (err != null) {
-            throw err;
-          }
-          if (userid == null) {
+      return setTimeout((function(_this) {
+        return function() {
+          if (req.query.username == null) {
             return res.send({
               isValid: false,
-              message: 'Incorrect username or password'
+              message: 'Username required'
             });
           }
-          password = req.query.password;
-          return inject.one('odo user by id')(userid, function(err, user) {
+          if (req.query.password == null) {
+            return res.send({
+              isValid: false,
+              message: 'Password required'
+            });
+          }
+          return _this.get(req.query.username, function(err, userid) {
+            var password;
             if (err != null) {
               throw err;
             }
-            if (!bcrypt.compareSync(password, user.local.profile.password)) {
+            if (userid == null) {
               return res.send({
                 isValid: false,
                 message: 'Incorrect username or password'
               });
             }
-            return res.send({
-              isValid: true,
-              message: 'Correct username and password'
+            password = req.query.password;
+            return inject.one('odo user by id')(userid, function(err, user) {
+              if (err != null) {
+                throw err;
+              }
+              if (!bcrypt.compareSync(password, user.local.profile.password)) {
+                return res.send({
+                  isValid: false,
+                  message: 'Incorrect username or password'
+                });
+              }
+              return res.send({
+                isValid: true,
+                message: 'Correct username and password'
+              });
             });
           });
         };
-      })(this));
+      })(this), 1000);
     };
 
     LocalAuthentication.prototype.emailavailability = function(req, res) {

@@ -108,23 +108,24 @@ define [
 					done null, user
 		
 		test: (req, res) =>
-			return res.send isValid: no, message: 'Username required' if !req.query.username?
-			return res.send isValid: no, message: 'Password required' if !req.query.password?
-			
-			@get req.query.username, (err, userid) =>
-				throw err if err?
-				return res.send isValid: no, message: 'Incorrect username or password' if !userid?
-				
-				password = req.query.password
-				
-				inject.one('odo user by id') userid, (err, user) =>
+			setTimeout =>
+				return res.send isValid: no, message: 'Username required' if !req.query.username?
+				return res.send isValid: no, message: 'Password required' if !req.query.password?
+
+				@get req.query.username, (err, userid) =>
 					throw err if err?
+					return res.send isValid: no, message: 'Incorrect username or password' if !userid?
 					
-					if !bcrypt.compareSync password, user.local.profile.password
-						return res.send isValid: no, message: 'Incorrect username or password'
+					password = req.query.password
 					
-					res.send isValid: yes, message: 'Correct username and password'
-		
+					inject.one('odo user by id') userid, (err, user) =>
+						throw err if err?
+						
+						if !bcrypt.compareSync password, user.local.profile.password
+							return res.send isValid: no, message: 'Incorrect username or password'
+						
+						res.send isValid: yes, message: 'Correct username and password'
+			,1000
 		emailavailability: (req, res) =>	
 			return res.send isAvailable: no, message: 'Required' if !req.query.email?
 			
