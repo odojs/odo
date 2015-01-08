@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Odo by tcoats</title>
+    <title>Odo by odojs</title>
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
@@ -19,33 +19,35 @@
       <header>
         <h1>Odo</h1>
         <p>Nodejs and durandaljs framework.</p>
-        <p class="view"><a href="https://github.com/tcoats/odo">View the Project on GitHub <small>tcoats/odo</small></a></p>
+        <p class="view"><a href="https://github.com/odojs/odo">View the Project on GitHub <small>odojs/odo</small></a></p>
         <ul>
-          <li><a href="https://github.com/tcoats/odo/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/tcoats/odo/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/tcoats/odo">View On <strong>GitHub</strong></a></li>
+          <li><a href="https://github.com/odojs/odo/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/odojs/odo/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/odojs/odo">View On <strong>GitHub</strong></a></li>
         </ul>
       </header>
       <section>
         <h1>
-<a name="odo---whatever-you-want-it-to-be" class="anchor" href="#odo---whatever-you-want-it-to-be"><span class="octicon octicon-link"></span></a>Odo - whatever you want it to be</h1>
+<a id="odo---whatever-you-want-it-to-be" class="anchor" href="#odo---whatever-you-want-it-to-be" aria-hidden="true"><span class="octicon octicon-link"></span></a>Odo - whatever you want it to be</h1>
 
 <p>A Nodejs framework for creating awesome things.</p>
 
 <p><a href="https://trello.com/board/odo/4f7b3e995aa70d786202e667">Status and current work on Trello</a></p>
 
 <h2>
-<a name="goals" class="anchor" href="#goals"><span class="octicon octicon-link"></span></a>Goals</h2>
+<a id="goals" class="anchor" href="#goals" aria-hidden="true"><span class="octicon octicon-link"></span></a>Goals</h2>
 
 <ol>
 <li>Easy to install, use, modify, adapt and refactor</li>
 <li>Modular and lightweight components that are useful independently</li>
 <li>Strong cohesion where things change at the same rate, loose coupling where things change at a different rate</li>
 <li>Few concepts needed in any one area of the code to keep mental effort of development low</li>
-</ol><p>Odo hopefully follows these goals and also makes it easy to write applications that follow these goals.</p>
+</ol>
+
+<p>Odo hopefully follows these goals and also makes it easy to write applications that follow these goals.</p>
 
 <h2>
-<a name="techniques" class="anchor" href="#techniques"><span class="octicon octicon-link"></span></a>Techniques</h2>
+<a id="techniques" class="anchor" href="#techniques" aria-hidden="true"><span class="octicon octicon-link"></span></a>Techniques</h2>
 
 <ul>
 <li><a href="http://martinfowler.com/tags/domain%20driven%20design.html">Domain-driven design</a></li>
@@ -56,18 +58,22 @@
 <li><a href="http://www.johnpapa.net/spa/">Single-page applications</a></li>
 <li><a href="http://martinfowler.com/nosql.html">Schema-less database</a></li>
 <li><a href="http://martinfowler.com/articles/injection.html">Dependency injection</a></li>
-</ul><hr><h1>
-<a name="get-started" class="anchor" href="#get-started"><span class="octicon octicon-link"></span></a>Get started</h1>
+</ul>
+
+<hr>
+
+<h1>
+<a id="get-started" class="anchor" href="#get-started" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get started</h1>
 
 <p>Fork <a href="https://github.com/tcoats/odo-example">odo example</a></p>
 
 <h1>
-<a name="overview" class="anchor" href="#overview"><span class="octicon octicon-link"></span></a>Overview</h1>
+<a id="overview" class="anchor" href="#overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview</h1>
 
 <p>There are two types of code in Odo: infrastructure and plugins.</p>
 
 <h2>
-<a name="infrastructure" class="anchor" href="#infrastructure"><span class="octicon octicon-link"></span></a>Infrastructure</h2>
+<a id="infrastructure" class="anchor" href="#infrastructure" aria-hidden="true"><span class="octicon octicon-link"></span></a>Infrastructure</h2>
 
 <p>Tools, frameworks and techniques make up the odo infrastructure. Using existing 3rd party frameworks and libraries has been prioritised over custom development. Where existing frameworks are not available small independent utilities have been written.</p>
 
@@ -76,74 +82,73 @@
 <p>Infrastructure is included as and when you need it by code you write. Components like the hub 'odo/hub' and humanize 'odo/humanize' are examples of infrastructure.</p>
 
 <h2>
-<a name="plugins" class="anchor" href="#plugins"><span class="octicon octicon-link"></span></a>Plugins</h2>
+<a id="plugins" class="anchor" href="#plugins" aria-hidden="true"><span class="octicon octicon-link"></span></a>Plugins</h2>
 
 <p>Plugins are independent features of the application loosely coupled to other plugins to make up the whole application. Usually plugins communicate through a combination of dependency injection and events.</p>
 
 <p>Plugins are added to the systems array in config.cson. Express web authentication modules 'odo/auth', 'odo/auth/local', 'odo/auth/facebook' and public folder 'odo/public' are examples of plugins.</p>
 
 <h2>
-<a name="execution-context" class="anchor" href="#execution-context"><span class="octicon octicon-link"></span></a>Execution context</h2>
+<a id="execution-context" class="anchor" href="#execution-context" aria-hidden="true"><span class="octicon octicon-link"></span></a>Execution context</h2>
 
 <p>Plugins can run in four contexts: web, api, domain and projection. This technique allows the web code, database logic, and validation rules for a particular piece of information to exist in the same codebase but run in four different contexts. Having all aspects in the same codebase increases speed of development and still provides good decoupling between concepts.</p>
 
 <p>Plugins are loaded on startup and either expose themselves as a class or as a plain object. Specific methods are checked for and will be called depending on the context the plugin is running in. These methods are 'web', 'api', 'domain' and 'projection'.</p>
 
-<div class="highlight highlight-coffee"><pre><span class="k">class</span> <span class="nx">ExamplePlugin</span>
-    <span class="nv">web: </span><span class="nf">=&gt;</span>
-        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s">"I'm running in web context"</span>
-        <span class="c1"># I can register express routes here</span>
-</pre></div>
+<div class="highlight highlight-coffee"><pre><span class="pl-st">class</span> <span class="pl-en">ExamplePlugin</span>
+    <span class="pl-en">web</span><span class="pl-k">:</span> <span class="pl-st"><span class="pl-st">=&gt;</span></span>
+        <span class="pl-en">console</span>.<span class="pl-s3">log</span> <span class="pl-s1"><span class="pl-pds">"</span>I'm running in web context<span class="pl-pds">"</span></span>
+        <span class="pl-c"># I can register express routes here</span></pre></div>
 
 <p>Frontend plugins are registered by backend code in the 'web' context. They have the ability to bind themselves to several hooks, most importantly as single page application routes through durandal.</p>
 
-<hr><h1>
-<a name="backend-infrastructure" class="anchor" href="#backend-infrastructure"><span class="octicon octicon-link"></span></a>Backend infrastructure</h1>
+<hr>
+
+<h1>
+<a id="backend-infrastructure" class="anchor" href="#backend-infrastructure" aria-hidden="true"><span class="octicon octicon-link"></span></a>Backend infrastructure</h1>
 
 <h2>
-<a name="requirejs" class="anchor" href="#requirejs"><span class="octicon octicon-link"></span></a><a href="http://requirejs.org/">Requirejs</a>
+<a id="requirejs" class="anchor" href="#requirejs" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://requirejs.org/">Requirejs</a>
 </h2>
 
 <p>All of odo uses requirejs to pull together plugins and components. In the backend node.js's require function is passed into require to include npm modules.</p>
 
-<div class="highlight highlight-coffee"><pre><span class="nv">requirejs = </span><span class="nx">require</span> <span class="s">'requirejs'</span>
-<span class="nx">requirejs</span><span class="p">.</span><span class="nx">config</span>
-    <span class="nv">nodeRequire: </span><span class="nx">require</span>
-    <span class="nv">paths:</span>
-        <span class="nv">odo: </span><span class="s">'./node_modules/odo'</span>
-        <span class="nv">local: </span><span class="s">'./'</span>
-<span class="nx">requirejs</span> <span class="p">[</span><span class="s">'odo/bootstrap'</span><span class="p">]</span>
-</pre></div>
+<div class="highlight highlight-coffee"><pre><span class="pl-v"><span class="pl-v">requirejs <span class="pl-k">=</span></span></span> <span class="pl-s3">require</span> <span class="pl-s1"><span class="pl-pds">'</span>requirejs<span class="pl-pds">'</span></span>
+requirejs.config
+    <span class="pl-v"><span class="pl-v">nodeRequire:</span></span> <span class="pl-s3">require</span>
+    <span class="pl-v"><span class="pl-v">paths:</span></span>
+        <span class="pl-v"><span class="pl-v">odo:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>./node_modules/odo<span class="pl-pds">'</span></span>
+        <span class="pl-v"><span class="pl-v">local:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>./<span class="pl-pds">'</span></span>
+requirejs [<span class="pl-s1"><span class="pl-pds">'</span>odo/bootstrap<span class="pl-pds">'</span></span>]</pre></div>
 
 <p>In the frontend requirejs is used more conventionally - included by a html file and configured by a javascript file.</p>
 
 <h2>
-<a name="mandrill" class="anchor" href="#mandrill"><span class="octicon octicon-link"></span></a><a href="http://mandrill.com/">Mandrill</a>
+<a id="mandrill" class="anchor" href="#mandrill" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://mandrill.com/">Mandrill</a>
 </h2>
 
 <p>For sending emails.</p>
 
-<div class="highlight highlight-coffee"><pre><span class="nx">define</span> <span class="p">[</span><span class="s">'odo/mandrill'</span><span class="p">],</span> <span class="nf">(Mandrill) -&gt;</span>
-    <span class="nv">options =</span>
-        <span class="nv">message:</span>
-            <span class="nv">text: </span><span class="s">'An email sent with Mandrill'</span>
-            <span class="nv">subject: </span><span class="s">'Email from Odo'</span>
-            <span class="nv">from_email: </span><span class="s">'odo@odojs.com'</span>
-            <span class="nv">from_name: </span><span class="s">'Odo'</span>
-            <span class="nv">to: </span><span class="p">[</span>
-                <span class="nv">email: </span><span class="s">'john.smith@example.com'</span>
-                <span class="nv">name: </span><span class="s">'John Smith'</span>
-                <span class="nv">type: </span><span class="s">'to'</span>
-            <span class="p">]</span>
+<div class="highlight highlight-coffee"><pre>define [<span class="pl-s1"><span class="pl-pds">'</span>odo/mandrill<span class="pl-pds">'</span></span>], <span class="pl-vpf">(Mandrill)</span> <span class="pl-st">-&gt;</span>
+    <span class="pl-v"><span class="pl-v">options <span class="pl-k">=</span></span></span>
+        <span class="pl-v"><span class="pl-v">message:</span></span>
+            <span class="pl-v"><span class="pl-v">text:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>An email sent with Mandrill<span class="pl-pds">'</span></span>
+            <span class="pl-v"><span class="pl-v">subject:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>Email from Odo<span class="pl-pds">'</span></span>
+            <span class="pl-v"><span class="pl-v">from_email:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>odo@odojs.com<span class="pl-pds">'</span></span>
+            <span class="pl-v"><span class="pl-v">from_name:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>Odo<span class="pl-pds">'</span></span>
+            <span class="pl-v"><span class="pl-v">to:</span></span> [
+                <span class="pl-v"><span class="pl-v">email:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>john.smith@example.com<span class="pl-pds">'</span></span>
+                <span class="pl-v"><span class="pl-v">name:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>John Smith<span class="pl-pds">'</span></span>
+                <span class="pl-v"><span class="pl-v">type:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>to<span class="pl-pds">'</span></span>
+            ]
 
-    <span class="k">new</span> <span class="nx">Mandrill</span><span class="p">()</span>
-        <span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nf">-&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s">'Email away!'</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">catch</span><span class="p">(</span><span class="nf">(err) -&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">err</span><span class="p">)</span>
-</pre></div>
+    <span class="pl-k">new</span> <span class="pl-en">Mandrill</span>()
+        .send(options)
+        .then(<span class="pl-st">-&gt;</span> <span class="pl-en">console</span>.<span class="pl-s3">log</span> <span class="pl-s1"><span class="pl-pds">'</span>Email away!<span class="pl-pds">'</span></span>)
+        .catch(<span class="pl-vpf">(err)</span> <span class="pl-st">-&gt;</span> <span class="pl-en">console</span>.<span class="pl-s3">log</span> err)</pre></div>
 
 <h2>
-<a name="configuration" class="anchor" href="#configuration"><span class="octicon octicon-link"></span></a>Configuration</h2>
+<a id="configuration" class="anchor" href="#configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuration</h2>
 
 <p>Require 'odo/config' into your code to access all configuration.</p>
 
@@ -155,7 +160,9 @@
 <li>Individual environment variables like 'EXPRESS_PORT'</li>
 <li>A cson formatted environment variable 'ODO_EXAMPLE_ODO_CONFIG'</li>
 <li>Individual environment variables like 'ODO_EXAMPLE_EXPRESS_PORT'</li>
-</ol><p>Use the local config.cson file to add plugins to your project, add configuration that won't change per environment and add events and commands you want published and sent at the start of the application.</p>
+</ol>
+
+<p>Use the local config.cson file to add plugins to your project, add configuration that won't change per environment and add events and commands you want published and sent at the start of the application.</p>
 
 <p>Use the environment variable named 'ODO_CONFIG' for database details and other values that change between development and production environments and are shared across all applications running on the same computer.</p>
 
@@ -164,190 +171,184 @@
 <p>Direct environment variables are checked, see config.coffee for a template. For example both 'EXPRESS_PORT' and 'ODO_EXAMPLE_EXPRESS_PORT' will be checked to get the port express should run on, along with any values set in 'ODO_CONFIG' and 'ODO_EXAMPLE_ODO_CONFIG'.</p>
 
 <h2>
-<a name="eventstore" class="anchor" href="#eventstore"><span class="octicon octicon-link"></span></a>Eventstore</h2>
+<a id="eventstore" class="anchor" href="#eventstore" aria-hidden="true"><span class="octicon octicon-link"></span></a>Eventstore</h2>
 
 <p>Eventstore provides tooling to help implement Event Sourcing. The infrastructure includes an extend method to add methods and properties to an aggregate object to support event sourcing and the CQRS pattern. It uses the eventstore library and is backed by redis.</p>
 
 <p>See user.coffee for a web, domain and projection eventstore example.</p>
 
 <h2>
-<a name="hub" class="anchor" href="#hub"><span class="octicon octicon-link"></span></a>Hub</h2>
+<a id="hub" class="anchor" href="#hub" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hub</h2>
 
 <p>The hub used for cross plugin communication. It follows the CQRS pattern separating commands from events. The hub is using redis publish and subscribe with specific channels dedicated to each application. Event listers can be bound through the receive method and command handlers can be bound through the handle method. Send and publish methods are used to send commands and publish events.</p>
 
-<div class="highlight highlight-coffee"><pre><span class="nx">define</span> <span class="p">[</span><span class="s">'odo/hub'</span><span class="p">],</span> <span class="nf">(hub) -&gt;</span>
-    <span class="nx">hub</span><span class="p">.</span><span class="nx">receive</span> <span class="s">'userHasDisplayName'</span><span class="p">,</span> <span class="nf">(event, cb) -&gt;</span>
-        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s">"A new display name! </span><span class="si">#{</span><span class="nx">event</span><span class="p">.</span><span class="nx">payload</span><span class="p">.</span><span class="nx">displayName</span><span class="si">}</span><span class="s">"</span>
-        <span class="nx">cb</span><span class="p">()</span>
+<div class="highlight highlight-coffee"><pre>define [<span class="pl-s1"><span class="pl-pds">'</span>odo/hub<span class="pl-pds">'</span></span>], <span class="pl-vpf">(hub)</span> <span class="pl-st">-&gt;</span>
+    hub.receive <span class="pl-s1"><span class="pl-pds">'</span>userHasDisplayName<span class="pl-pds">'</span></span>, <span class="pl-vpf">(event, cb)</span> <span class="pl-st">-&gt;</span>
+        <span class="pl-en">console</span>.<span class="pl-s3">log</span> <span class="pl-s1"><span class="pl-pds">"</span>A new display name! <span class="pl-s2"><span class="pl-pse">#{</span>event.payload.displayName<span class="pl-pse">}</span></span><span class="pl-pds">"</span></span>
+        cb()
 
-    <span class="nx">hub</span><span class="p">.</span><span class="nx">send</span>
-        <span class="nv">command: </span><span class="s">'assignDisplayNameToUser'</span>
-        <span class="nv">payload:</span>
-            <span class="nv">id: </span><span class="mi">34</span>
-            <span class="nv">displayName: </span><span class="s">'John Smith'</span>
+    hub.send
+        <span class="pl-v"><span class="pl-v">command:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>assignDisplayNameToUser<span class="pl-pds">'</span></span>
+        <span class="pl-v"><span class="pl-v">payload:</span></span>
+            <span class="pl-v"><span class="pl-v">id:</span></span> <span class="pl-c1">34</span>
+            <span class="pl-v"><span class="pl-v">displayName:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>John Smith<span class="pl-pds">'</span></span>
 
-    <span class="nx">hub</span><span class="p">.</span><span class="nx">publish</span>
-        <span class="nv">event: </span><span class="s">'subspotActivityHasIncreased'</span>
-        <span class="nv">payload:</span>
-            <span class="nv">amount: </span><span class="s">'100%'</span>
-</pre></div>
+    hub.publish
+        <span class="pl-v"><span class="pl-v">event:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>subspotActivityHasIncreased<span class="pl-pds">'</span></span>
+        <span class="pl-v"><span class="pl-v">payload:</span></span>
+            <span class="pl-v"><span class="pl-v">amount:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>100%<span class="pl-pds">'</span></span></pre></div>
 
 <h2>
-<a name="plugin" class="anchor" href="#plugin"><span class="octicon octicon-link"></span></a>Plugin</h2>
+<a id="plugin" class="anchor" href="#plugin" aria-hidden="true"><span class="octicon octicon-link"></span></a>Plugin</h2>
 
 <p>Plugin is a component to help load other plugins. It provides web, api, domain and projection methods that call the same named method on an array of plugins passed to it's constructor.</p>
 
-<div class="highlight highlight-coffee"><pre><span class="nx">define</span> <span class="p">[</span>
-    <span class="s">'odo/plugins'</span>
-    <span class="s">'local/identity/user'</span>
-    <span class="s">'local/identity/organisation'</span>
-    <span class="s">'local/identity/invitation'</span>
-    <span class="s">'local/identity/permissions'</span>
-    <span class="s">'local/identity/public'</span>
-<span class="p">],</span> <span class="nf">(Plugins, plugins...) -&gt;</span>
-    <span class="k">new</span> <span class="nx">Plugins</span> <span class="nx">plugins</span>
-</pre></div>
+<div class="highlight highlight-coffee"><pre>define [
+    <span class="pl-s1"><span class="pl-pds">'</span>odo/plugins<span class="pl-pds">'</span></span>
+    <span class="pl-s1"><span class="pl-pds">'</span>local/identity/user<span class="pl-pds">'</span></span>
+    <span class="pl-s1"><span class="pl-pds">'</span>local/identity/organisation<span class="pl-pds">'</span></span>
+    <span class="pl-s1"><span class="pl-pds">'</span>local/identity/invitation<span class="pl-pds">'</span></span>
+    <span class="pl-s1"><span class="pl-pds">'</span>local/identity/permissions<span class="pl-pds">'</span></span>
+    <span class="pl-s1"><span class="pl-pds">'</span>local/identity/public<span class="pl-pds">'</span></span>
+], <span class="pl-vpf">(Plugins, plugins...)</span> <span class="pl-st">-&gt;</span>
+    <span class="pl-k">new</span> <span class="pl-en">Plugins</span> plugins</pre></div>
 
 <h2>
-<a name="misc-helpers" class="anchor" href="#misc-helpers"><span class="octicon octicon-link"></span></a>Misc helpers</h2>
+<a id="misc-helpers" class="anchor" href="#misc-helpers" aria-hidden="true"><span class="octicon octicon-link"></span></a>Misc helpers</h2>
 
 <p>Recorder and sequencer are classes used internally, you're welcome to use them too although they might change.</p>
 
-<hr><h1>
-<a name="backend-plugins" class="anchor" href="#backend-plugins"><span class="octicon octicon-link"></span></a>Backend plugins</h1>
+<hr>
+
+<h1>
+<a id="backend-plugins" class="anchor" href="#backend-plugins" aria-hidden="true"><span class="octicon octicon-link"></span></a>Backend plugins</h1>
 
 <h2>
-<a name="express" class="anchor" href="#express"><span class="octicon octicon-link"></span></a><a href="http://expressjs.com/">Express</a>
+<a id="express" class="anchor" href="#express" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://expressjs.com/">Express</a>
 </h2>
 
 <p>The web context is based around express. Plugins exposed in the web context are given an opportunity to register against different parts of express to define routes and extend the express system.</p>
 
-<div class="highlight highlight-coffee"><pre><span class="nx">define</span> <span class="p">[</span><span class="s">'odo/express'</span><span class="p">],</span> <span class="nf">(express) -&gt;</span>
-    <span class="nv">web: </span><span class="nf">-&gt;</span>
-        <span class="nx">express</span><span class="p">.</span><span class="nx">get</span> <span class="s">'/test'</span><span class="p">,</span> <span class="nf">(req, res) -&gt;</span>
-            <span class="nx">res</span><span class="p">.</span><span class="nx">send</span> <span class="s">'Hello World'</span>
-
+<div class="highlight highlight-coffee"><pre>define [<span class="pl-s1"><span class="pl-pds">'</span>odo/express<span class="pl-pds">'</span></span>], <span class="pl-vpf">(express)</span> <span class="pl-st">-&gt;</span>
+    <span class="pl-en">web</span><span class="pl-k">:</span> <span class="pl-st"><span class="pl-st">-&gt;</span></span>
+        express.get <span class="pl-s1"><span class="pl-pds">'</span>/test<span class="pl-pds">'</span></span>, <span class="pl-vpf">(req, res)</span> <span class="pl-st">-&gt;</span>
+            res.send <span class="pl-s1"><span class="pl-pds">'</span>Hello World<span class="pl-pds">'</span></span>
 </pre></div>
 
 <p>'odo/express' needs to be included in the systems array after any plugins wanting web context.</p>
 
 <h2>
-<a name="restify" class="anchor" href="#restify"><span class="octicon octicon-link"></span></a><a href="http://mcavage.me/node-restify/">Restify</a>
+<a id="restify" class="anchor" href="#restify" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://mcavage.me/node-restify/">Restify</a>
 </h2>
 
 <p>The api context is based around restify. Plugins exposed in the api context are given the opportunity to register against different parts of restify to define routes and extend the restify system.</p>
 
-<div class="highlight highlight-coffee"><pre><span class="nx">define</span> <span class="p">[</span><span class="s">'odo/restify'</span><span class="p">],</span> <span class="nf">(restify) -&gt;</span>
-    <span class="nv">web: </span><span class="nf">-&gt;</span>
-        <span class="nx">restify</span><span class="p">.</span><span class="nx">get</span> <span class="s">'/test'</span><span class="p">,</span> <span class="nf">(req, res) -&gt;</span>
-            <span class="nx">res</span><span class="p">.</span><span class="nx">send</span> <span class="s">'Hello World'</span>
-
+<div class="highlight highlight-coffee"><pre>define [<span class="pl-s1"><span class="pl-pds">'</span>odo/restify<span class="pl-pds">'</span></span>], <span class="pl-vpf">(restify)</span> <span class="pl-st">-&gt;</span>
+    <span class="pl-en">web</span><span class="pl-k">:</span> <span class="pl-st"><span class="pl-st">-&gt;</span></span>
+        restify.get <span class="pl-s1"><span class="pl-pds">'</span>/test<span class="pl-pds">'</span></span>, <span class="pl-vpf">(req, res)</span> <span class="pl-st">-&gt;</span>
+            res.send <span class="pl-s1"><span class="pl-pds">'</span>Hello World<span class="pl-pds">'</span></span>
 </pre></div>
 
 <p>'odo/restify' needs to be included in the systems array after any plugins wanting api context.</p>
 
 <h2>
-<a name="bower" class="anchor" href="#bower"><span class="octicon octicon-link"></span></a>Bower</h2>
+<a id="bower" class="anchor" href="#bower" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bower</h2>
 
 <p>The bower plugin hosts the /bower_components directory so anything you've installed with bower is available to the web.</p>
 
 <p>E.g. <code>bower install --save jquery</code> will result in <code>http://localhost:1234/jquery/dist/jquery.min.js</code> being available, depending on your express port.</p>
 
 <h2>
-<a name="durandal" class="anchor" href="#durandal"><span class="octicon octicon-link"></span></a>Durandal</h2>
+<a id="durandal" class="anchor" href="#durandal" aria-hidden="true"><span class="octicon octicon-link"></span></a>Durandal</h2>
 
 <p>The durandal plugin allows other plugins to register components to be used in the Front End.</p>
 
-<div class="highlight highlight-coffee"><pre><span class="nx">define</span> <span class="p">[</span>
-    <span class="s">'module'</span>
-    <span class="s">'odo/express'</span>
-    <span class="s">'odo/durandal'</span>
-<span class="p">],</span> <span class="nf">(module, express, durandal) -&gt;</span>
-    <span class="nv">web: </span><span class="nf">-&gt;</span>
-        <span class="nx">express</span><span class="p">.</span><span class="nx">route</span> <span class="s">'/views'</span><span class="p">,</span> <span class="nx">express</span><span class="p">.</span><span class="nx">modulepath</span><span class="p">(</span><span class="nx">module</span><span class="p">.</span><span class="nx">uri</span><span class="p">)</span> <span class="o">+</span> <span class="s">'/public'</span>
-        <span class="nx">durandal</span><span class="p">.</span><span class="nx">register</span> <span class="s">'views/welcome'</span>
-</pre></div>
+<div class="highlight highlight-coffee"><pre>define [
+    <span class="pl-s1"><span class="pl-pds">'</span>module<span class="pl-pds">'</span></span>
+    <span class="pl-s1"><span class="pl-pds">'</span>odo/express<span class="pl-pds">'</span></span>
+    <span class="pl-s1"><span class="pl-pds">'</span>odo/durandal<span class="pl-pds">'</span></span>
+], <span class="pl-vpf">(module, express, durandal)</span> <span class="pl-st">-&gt;</span>
+    <span class="pl-en">web</span><span class="pl-k">:</span> <span class="pl-st"><span class="pl-st">-&gt;</span></span>
+        express.route <span class="pl-s1"><span class="pl-pds">'</span>/views<span class="pl-pds">'</span></span>, express.modulepath(<span class="pl-sv">module</span>.uri) <span class="pl-k">+</span> <span class="pl-s1"><span class="pl-pds">'</span>/public<span class="pl-pds">'</span></span>
+        durandal.register <span class="pl-s1"><span class="pl-pds">'</span>views/welcome<span class="pl-pds">'</span></span></pre></div>
 
 <p>And in a public folder is welcome.coffee and welcome.html:</p>
 
-<div class="highlight highlight-coffee"><pre><span class="nx">define</span> <span class="p">[</span><span class="s">'knockout'</span><span class="p">,</span> <span class="s">'plugins/router'</span><span class="p">],</span> <span class="nf">(ko, router) -&gt;</span>
-    <span class="nx">router</span><span class="p">.</span><span class="nx">map</span>
-        <span class="nv">route: </span><span class="s">''</span>
-        <span class="nv">moduleId: </span><span class="s">'views/welcome'</span>
+<div class="highlight highlight-coffee"><pre>define [<span class="pl-s1"><span class="pl-pds">'</span>knockout<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>plugins/router<span class="pl-pds">'</span></span>], <span class="pl-vpf">(ko, router)</span> <span class="pl-st">-&gt;</span>
+    router.<span class="pl-s3">map</span>
+        <span class="pl-v"><span class="pl-v">route:</span></span> <span class="pl-s1"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>
+        <span class="pl-v"><span class="pl-v">moduleId:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>views/welcome<span class="pl-pds">'</span></span>
 
-    <span class="k">class</span> <span class="nx">Welcome</span>
-        <span class="nv">title: </span><span class="s">'Welcome'</span>
+    <span class="pl-st">class</span> <span class="pl-en">Welcome</span>
+        <span class="pl-v"><span class="pl-v">title:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>Welcome<span class="pl-pds">'</span></span>
 
-        <span class="nv">constructor: </span><span class="nf">-&gt;</span>
-            <span class="vi">@displayName = </span><span class="nx">ko</span><span class="p">.</span><span class="nx">observable</span> <span class="s">'John Smith'</span>
-</pre></div>
+        <span class="pl-en">constructor</span><span class="pl-k">:</span> <span class="pl-st"><span class="pl-st">-&gt;</span></span>
+            <span class="pl-vo">@displayName</span> <span class="pl-k">=</span> ko.observable <span class="pl-s1"><span class="pl-pds">'</span>John Smith<span class="pl-pds">'</span></span></pre></div>
 
-<div class="highlight highlight-html"><pre><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"test"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;h1&gt;</span>Test Page<span class="nt">&lt;/h1&gt;</span>
-    <span class="nt">&lt;p&gt;</span>Welcome <span class="nt">&lt;span</span> <span class="na">data-bind=</span><span class="s">"text: displayName"</span><span class="nt">&gt;&lt;/span&gt;&lt;p&gt;</span>
-<span class="nt">&lt;/div&gt;</span>
-</pre></div>
+<div class="highlight highlight-html"><pre>&lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s1"><span class="pl-pds">"</span>test<span class="pl-pds">"</span></span>&gt;
+    &lt;<span class="pl-ent">h1</span>&gt;Test Page&lt;/<span class="pl-ent">h1</span>&gt;
+    &lt;<span class="pl-ent">p</span>&gt;Welcome &lt;<span class="pl-ent">span</span> <span class="pl-e">data-bind</span>=<span class="pl-s1"><span class="pl-pds">"</span>text: displayName<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">span</span>&gt;&lt;<span class="pl-ent">p</span>&gt;
+&lt;/<span class="pl-ent">div</span>&gt;</pre></div>
 
 <h2>
-<a name="handlebars" class="anchor" href="#handlebars"><span class="octicon octicon-link"></span></a>Handlebars</h2>
+<a id="handlebars" class="anchor" href="#handlebars" aria-hidden="true"><span class="octicon octicon-link"></span></a>Handlebars</h2>
 
 <p>Handlebars is a plugin in the web context to register handlebars as the view engine for express and add additional functionality for handlebars including a custom render method.</p>
 
-<div class="highlight highlight-coffee"><pre><span class="nx">define</span> <span class="p">[</span><span class="s">'odo/express'</span><span class="p">],</span> <span class="nf">(module, express) -&gt;</span>
-    <span class="nv">web: </span><span class="nf">=&gt;</span>
-        <span class="nx">express</span><span class="p">.</span><span class="nx">get</span> <span class="s">'/test'</span><span class="p">,</span> <span class="nf">(req, res) -&gt;</span>
-            <span class="nx">res</span><span class="p">.</span><span class="nx">render</span>
-                <span class="nv">view: </span><span class="s">'templates/layout'</span>
-                <span class="nv">data:</span>
-                    <span class="nv">title: </span><span class="nx">req</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">displayName</span>
-                    <span class="nv">displayName: </span><span class="s">'John Smith'</span>
-                <span class="nv">partials:</span>
-                    <span class="nv">content: </span><span class="s">'test'</span>
-</pre></div>
+<div class="highlight highlight-coffee"><pre>define [<span class="pl-s1"><span class="pl-pds">'</span>odo/express<span class="pl-pds">'</span></span>], <span class="pl-vpf">(module, express)</span> <span class="pl-st">-&gt;</span>
+    <span class="pl-en">web</span><span class="pl-k">:</span> <span class="pl-st"><span class="pl-st">=&gt;</span></span>
+        express.get <span class="pl-s1"><span class="pl-pds">'</span>/test<span class="pl-pds">'</span></span>, <span class="pl-vpf">(req, res)</span> <span class="pl-st">-&gt;</span>
+            res.render
+                <span class="pl-v"><span class="pl-v">view:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>templates/layout<span class="pl-pds">'</span></span>
+                <span class="pl-v"><span class="pl-v">data:</span></span>
+                    <span class="pl-v"><span class="pl-v">title:</span></span> req.user.displayName
+                    <span class="pl-v"><span class="pl-v">displayName:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>John Smith<span class="pl-pds">'</span></span>
+                <span class="pl-v"><span class="pl-v">partials:</span></span>
+                    <span class="pl-v"><span class="pl-v">content:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>test<span class="pl-pds">'</span></span></pre></div>
 
 <p>The code sample above will combine the layout template with the test template from a directory called 'templates' and pass in some information to be used when rendering.</p>
 
 <p>layout.html:</p>
 
-<div class="highlight highlight-html"><pre><span class="cp">&lt;!DOCTYPE html&gt;</span>
-<span class="nt">&lt;html</span> <span class="na">lang=</span><span class="s">"en"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;head&gt;</span>
-        <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"utf-8"</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">"X-UA-Compatible"</span> <span class="na">content=</span><span class="s">"IE=edge, chrome=1"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"viewport"</span> <span class="na">content=</span><span class="s">"width=device-width, initial-scale=1.0"</span><span class="nt">&gt;</span>
+<div class="highlight highlight-html"><pre>&lt;!DOCTYPE html&gt;
+&lt;<span class="pl-ent">html</span> <span class="pl-e">lang</span>=<span class="pl-s1"><span class="pl-pds">"</span>en<span class="pl-pds">"</span></span>&gt;
+    &lt;<span class="pl-ent">head</span>&gt;
+        &lt;<span class="pl-ent">meta</span> <span class="pl-e">charset</span>=<span class="pl-s1"><span class="pl-pds">"</span>utf-8<span class="pl-pds">"</span></span>&gt;
+        &lt;<span class="pl-ent">meta</span> <span class="pl-e">http-equiv</span>=<span class="pl-s1"><span class="pl-pds">"</span>X-UA-Compatible<span class="pl-pds">"</span></span> <span class="pl-e">content</span>=<span class="pl-s1"><span class="pl-pds">"</span>IE=edge, chrome=1<span class="pl-pds">"</span></span> /&gt;
+        &lt;<span class="pl-ent">meta</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">"</span>viewport<span class="pl-pds">"</span></span> <span class="pl-e">content</span>=<span class="pl-s1"><span class="pl-pds">"</span>width=device-width, initial-scale=1.0<span class="pl-pds">"</span></span>&gt;
 
-        <span class="nt">&lt;title&gt;</span>{{title}}<span class="nt">&lt;/title&gt;</span>
-    <span class="nt">&lt;/head&gt;</span>
+        &lt;<span class="pl-ent">title</span>&gt;{{title}}&lt;/<span class="pl-ent">title</span>&gt;
+    &lt;/<span class="pl-ent">head</span>&gt;
 
-    <span class="nt">&lt;body&gt;</span>
+    &lt;<span class="pl-ent">body</span>&gt;
         {{hook 'content'}}
-    <span class="nt">&lt;/body&gt;</span>
-<span class="nt">&lt;/html&gt;</span>
-</pre></div>
+    &lt;/<span class="pl-ent">body</span>&gt;
+&lt;/<span class="pl-ent">html</span>&gt;</pre></div>
 
 <p>test.html:</p>
 
-<div class="highlight highlight-html"><pre><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"test"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;h1&gt;</span>Test Page<span class="nt">&lt;/h1&gt;</span>
-    <span class="nt">&lt;p&gt;</span>Welcome {{displayName}}<span class="nt">&lt;p&gt;</span>
-<span class="nt">&lt;/div&gt;</span>
-</pre></div>
+<div class="highlight highlight-html"><pre>&lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s1"><span class="pl-pds">"</span>test<span class="pl-pds">"</span></span>&gt;
+    &lt;<span class="pl-ent">h1</span>&gt;Test Page&lt;/<span class="pl-ent">h1</span>&gt;
+    &lt;<span class="pl-ent">p</span>&gt;Welcome {{displayName}}&lt;<span class="pl-ent">p</span>&gt;
+&lt;/<span class="pl-ent">div</span>&gt;</pre></div>
 
 <h2>
-<a name="public" class="anchor" href="#public"><span class="octicon octicon-link"></span></a>Public</h2>
+<a id="public" class="anchor" href="#public" aria-hidden="true"><span class="octicon octicon-link"></span></a>Public</h2>
 
 <p>The public plugin hosts the odo public directory through express which includes durandal components and identity and authentication code. Also hosts a public directory available in your application for static assets and durandal models and views.</p>
 
 <h2>
-<a name="passport-authentication---local-google-facebook-twitter-and-metocean" class="anchor" href="#passport-authentication---local-google-facebook-twitter-and-metocean"><span class="octicon octicon-link"></span></a>Passport authentication - local, google, facebook, twitter and metocean</h2>
+<a id="passport-authentication---local-google-facebook-twitter-and-metocean" class="anchor" href="#passport-authentication---local-google-facebook-twitter-and-metocean" aria-hidden="true"><span class="octicon octicon-link"></span></a>Passport authentication - local, google, facebook, twitter and metocean</h2>
 
 <p>The passport authentication plugins provide urls and methods to authenticate a user with passport and passport plugins. Custom local, twitter, facebook, google and metocean passport plugins have been provided.</p>
 
-<hr><h1>
-<a name="technologies" class="anchor" href="#technologies"><span class="octicon octicon-link"></span></a>Technologies</h1>
+<hr>
+
+<h1>
+<a id="technologies" class="anchor" href="#technologies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Technologies</h1>
 
 <h2>
-<a name="developed-alongside-odo" class="anchor" href="#developed-alongside-odo"><span class="octicon octicon-link"></span></a>Developed alongside Odo</h2>
+<a id="developed-alongside-odo" class="anchor" href="#developed-alongside-odo" aria-hidden="true"><span class="octicon octicon-link"></span></a>Developed alongside Odo</h2>
 
 <ul>
 <li>
@@ -358,8 +359,10 @@
 <a href="https://github.com/tcoats/peekinto">Peekinto</a> (ui composition for express)</li>
 <li>
 <a href="https://github.com/tcoats/fetching">Fetching</a> (fetching strategies)</li>
-</ul><h2>
-<a name="backend-and-front-end" class="anchor" href="#backend-and-front-end"><span class="octicon octicon-link"></span></a>Backend and front end</h2>
+</ul>
+
+<h2>
+<a id="backend-and-front-end" class="anchor" href="#backend-and-front-end" aria-hidden="true"><span class="octicon octicon-link"></span></a>Backend and front end</h2>
 
 <ul>
 <li>
@@ -370,8 +373,10 @@
 <a href="https://github.com/broofa/node-uuid">node-uuid</a> (guids)</li>
 <li>
 <a href="https://github.com/hubspot/humanize">humanize</a> (string formatting)</li>
-</ul><h2>
-<a name="back-end" class="anchor" href="#back-end"><span class="octicon octicon-link"></span></a>Back end</h2>
+</ul>
+
+<h2>
+<a id="back-end" class="anchor" href="#back-end" aria-hidden="true"><span class="octicon octicon-link"></span></a>Back end</h2>
 
 <ul>
 <li>
@@ -392,8 +397,10 @@
 <a href="https://github.com/bevry/cson">cson</a> (coffeescript object notation)</li>
 <li>
 <a href="https://github.com/expressjs/multer">multer</a> (file uploads)</li>
-</ul><h2>
-<a name="front-end" class="anchor" href="#front-end"><span class="octicon octicon-link"></span></a>Front end</h2>
+</ul>
+
+<h2>
+<a id="front-end" class="anchor" href="#front-end" aria-hidden="true"><span class="octicon octicon-link"></span></a>Front end</h2>
 
 <ul>
 <li>
@@ -414,7 +421,7 @@
       </section>
     </div>
     <footer>
-      <p>Project maintained by <a href="https://github.com/tcoats">tcoats</a></p>
+      <p>Project maintained by <a href="https://github.com/odojs">odojs</a></p>
       <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
     </footer>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
