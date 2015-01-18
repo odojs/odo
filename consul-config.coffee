@@ -1,4 +1,4 @@
-define ['odo/config', 'redwire-consul', 'cson'], (config, consul, CSON) ->
+define ['odo/config', 'consul-utils', 'cson'], (config, consul, CSON) ->
   (httpAddr, callback) ->
     firstRun = yes
     watch = new consul.KV httpAddr, "#{config.odo.domain}/odo-config", (configurations) ->
