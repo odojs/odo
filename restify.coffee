@@ -30,9 +30,6 @@ define [
 					if req.header('referrer')?
 						referrer = req.header('referrer').slice(0,-1)
 					
-					console.log referrer
-					console.log alloweddomains
-					
 					return next() unless referrer in alloweddomains
 					
 					res.header 'Access-Control-Allow-Origin', referrer

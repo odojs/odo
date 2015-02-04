@@ -1,11 +1,11 @@
 {
   "name": "odo",
   "description": "Odo, whatever you want it to be",
-  "version": "11.11.0",
+  "version": "11.11.1",
   "dependencies": {},
   "repository": {
     "type": "git",
-    "url": "http://github.com/tcoats/odo.git"
+    "url": "http://github.com/odojs/odo.git"
   },
   "readmeFilename": "README.md"
 }
