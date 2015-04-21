@@ -67,6 +67,8 @@ define [
 				if sessionConfig?
 					if sessionConfig.rolling?
 						sessionOptions.rolling = sessionConfig.rolling
+					if sessionConfig.name?
+						sessionOptions.name = sessionConfig.name
 					if sessionConfig.cookie?
 						sessionOptions.cookie = {}
 						for key, value of sessionConfig.cookie
