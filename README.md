@@ -21,7 +21,7 @@ Odo hopefully follows these goals and also makes it easy to write applications t
 - [Domain-driven design](http://martinfowler.com/tags/domain%20driven%20design.html)
 - [Event sourcing](http://martinfowler.com/eaaDev/EventSourcing.html)
 - [Command and Query Responsibility Segregation](http://martinfowler.com/bliki/CQRS.html)
-- [Event-driven architecture](http://msdn.microsoft.com/en-nz/architecture/aa699424.aspx)
+- Event-driven architecture
 - [UI composition](http://www.udidahan.com/2012/06/23/ui-composition-techniques-for-correct-service-boundaries/)
 - [Single-page applications](http://www.johnpapa.net/spa/)
 - [Schema-less database](http://martinfowler.com/nosql.html)
