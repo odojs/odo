@@ -107,10 +107,11 @@ define(['odo/config', 'odo/recorder'], function(config, Recorder) {
         alloweddomains = this.app.get('allowed cross domains').split(' ');
         this.app.use((function(_this) {
           return function(req, res, next) {
-            var referrer;
+            var referrer, u;
             referrer = req.protocol + "://" + req.hostname;
-            if (req.header('referrer') != null) {
-              referrer = req.header('referrer').slice(0, -1);
+            if (req.header('referer') != null) {
+              u = url.parse(req.header('referer'));
+              referrer = u.protocol + "//" + u.host;
             }
             if (indexOf.call(alloweddomains, referrer) < 0) {
               return next();
