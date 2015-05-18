@@ -84,8 +84,9 @@ define [
 
 				@app.use (req, res, next) =>
 					referrer = "#{req.protocol}://#{req.hostname}"
-					if req.header('referrer')?
-						referrer = req.header('referrer').slice(0,-1)
+					if req.header('referer')?
+						u = url.parse req.header 'referer'
+						referrer = "#{u.protocol}//#{u.host}"  # Protocol includes ':'
 					
 					return next() unless referrer in alloweddomains
 					res.header 'Access-Control-Allow-Origin', referrer
