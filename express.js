@@ -37,9 +37,10 @@ define(['odo/config', 'odo/recorder'], function(config, Recorder) {
     };
 
     Express.prototype.web = function() {
-      var RedisStore, alloweddomains, bodyParser, express, http, key, port, ref, ref1, ref2, session, sessionConfig, sessionOptions, value;
+      var RedisStore, alloweddomains, bodyParser, express, http, key, port, ref, ref1, ref2, session, sessionConfig, sessionOptions, url, value;
       http = require('http');
       express = require('express');
+      url = require('url');
       this.app = express();
       ref = config.express;
       for (key in ref) {

@@ -30,6 +30,7 @@ define [
 		web: =>
 			http = require 'http'
 			express = require 'express'
+			url = require 'url'
 			
 			@app = express()
 
