@@ -236,19 +236,15 @@ define [
 			hub.emit 'assign email address {email} to user {id}',
 				id: userid
 				email: email
-			
+
 			hub.emit 'set password of user {id}',
 				id: userid
 				password: profile.password
 
-			#Public General Access
-			###
-			hub.emit 'user {userid} is a member of group {groupid}',
-				userid: userid
-				groupid: config.metocean.publicgeneralaccess.groupid
-				organisationid: config.metocean.publicgeneralaccess.organisationid
-			###
-			
+			hub.emit 'user {id} has signed up',
+				id: userid
+				displayName: displayName
+
 			hub.ready (cb) ->
 				cb()
 				inject.one('odo user by id') userid, (err, user) =>
