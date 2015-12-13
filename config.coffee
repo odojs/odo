@@ -72,7 +72,9 @@ define ['module', 'fs', 'path', 'cson'], (module, fs, path, CSON) ->
 		result
 	
 	# start with the config.cson file
-	result = CSON.parseFileSync path.join path.dirname(module.uri), '../../config.cson'
+	filepath = path.join path.dirname(module.uri), '../../config.cson'
+	filecontents = fs.readFileSync filepath, 'utf-8'
+	result = CSON.parseCSONString filecontents
 	result.package = JSON.parse fs.readFileSync path.join path.dirname(module.uri), '../../package.json'
 	result.import = (source) ->
 		for key, value of source
@@ -90,7 +92,8 @@ define ['module', 'fs', 'path', 'cson'], (module, fs, path, CSON) ->
 	globalenvblob = {}
 	if process.env[globalenvvar]?
 		#console.log "Reading #{globalenvvar}"
-		globalenvblob = CSON.parseSync process.env[globalenvvar]
+		globalenvcontents = fs.readFileSync process.env[globalenvvar]
+		globalenvblob = CSON.parseCSONString globalenvcontents
 	
 	# Look for global configurations
 	globalenv = parse '', template
@@ -100,7 +103,8 @@ define ['module', 'fs', 'path', 'cson'], (module, fs, path, CSON) ->
 	domainenvblob = {}
 	if process.env[domainenvvar]?
 		#console.log "Reading #{domainenvvar}"
-		domainenvblob = CSON.parseSync process.env[domainenvvar]
+		domainenvcontents = fs.readFileSync process.env[domainenvvar]
+		domainenvblob = CSON.parseCSONString domainenvcontents
 	
 	# Also look for domain specific overrides
 	domainenv = parse "#{envdomain}_", template
